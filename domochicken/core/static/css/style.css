@@ -1,0 +1,85 @@
+body {
+    font-family: 'Questrial', sans-serif;
+}
+.carousel-item img {
+    max-height: 720px; /* ajusta el tamaño según tus necesidades */
+    object-fit: cover;
+  }
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+.navbar .navbar-brand img {
+    max-width: 100px;
+}
+
+@media screen and (min-width: 768px) {
+    .navbar-collapse {
+        display: flex;
+
+    }
+
+    .navbar .navbar-brand img {
+        max-width: 6em;
+    }
+
+}
+
+@media screen and (max-width: 576px) {
+    .card {
+        width: 100%;
+    }
+
+}
+
+.iconos-usuario {
+    padding-right: 2em;
+    font-size: 20px;
+
+}
+
+/* BOTONES DE REDES SOCIALES */
+.iconos-usuario a i {
+    text-decoration: none !important;
+    color: #000 !important;
+}
+
+.instagram {
+    background: #f09433;
+    background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    background: -webkit-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f09433', endColorstr='#bc1888', GradientType=1);
+}
+
+.botones {
+    border-radius: 10px;
+    font-size: 30px;
+    filter: drop-shadow(0 0 0.3rem #15111a);
+    cursor: pointer;
+    transition: all 0.1s ease;
+}
+
+.botones:hover {
+    border-radius: 10px;
+    filter: drop-shadow(0 0 0.6rem #15111a);
+    transform: translate(0, 10px);
+    clip-path: inset(0% 0 0% 0 round 10px);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
