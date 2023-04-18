@@ -5,3 +5,6 @@ def index(request):
 
     return render(request,'index.html')
     
+def inicio_sesion(request):
+
+    return render(request,'inicio_sesion.html')
