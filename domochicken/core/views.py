@@ -8,3 +8,7 @@ def index(request):
 def inicio_sesion(request):
 
     return render(request,'inicio_sesion.html')
+
+def indexAdmin(request):
+
+    return render(request,'indexAdmin.html')
