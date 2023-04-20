@@ -12,3 +12,7 @@ def inicio_sesion(request):
 def indexAdmin(request):
 
     return render(request,'indexAdmin.html')
+
+def proveedores(request):
+
+    return render(request,'proveedores.html' )
