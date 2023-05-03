@@ -9,9 +9,9 @@ def inicio_sesion(request):
 
     return render(request,'inicio_sesion.html')
 
-def indexAdmin(request):
+def index_admin(request):
 
-    return render(request,'indexAdmin.html')
+    return render(request,'index_admin.html')
 
 def proveedores(request):
 

@@ -1,10 +1,19 @@
+/*
+**********************************************
+**********************************************
+                    INDEX
+**********************************************
+**********************************************
+*/
 body {
     font-family: 'Questrial', sans-serif;
 }
+
 .carousel-item img {
-    max-height: 720px; /* ajusta el tamaño según tus necesidades */
+    max-height: 720px;
     object-fit: cover;
-  }
+}
+
 .navbar {
     position: fixed;
     top: 0;
@@ -71,18 +80,9 @@ body {
     clip-path: inset(0% 0 0% 0 round 10px);
 }
 
-
-
-
-
-
-
-
-/*Footer Inicio*/
 .pie-pagina {
     width: 100%;
     background-color: rgb(182, 13, 13);
-    margin-top: 50px;
 }
 
 .pie-pagina .grupo-1 {
@@ -146,118 +146,133 @@ body {
     font-size: 15px;
 }
 
-.redes-sociales
-{
+.redes-sociales {
     margin-bottom: 10px;
 }
-.lista
-{
+
+.lista {
     color: #fff;
     list-style: none;
     text-align: left;
 }
 
-.img-foot
-{
+.img-foot {
     width: 300px;
 }
-.cerrar{
+
+.cerrar {
     color: blue;
 }
+
 footer {
-    position: absolute,bottom;
+    position: absolute, bottom;
     bottom: 0;
     width: 100%;
     background-color: #333;
     color: #fff;
     text-align: center;
-  }
-  /*Footer Fin*/
+}
 
-/*Index Admin*/
+/*Footer Fin*/
+/*
+**********************************************
+**********************************************
+                INDEX ADMIN
+**********************************************
+**********************************************
+*/
+
 /*Titulo*/
-.titulo
-{
+.titulo {
     font-size: 40px;
     color: var(--blanco);
     margin-bottom: 25px;
     margin-top: 25px;
-    
+
 }
+
 /*Filas y columnas*/
-.filas
-{
+.filas {
     color: var(--negro);
     font-size: 20px;
 }
-.columnas
-{
+
+.columnas {
     margin-bottom: 20px;
 }
-.card
-{
+
+.card {
     padding: 10px;
     word-wrap: break-word;
 }
-.color-borde-1
-{
-    border-left: 0.25rem solid #2897e0!important; /*Para que el color tenga prioridad*/
+
+.color-borde-1 {
+    border-left: 0.25rem solid #2897e0 !important;
+    /*Para que el color tenga prioridad*/
 }
-.color-borde-2
-{
-    border-left: 0.25rem solid #28eDdd!important; /*Para que el color tenga prioridad*/
+
+.color-borde-2 {
+    border-left: 0.25rem solid #28eDdd !important;
+    /*Para que el color tenga prioridad*/
 }
-.color-borde-3
-{
-    border-left: 0.25rem solid #1d41e0!important; /*Para que el color tenga prioridad*/
+
+.color-borde-3 {
+    border-left: 0.25rem solid #1d41e0 !important;
+    /*Para que el color tenga prioridad*/
 }
-.titulo-card 
-{
-    
+
+.titulo-card {
+
     padding: 10px;
     background-color: #f8f9fc;
     border-bottom: 1px solid #e3e6f0;
     font-size: 20px;
 }
-.iconos
-{
+
+.iconos {
     font-size: 22px;
 }
-.desc
-{
+
+.desc {
     padding: 5px;
     font-size: 19px;
     color: var(--negro);
 }
 
-/*CSS vista proveedor*/
+/*
+**********************************************
+**********************************************
+                    PROVEEDORES
+**********************************************
+**********************************************
+*/
 
-.fondoP{
-    background-image: url(/../../static/img/pollo1.jpg) ;
+.fondoP {
+    background-image: url(/../../static/img/pollo1.jpg);
 }
 
-.tituloP{
+.tituloP {
     font-size: 40px;
     margin-bottom: 25px;
     margin-top: 25px;
     color: white;
-    
+
 }
 
 /* burbujas */
 
-.burbuja{
+.burbuja {
     border-radius: 50%;
     background: #000000;
     opacity: .3;
 
     position: absolute;
     bottom: -150;
-    
-    animation: burbujas 3s linear infinite ;
+
+    animation: burbujas 3s linear infinite;
 }
 
-.burbuja:nth-child(1){
+.burbuja:nth-child(1) {
     width: 80px;
     height: 80px;
     left: 5%;
@@ -265,7 +280,7 @@ footer {
     animation-delay: 3s;
 }
 
-.burbuja:nth-child(2){
+.burbuja:nth-child(2) {
     width: 100px;
     height: 100px;
     left: 35%;
@@ -273,7 +288,7 @@ footer {
     animation-delay: 5s;
 }
 
-.burbuja:nth-child(3){
+.burbuja:nth-child(3) {
     width: 20px;
     height: 20px;
     left: 15%;
@@ -281,7 +296,7 @@ footer {
     animation-delay: 7s;
 }
 
-.burbuja:nth-child(4){
+.burbuja:nth-child(4) {
     width: 50px;
     height: 50px;
     left: 90%;
@@ -289,7 +304,7 @@ footer {
     animation-delay: 3s;
 }
 
-.burbuja:nth-child(5){
+.burbuja:nth-child(5) {
     width: 70px;
     height: 70px;
     left: 65%;
@@ -297,7 +312,7 @@ footer {
     animation-delay: 1s;
 }
 
-.burbuja:nth-child(6){
+.burbuja:nth-child(6) {
     width: 20px;
     height: 20px;
     left: 50%;
@@ -305,7 +320,7 @@ footer {
     animation-delay: 5s;
 }
 
-.burbuja:nth-child(7){
+.burbuja:nth-child(7) {
     width: 20px;
     height: 20px;
     left: 50%;
@@ -313,7 +328,7 @@ footer {
     animation-delay: 5s;
 }
 
-.burbuja:nth-child(8){
+.burbuja:nth-child(8) {
     width: 100;
     height: 100px;
     left: 52%;
@@ -321,7 +336,7 @@ footer {
     animation-delay: 5s;
 }
 
-.burbuja:nth-child(9){
+.burbuja:nth-child(9) {
     width: 65px;
     height: 65px;
     left: 51%;
@@ -329,7 +344,7 @@ footer {
     animation-delay: 2s;
 }
 
-.burbuja:nth-child(10){
+.burbuja:nth-child(10) {
     width: 40px;
     height: 40px;
     left: 35%;
@@ -338,31 +353,36 @@ footer {
 }
 
 
-@keyframes burbujas{
-    0%{
+@keyframes burbujas {
+    0% {
         bottom: 0;
         opacity: 0;
     }
-    30%{
+
+    30% {
         transform: translateX(30px);
     }
-    50%{
+
+    50% {
         opacity: .4;
     }
-    100%{
+
+    100% {
         bottom: 100vh;
         opacity: 0;
     }
 }
 
-@keyframes movimiento{
-    0%{
+@keyframes movimiento {
+    0% {
         transform: translateY(0);
     }
-    50%{
+
+    50% {
         transform: translateY(30px);
     }
-    100%{
+
+    100% {
         transform: translateY(0);
     }
 }
@@ -370,22 +390,24 @@ footer {
 
 /* Animacion de fondo */
 
-.cuerpoP{
-    background-image: linear-gradient(135deg,#00b7D4, #505488, #2F3F80, #161569, #5A4894, #A950A1, #FF7CAE);
+.cuerpoP {
+    background-image: linear-gradient(135deg, #00b7D4, #505488, #2F3F80, #161569, #5A4894, #A950A1, #FF7CAE);
     background-size: 500%;
     animation: fanimado 10s infinite;
     height: 100vh;
 }
 
 @keyframes fanimado {
-    0%{
+    0% {
         background-position: 0% 50%;
     }
-    50%{
+
+    50% {
         background-position: 100% 50%;
     }
-    100%{
+
+    100% {
         background-position: 0% 50%;
     }
-    
+
 }
