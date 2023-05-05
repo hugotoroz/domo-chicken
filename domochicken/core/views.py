@@ -1,9 +1,10 @@
 from django.shortcuts import render
+from .models import Permiso
 
 # Create your views here.
 def index(request):
-
-    return render(request,'index.html')
+    tu_variable = Permiso.objects.get()
+    return render(request, 'index.html', {'nombre_permiso': tu_variable.nombre_permiso})
     
 def inicio_sesion(request):
 
@@ -16,3 +17,7 @@ def index_admin(request):
 def proveedores(request):
 
     return render(request,'proveedores.html' )
+
+
+
+    
