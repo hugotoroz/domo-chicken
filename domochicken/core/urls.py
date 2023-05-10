@@ -1,9 +1,10 @@
 from django.urls import path
-from  .views import index, inicio_sesion,index_admin,proveedores
+from  .views import index, inicio_sesion,index_admin,proveedores,catalogo
 
 urlpatterns =[
     path('',index,name="index"),
     path('login',inicio_sesion,name="inicio_sesion"),
     path('index_admin',index_admin,name="index_admin"),
-    path('proveedores',proveedores,name="proveedores")
+    path('proveedores',proveedores,name="proveedores"),
+    path('catalogo',catalogo,name="catalogo")
  ]

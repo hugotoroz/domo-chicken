@@ -3,8 +3,8 @@ from .models import Permiso
 
 # Create your views here.
 def index(request):
-    tu_variable = Permiso.objects.get()
-    return render(request, 'index.html', {'nombre_permiso': tu_variable.nombre_permiso})
+    
+    return render(request, 'index.html')
     
 def inicio_sesion(request):
 
@@ -18,6 +18,9 @@ def proveedores(request):
 
     return render(request,'proveedores.html' )
 
+def catalogo(request):
+
+    return render(request,'catalogo.html')
 
 
     
