@@ -4,6 +4,7 @@
 {% endblock %}
 {% block title %}Domo Chicken - La mejor calidad{% endblock %}
 {% block template %}
+
 <!--Imágenes en Carousel-->
 <div id="carouselExampleAutoplaying" class="carousel slide carousel-fade shadow-lg " data-bs-ride="carousel">
     <div class="carousel-inner">
@@ -29,163 +30,36 @@
 
 <section class="catalogo">
     <div class="container">
-        <h1>Catálogo</h1>
+        <h1>Algunos de nuestros productos</h1>
         <div class="row">
+           {% for x in producto %}
             <div class="col-xxl-4 col-xl-4 col-lg-4 col-sm-6 col-6">
+                
                 <div class="card mb-3" style="max-width: 450px;">
                     <div class="row g-0">
                         <div class="col-md-4">
                             <img src="https://tofuu.getjusto.com/orioneat-prod-resized/s6JkYk49p3cgo2zcL-1200-1200.webp"
                                 class="img-fluid img-card" alt="...">
                         </div>
+                        
                         <div class="col-md-8">
                             <div class="card-body">
-                                <h5 class="card-title">Promoción </h5>
+                                <h5 class="card-title">{{x.nombre_producto}} </h5>
                                 <p class="card-text text-truncate">
-                                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ratione in dicta fugit
-                                    ipsa corporis quam placeat eaque illum est cupiditate, debitis sed saepe
-                                    corrupti. Repellat quia officiis voluptates! Distinctio modi vero eum eos sint,
-                                    cupiditate ad ratione minima sit corrupti.
+                                    {{x.descripcion}}
                                 </p>
-                                <p class="card-text"><small class="fw-bold"> Precio: $ 15.000</small></p>
+                                <p class="card-text"><small class="fw-bold"> Precio: ${{x.precio}}</small></p>
                             </div>
                         </div>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'agregar_carrito' x.id_producto x.precio %}" class="btn btn-primary my-btn">Agregar carrito</a>
+                        {% endif %}
+                        
                     </div>
                 </div>
+                
             </div>
-            <div class="col-xxl-4 col-xl-4 col-lg-4 col-sm-6 col-6">
-                <div class="card mb-3" style="max-width: 450px;">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img src="https://tofuu.getjusto.com/orioneat-prod-resized/s6JkYk49p3cgo2zcL-1200-1200.webp"
-                                class="img-fluid img-card" alt="...">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">Promoción </h5>
-                                <p class="card-text text-truncate">
-                                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ratione in dicta fugit
-                                    ipsa corporis quam placeat eaque illum est cupiditate, debitis sed saepe
-                                    corrupti. Repellat quia officiis voluptates! Distinctio modi vero eum eos sint,
-                                    cupiditate ad ratione minima sit corrupti.
-                                </p>
-                                <p class="card-text"><small class="fw-bold"> Precio: $ 15.000</small></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xxl-4 col-xl-4 col-lg-4 col-sm-6 col-6">
-                <div class="card mb-3" style="max-width: 450px;">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img src="https://tofuu.getjusto.com/orioneat-prod-resized/s6JkYk49p3cgo2zcL-1200-1200.webp"
-                                class="img-fluid img-card" alt="...">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">Promoción </h5>
-                                <p class="card-text text-truncate">
-                                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ratione in dicta fugit
-                                    ipsa corporis quam placeat eaque illum est cupiditate, debitis sed saepe
-                                    corrupti. Repellat quia officiis voluptates! Distinctio modi vero eum eos sint,
-                                    cupiditate ad ratione minima sit corrupti.
-                                </p>
-                                <p class="card-text"><small class="fw-bold"> Precio: $ 15.000</small></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xxl-4 col-xl-4 col-lg-4 col-sm-6 col-6">
-                <div class="card mb-3" style="max-width: 450px;">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img src="https://tofuu.getjusto.com/orioneat-prod-resized/s6JkYk49p3cgo2zcL-1200-1200.webp"
-                                class="img-fluid img-card" alt="...">
-                        </div>
-                        {{ nombre_permiso }}
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">Promoción </h5>
-                                <p class="card-text text-truncate">
-                                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ratione in dicta fugit
-                                    ipsa corporis quam placeat eaque illum est cupiditate, debitis sed saepe
-                                    corrupti. Repellat quia officiis voluptates! Distinctio modi vero eum eos sint,
-                                    cupiditate ad ratione minima sit corrupti.
-                                </p>
-                                <p class="card-text"><small class="fw-bold"> Precio: $ 15.000</small></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xxl-4 col-xl-4 col-lg-4 col-sm-6 col-6">
-                <div class="card mb-3" style="max-width: 450px;">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img src="https://tofuu.getjusto.com/orioneat-prod-resized/s6JkYk49p3cgo2zcL-1200-1200.webp"
-                                class="img-fluid img-card" alt="...">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">Promoción </h5>
-                                <p class="card-text text-truncate">
-                                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ratione in dicta fugit
-                                    ipsa corporis quam placeat eaque illum est cupiditate, debitis sed saepe
-                                    corrupti. Repellat quia officiis voluptates! Distinctio modi vero eum eos sint,
-                                    cupiditate ad ratione minima sit corrupti.
-                                </p>
-                                <p class="card-text"><small class="fw-bold"> Precio: $ 15.000</small></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xxl-4 col-xl-4 col-lg-4 col-sm-6 col-6">
-                <div class="card mb-3" style="max-width: 450px;">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img src="https://tofuu.getjusto.com/orioneat-prod-resized/s6JkYk49p3cgo2zcL-1200-1200.webp"
-                                class="img-fluid img-card" alt="...">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">Promoción </h5>
-                                <p class="card-text text-truncate">
-                                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ratione in dicta fugit
-                                    ipsa corporis quam placeat eaque illum est cupiditate, debitis sed saepe
-                                    corrupti. Repellat quia officiis voluptates! Distinctio modi vero eum eos sint,
-                                    cupiditate ad ratione minima sit corrupti.
-                                </p>
-                                <p class="card-text"><small class="fw-bold"> Precio: $ 15.000</small></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xxl-4 col-xl-4 col-lg-4 col-sm-6 col-6">
-                <div class="card mb-3" style="max-width: 450px;">
-                    <div class="row g-0">
-                        <div class="col-md-4">
-                            <img src="https://tofuu.getjusto.com/orioneat-prod-resized/s6JkYk49p3cgo2zcL-1200-1200.webp"
-                                class="img-fluid img-card" alt="...">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">Promoción </h5>
-                                <p class="card-text text-truncate">
-                                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ratione in dicta fugit
-                                    ipsa corporis quam placeat eaque illum est cupiditate, debitis sed saepe
-                                    corrupti. Repellat quia officiis voluptates! Distinctio modi vero eum eos sint,
-                                    cupiditate ad ratione minima sit corrupti.
-                                </p>
-                                <p class="card-text"><small class="fw-bold"> Precio: $ 15.000</small></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
             <div class="col-xxl-4 col-xl-4 col-lg-4 col-sm-6 col-6 d-flex align-items-end" style="margin-bottom: 15px;">
                 <button class="btn btn-primary align-items-end">Ver más...</button>
             </div>

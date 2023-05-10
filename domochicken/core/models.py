@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 # Create your models here.
 from django.db import models
 # Permisos de cada usuario.
@@ -54,9 +54,9 @@ class Producto(models.Model):
         return self.nombre_producto
 class Carrito(models.Model):
     id_carrito = models.BigAutoField(primary_key=True)
-    fk_id_producto = models.ForeignKey(Producto,on_delete=models.CASCADE,)
     total = models.IntegerField()
-    fk_id_usuario = models.ForeignKey(Usuario,on_delete=models.CASCADE,)
+    producto = models.IntegerField(null=True)
+    fk_id_usuario = models.ForeignKey(User,on_delete=models.CASCADE,)
     def __str__(self):
         return self.total
 class Pedido(models.Model):

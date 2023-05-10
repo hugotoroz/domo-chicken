@@ -176,3 +176,29 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+
+
+/*SCRIPT DB*/
+
+INSERT INTO `domochicken`.`core_permiso` (`nombre_permiso`) VALUES ('admin');
+INSERT INTO `domochicken`.`core_permiso` (`nombre_permiso`) VALUES ('cocinero');
+INSERT INTO `domochicken`.`core_permiso` (`nombre_permiso`) VALUES ('repartidor');
+INSERT INTO `domochicken`.`core_permiso` (`nombre_permiso`) VALUES ('jefe local');
+INSERT INTO `domochicken`.`core_permiso` (`nombre_permiso`) VALUES ('cliente');
+
+INSERT INTO `domochicken`.`core_rol` (`nombre_rol`, `fk_id_permiso_id`) VALUES ('admin', '1');
+INSERT INTO `domochicken`.`core_rol` (`nombre_rol`, `fk_id_permiso_id`) VALUES ('cocinero', '2');
+INSERT INTO `domochicken`.`core_rol` (`nombre_rol`, `fk_id_permiso_id`) VALUES ('repartidor', '3');
+INSERT INTO `domochicken`.`core_rol` (`nombre_rol`, `fk_id_permiso_id`) VALUES ('jefe local', '4');
+INSERT INTO `domochicken`.`core_rol` (`nombre_rol`, `fk_id_permiso_id`) VALUES ('cliente', '5');
+
+INSERT INTO `domochicken`.`core_comuna` (`comuna`) VALUES ('Quilicura');
+INSERT INTO `domochicken`.`core_comuna` (`comuna`) VALUES ('Lampa');
+
+INSERT INTO `domochicken`.`core_usuario` (`nombre_usuario`, `apellido_usuario`, `celular`, `correo`, `direccion`, `fk_id_comuna_id`, `fk_id_rol_id`,`clave`) VALUES ('admin', 'admin', '975280957', 'admin@admin.cl', 'estero nifre 0206', '1', '1','admin');
+
+INSERT INTO `domochicken`.`core_proveedor` (`nombre_proveedor`, `descripcion`, `rut_proveedor`, `direccion`) VALUES ('proveedor 1', 'provedoor1', '206712872', 'si');
+
+INSERT INTO `domochicken`.`core_producto` (`nombre_producto`, `stock`, `precio`, `descripcion`, `fk_id_proveedor_id`) VALUES ('Pollo', '2', '2000', 'Rico pollito ', '1');
+INSERT INTO `domochicken`.`core_producto` (`nombre_producto`, `stock`, `precio`, `descripcion`, `fk_id_proveedor_id`) VALUES ('Papas Fritas', '100', '200', 'RIcas papas fritas', '1');
