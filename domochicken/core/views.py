@@ -39,6 +39,10 @@ def carrito(request):
 
     return render(request, 'carrito.html')
 
+def perfil(request):
+
+    return render(request, 'perfil.html')
+
 # FUNCIONES DE BACK END
 
 # Función de registro de usuarios.

@@ -162,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `prueba_dc1`.`pedido` (
   `id_pedido` INT NOT NULL,
   `descripcion` VARCHAR(400) NULL,
   `fecha` DATETIME NULL,
-  `fk_id_producto` INT NOT NULL,
+  `fk_id_producto` INT NOT NULL,ñ
   PRIMARY KEY (`id_pedido`),
   INDEX `fk_pedido_producto_idx` (`fk_id_producto` ASC) ,
   CONSTRAINT `fk_pedido_producto`

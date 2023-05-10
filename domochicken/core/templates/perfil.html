@@ -1,0 +1,42 @@
+{% extends "base/base.html" %}
+{% block css %}
+<link rel="stylesheet" href="../static/css/perfil.css">
+{% endblock %}
+{% block title %}Mi perfil{% endblock %}
+
+{% block template %}
+<section class="seccion-perfil-usuario">
+    <div class="perfil-usuario-header">
+        <div class="perfil-usuario-portada">
+       
+        </div>
+    </div>
+    <div class="perfil-usuario-body">
+        <div class="perfil-usuario-bio">
+            <h3 class="titulo">Yo el Avatar </h3>
+            <p class="texto">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua.</p>
+        </div>
+        <div class="perfil-usuario-footer">
+            <ul class="lista-datos">
+                <li><i class="bi bi-geo-alt"></i> Direccion de usuario:</li>
+                <li><i class="bi bi-telephone-fill"></i> Telefono:</li>
+                <li><i class="bi bi-person-workspace"></i> Cargo:</li>
+            </ul>
+            <ul class="lista-datos">
+                <li><i class="bi bi-envelope-at-fill"></i> Correo Electrónico:</li>
+                <li><i class="bi bi-calendar2-range"></i> Fecha en que se unió:</li>
+                <li><i class="bi bi-box-arrow-in-right"></i> Registro:</li>
+            </ul>
+        </div>
+    </div>
+    <div>
+        <button type="button">
+            <span>Editar información</span>
+        </button>
+    </div>
+</section>
+
+
+
+{% endblock %}
