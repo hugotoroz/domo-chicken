@@ -12,42 +12,39 @@ from django.contrib.auth.models import User
 def index(request):
     producto = Producto.objects.all()[:2]
     contexto = {'producto': producto}
-    return render(request, 'index.html',contexto)
-    
-def inicio_sesion(request):
+    return render(request, 'index.html', contexto)
 
-    return render(request,'inicio_sesion.html')
-#Para hacer que solo pueda ingresar si es que esta logeado
-#@login_required
+
 def index_admin(request):
 
-    return render(request,'index_admin.html')
+    return render(request, 'index_admin.html')
+
 
 def proveedores(request):
 
-    return render(request,'proveedores.html' )
+    return render(request, 'proveedores.html')
 
 
 def catalogo(request):
 
-    return render(request,'catalogo.html')
+    return render(request, 'catalogo.html')
+
 
 def iniciar_session(request):
 
-    return render(request,'login.html' )
+    return render(request, 'login.html')
+
 
 def carrito(request):
 
-    return render(request,'carrito.html' )
+    return render(request, 'carrito.html')
 
-def registrarse(request):
-    comunas = Comuna.objects.all()
-    contexto = {"comunas_m": comunas,}
-    return render(request,"registrarse.html",contexto)
-#FUNCIONES DE BACK END
+# FUNCIONES DE BACK END
 
 # Función de registro de usuarios.
 # Registro de usuarios
+
+
 def registrar_usuario(request):
     if request.method == "POST":
         # Tomar los datos del formulario
@@ -72,8 +69,7 @@ def registrar_usuario(request):
     else:
         comunas = Comuna.objects.all()
         contexto = {'comunas': comunas}
-        return render(request, 'registrar.html', contexto)
-
+        return render(request, 'registrarse.html', contexto)
 
 
 def iniciar_sesion(request):
@@ -86,10 +82,9 @@ def iniciar_sesion(request):
         # Tomar las credenciales del usuario
         # rol = Usuario.objects.get(correo=correo, clave=clave)
         if u_auth is not None:
-            usuario = Usuario.objects.get(correo = correo)
-            login(request,u_auth)
+            usuario = Usuario.objects.get(correo=correo)
+            login(request, u_auth)
             if (usuario.fk_id_rol_id == 1):
-                
                 return redirect('index_admin')
             elif (usuario.fk_id_rol_id == 2):
                 return redirect('index_admin')
@@ -103,18 +98,18 @@ def iniciar_sesion(request):
             messages.error(
                 request, 'El usuario o la contraseÃ±a son incorrectos')
             return redirect('login')
-        """
-           
-        """
     else:
         return render(request, 'login.html')
+# Para hacer que solo pueda ingresar si es que esta logeado
+# @login_required
 
 
 def cerrar_sesion(request):
     logout(request)
     return redirect('login')
 
-def agregar_carrito (request,id,precio):
+
+def agregar_carrito(request, id, precio):
     if request.user.is_authenticated:
         username_id = request.user.id
     else:
@@ -122,14 +117,14 @@ def agregar_carrito (request,id,precio):
 
     user = User.objects.get(id=username_id)
 
-    carrito, creado = Carrito.objects.get_or_create(fk_id_usuario = user)
+    carrito, creado = Carrito.objects.get_or_create(fk_id_usuario=user)
     carrito.producto.add(id)
     carrito.total.add(precio)
 
     carrito.save()
     return redirect('carrito')
 
-    
+
 """"
 def agregar_carrito(request,producto_id,precio):
     # Obtener el usuario actual
