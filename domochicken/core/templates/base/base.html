@@ -39,7 +39,7 @@
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
                     <a class="nav-link" aria-current="page" href="{% url 'index' %}">Inicio</a>
-                    <a class="nav-link" href="#">Catálogo</a>
+                    <a class="nav-link" href="{% url 'catalogo' %}">Catálogo</a>
                     <a class="nav-link" href="#">Promociones</a>
                     <a class="nav-link" href="#">Nosotros</a>
                 </div>
@@ -51,6 +51,7 @@
                     <a href=""><i class="bi bi-person"></i></a>
                     <a href="{% url 'carrito' %}"><i class="bi bi-cart"></i></a>
                     <a href="{% url 'cerrar_sesion' %}">Cerrar sesión</a>
+                 
                     {% else %}
                     <a type="button" class="btn btn-primary px-3 me-2" href="{% url 'iniciar_sesion' %}">
                     Iniciar sesión

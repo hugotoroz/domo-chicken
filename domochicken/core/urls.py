@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import index, index_admin, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, agregar_carrito, perfil
+from .views import index, index_admin, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, agregar_carrito, perfil, registrarse
 
 
 urlpatterns = [
@@ -11,6 +11,8 @@ urlpatterns = [
     path('catalogo', catalogo, name="catalogo"),
 
     path('perfil', perfil, name="pefil"),
+
+    path('registrarse',registrarse,name="registrarse"),
 
     path('iniciar_sesion/', iniciar_sesion, name="iniciar_sesion"),
     path('carrito', carrito, name="carrito"),

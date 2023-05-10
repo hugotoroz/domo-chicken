@@ -24,6 +24,11 @@ def proveedores(request):
 
     return render(request, 'proveedores.html')
 
+def registrarse(request):
+    comunas = Comuna.objects.all()
+    contexto = {"comunas_m": comunas,}
+    return render(request,"registrarse.html",contexto)
+
 
 def catalogo(request):
 
