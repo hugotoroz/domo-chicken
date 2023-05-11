@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Producto</title>
+
+    <link rel="stylesheet" href="static/css/agregarProd.css">
+</head>
+
+<body>
+    <div class="col-12 d-flex justify-content-center">
+        <form class="form" action ="{% url 'editarProducto' producto.id_producto %}" method="POST" enctype="multipart/form-data" id="formprod" name="formularioprod">
+            {% csrf_token %}
+            <div class="flex">
+                <label>
+                    <input required="" name ="nomprod" id="nomprod" value="{{producto.nombre_producto}}" placeholder="" type="text" class="input">
+                    <span>Nombre del producto</span>
+                </label>
+
+                <label>
+                    <input required="" name ="stockprod" id="stockprod" value="{{producto.stock}}"  placeholder="" type="number" class="input">
+                    <span>Stock del producto</span>
+                </label>
+            </div>
+
+            <label>
+                <input required="" placeholder="" name ="precioprod" id="precioprod" value="{{producto.precio}}" type="number" class="input">
+                <span>Precio</span>
+            </label>
+            <select name="proveedor" id="proveedor" class="form-select" required>
+                <option disabled value="">Seleccione un proveedor</option>
+                {% for i in proveedor_m %}
+                    {% if i.id_proveedor == producto.fk_id_proveedor_id.id_proveedor %}
+                    <option value="{{ producto.fk_id_proveedor_id.id_proveedor }}" selected>{{ producto.fk_id_proveedor_id.nombre_proveedor }}</option>
+                    {% else %}
+                    <option value="{{ i.id_proveedor }}">{{ i.nombre_proveedor }}</option>
+                    {% endif %}
+                {% endfor %}
+
+            </select>
+            <label>
+                <input required="" type="tel" placeholder="" name ="descprod" id="descprod" value="{{producto.descripcion}}"  class="input">
+                <span>Descripción</span>
+            </label>
+
+            <button class="fancy" type="submit">
+                <span class="top-key"></span>
+                <span class="text">submit</span>
+                <span class="bottom-key-1"></span>
+                <span class="bottom-key-2"></span>
+            </button>
+        </form>
+    </div>
+</body>
+
+</html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+    {% load static %}
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -24,7 +25,7 @@
         
     </header>
     <div class="container">
-        <h1 class="titulo">¡Bienvenido Administrador!</h1>
+        <h1 class="titulo">¡Bienvenido {{ usuario.fk_id_rol_id.nombre_rol }}!</h1>
         <div class="row">
             <div class="col-md-6 col-sm-12 columnas">
                 <div class="card color-borde-1 shadow h-100 py-2">
@@ -43,11 +44,11 @@
 
     <div class="container">
         <h2 class="titulo">Acceso rápido</h2>
-  
+        {% if usuario.fk_id_rol_id == 1 or usuario.fk_id_rol_id == 2 %}
         <div class="row">
             <div class="col-6 columnas">
                 <div class="card h-100 py-2">
-                    <a href="#" style="text-decoration: none; color: #000;">
+                    <a href="{% url 'agregarProd' %}" style="text-decoration: none; color: #000;">
                     <p class="align-items-start fw-bold titulo-card "><i class="fa-solid fa-plus align-items-end iconos"></i> Agregar un nuevo producto </p>
                     <p class="desc">¡Presione acá si desea agregar un nuevo producto a la tienda!</p>
                     </a>
@@ -55,13 +56,15 @@
             </div>
             <div class="col-6 columnas">
                 <div class="card h-100 py-2">
-                    <a href="#" style="text-decoration: none; color: #000;">
+                    <a href="{% url 'modOrDeleteIndex' %}" style="text-decoration: none; color: #000;">
                     <p class="fw-bold align-items-start titulo-card"><i class="fa-solid fa-arrow-right-arrow-left iconos"></i> Modificar y/o Eliminar un producto</p>
                     <p class="desc">¡Presione acá si desea modificar cualquier producto de la tienda (También para aplicar descuentos)!</p>
                     </a>
                 </div> 
             </div>
         </div>
+        {% endif %}
+        {% if usuario.fk_id_rol_id == 1 %}
         <div class="row">
             <div class="col-6 columnas">
                 <div class="card h-100 py-2">
@@ -71,7 +74,8 @@
                     </a>
                 </div>    
             </div>
-            <div class="col-6 columnas">
+            
+            <div class="col-6 columnas ">
                 <div class="card h-100 py-2">
                     <a href="#" style="text-decoration: none; color: #000;">
                     <p class="fw-bold align-items-start titulo-card"><i class="bi bi-book"></i> Modificar y/o Eliminar una receta</p>
@@ -80,6 +84,8 @@
                 </div> 
             </div>
         </div>
+        {% endif %}
+        {% if usuario.fk_id_rol_id == 1 or usuario.fk_id_rol_id == 4 %}
         <div class="row">
             <div class="col-6 columnas">
                 <div class="card h-100 py-2">
@@ -97,8 +103,11 @@
                     </a>
                 </div> 
             </div>
-        </div><div class="row">
-            <div class="col-6 columnas">
+        </div>
+        {% endif %}
+        {% if usuario.fk_id_rol_id == 2 or usuario.fk_id_rol_id == 4 %}
+        <div class="row">
+            <div class="col-12 columnas">
                 <div class="card h-100 py-2">
                     <a href="#" style="text-decoration: none; color: #000;">
                     <p class="align-items-start fw-bold titulo-card "><i class="bi bi-eye"></i> Ver Recetas </p>
@@ -106,25 +115,8 @@
                     </a>
                 </div>    
             </div>
-            <div class="col-6 columnas">
-                <div class="card h-100 py-2">
-                    <a href="#" style="text-decoration: none; color: #000;">
-                    <p class="fw-bold align-items-start titulo-card"><i class="bi bi-x-octagon"></i> Hacer ff en la carrera</p>
-                    <p class="desc">¡Presione acá si desea irse a la ctm con la wea de la carrera jaj gg ez zzz la carrera!</p>
-                    </a>
-                </div> 
-            </div>
         </div>
-        <div class="row">
-            <div class="col-12 columnas">
-                <div class="card h-100 py-2">
-                    <a href="#" style="text-decoration: none; color: #000;">
-                    <p class="fw-bold align-items-start titulo-card"><i class="fa-solid fa-magnifying-glass-dollar iconos"></i> Buscar un pedido</p>
-                    <p class="desc">¡Presione acá si desea buscar un pedido realizado!</p>
-                    </a>
-                </div>
-            </div>
-        </div>
+        {% endif %}
     </div>
     
 

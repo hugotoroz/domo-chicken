@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 
 from django.contrib.auth.decorators import login_required
 
-from .models import Carrito, Comuna, Producto, Rol, Usuario
+from .models import Carrito, Comuna, Producto, Proveedor, Rol, Usuario
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
@@ -15,10 +15,28 @@ def index(request):
     return render(request, 'index.html', contexto)
 
 
+@login_required
 def index_admin(request):
+    usuario = Usuario.objects.filter(correo=request.user.username).first()
+    contexto = {'usuario': usuario}
+    return render(request, 'index_admin.html', contexto)
 
-    return render(request, 'index_admin.html')
+def agregarProd(request):
+    proveedores = Proveedor.objects.all()
+    contexto = {'proveedor_m': proveedores}
 
+    return render(request, 'agregarProd.html',contexto)
+#Index de modificar o eliminar producto
+def modOrDeleteIndex(request):
+    producto = Producto.objects.all()
+    contexto = {'producto': producto}
+    return render(request, 'modOrDeleteIndex.html',contexto)
+#Formulario de modificacion de producto
+def modificarProducto(request,idProd):
+    productoM = Producto.objects.get(id_producto = idProd)
+    proveedores = Proveedor.objects.all()
+
+    return render(request, 'modificar.html',{'producto':productoM,'proveedor_m':proveedores})
 
 def proveedores(request):
 
@@ -80,7 +98,6 @@ def registrar_usuario(request):
         contexto = {'comunas': comunas}
         return render(request, 'registrarse.html', contexto)
 
-
 def iniciar_sesion(request):
     if request.method == "POST":
         # Tomar los datos del formulario.
@@ -118,6 +135,70 @@ def cerrar_sesion(request):
     return redirect('login')
 
 
+#Nuevo producto 
+def newProd(request):
+    nombre = request.POST['nomprod']
+    stock = request.POST['stockprod']
+    desc = request.POST['descprod']
+    prove = request.POST['proveedor']
+    precio = request.POST['precioprod']
+    
+    proveedor = Proveedor.objects.get(id_proveedor = prove)
+    
+
+    Producto.objects.create(nombre_producto = nombre,stock = stock,precio = precio,descripcion =desc,fk_id_proveedor_id = prove)
+    return redirect ('index_admin')
+
+
+#Modificar Producto
+
+def editarProducto(request,idProd):
+    producto = Producto.objects.get(id_producto=idProd)
+    provee =request.POST['proveedor'] 
+    proveedor = Proveedor.objects.get(id_proveedor = provee)
+    producto.nombre_producto = request.POST.get('nomprod')
+    producto.stock = request.POST.get('stockprod')
+    producto.precio = request.POST.get('precioprod')
+    producto.descripcion = request.POST.get('descprod')
+    producto.fk_id_proveedor= proveedor
+    producto.save()
+    messages.success(request, '¡Producto Modificado!')
+    return redirect('index_admin')
+
+#Eliminar producto
+def eliminarProducto(request, idProd):
+    producto= Producto.objects.get(id_producto=idProd)
+    producto.delete()
+
+    messages.success(request, '¡Producto Eliminado!')
+
+    return redirect('index_admin')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+""""
 def agregar_carrito(request, id, precio):
     if request.user.is_authenticated:
         username_id = request.user.id
@@ -126,15 +207,22 @@ def agregar_carrito(request, id, precio):
 
     user = User.objects.get(id=username_id)
 
-    carrito, creado = Carrito.objects.get_or_create(fk_id_usuario=user)
-    carrito.producto.add(id)
-    carrito.total.add(precio)
+    Carrito.objects.create(total = precio,producto= id,fk_id_usuario=user)
 
-    carrito.save()
     return redirect('carrito')
 
+def obtener_carrito(request):
+    if request.user.is_authenticated:
+        username_id = request.user.id
+    else:
+        username_id = None
 
-""""
+    user = User.objects.get(id=username_id)
+    carrito = Carrito.objects.get(id=user)
+    contexto = {'carrito': carrito}
+    return render(request, 'carrito.html', contexto)
+
+
 def agregar_carrito(request,producto_id,precio):
     # Obtener el usuario actual
     usuario1 = request.user.username

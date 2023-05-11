@@ -17,8 +17,9 @@
           <label class="title">Tu Carrito</label>
           <div class="products">
             <div class="product">
+              {% for x in carrito %}
               <div>
-                <span>Cheese Burger</span>
+                <span>{{x.carrito.total}}</span>
                 <p>Extra Spicy</p>
 
               </div>
@@ -36,6 +37,7 @@
                 </button>
               </div>
               <label class="price small">$23.99</label>
+              {% endfor %}
             </div>
           </div>
         </div>

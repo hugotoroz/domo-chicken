@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import index, index_admin, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, agregar_carrito, perfil, registrarse
+from .views import editarProducto, eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil, registrarse,agregarProd
 
 
 urlpatterns = [
@@ -13,6 +13,21 @@ urlpatterns = [
     path('perfil', perfil, name="pefil"),
 
     path('registrarse',registrarse,name="registrarse"),
+    
+    #Render de pagina de agregar producto
+    path('agregarProd',agregarProd,name="agregarProd"),
+    #Funcion de agregar producto
+    path('agregarProd2/',newProd,name ="addProd"),
+    #Render de pagina modificar o eliminar productor
+    path('modificarIndex',modOrDeleteIndex,name="modOrDeleteIndex"),
+    #Formulario Modificar
+    path('modificarProducto/<idProd>',modificarProducto,name="modificarProducto"),
+    #Funcion modificar Producto
+    path('editarProducto/<idProd>',editarProducto,name="editarProducto"),
+    #Funcion eliminar Producto
+    path('eliminarProducto/<idProd>',eliminarProducto,name="eliminarProducto"),
+
+
 
     path('iniciar_sesion/', iniciar_sesion, name="iniciar_sesion"),
     path('carrito', carrito, name="carrito"),
@@ -21,6 +36,5 @@ urlpatterns = [
     # Cerrar sesión
     path('cerrar_sesion/', cerrar_sesion, name="cerrar_sesion"),
     # Agregar Carrito
-    path('agregar_carrito/<int:id>/<int:precio>/',
-         agregar_carrito, name="agregar_carrito"),
+    #path('agregar_carrito/<int:id>/<int:precio>/',agregar_carrito, name="agregar_carrito"),
 ]
