@@ -18,6 +18,10 @@ body {
     color: #404040;
     font-family: "Arial", Segoe UI, Tahoma, sans-serifl, Helvetica Neue, Helvetica;
     background-image: url(/../../static/img/textura.jpg);
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 /*=====================================
 estilos de la utilidad
@@ -46,12 +50,7 @@ Copiar esto
     height: 17rem;
     background-image: linear-gradient(45deg, #5a5a5a, #ffffff);
     border-radius: 0 0 20px 20px;
-    /*
-    background-image: url('http://localhost/multimedia/png/user-portada-3.png');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    */
+
 }
 
 .seccion-perfil-usuario .perfil-usuario-portada .boton-portada {
@@ -235,43 +234,70 @@ Copiar esto
 
 /*boton de perfil*/
 button {
+    appearance: none;
+    background-color: transparent;
+    border: 0.125em solid #1A1A1A;
+    border-radius: 0.9375em;
+    box-sizing: border-box;
+    color: #3B3B3B;
+    cursor: pointer;
     display: inline-block;
-    border-radius: 4px;
-    background-color: #ffffff;
-    border: none;
-    color: #000000;
+    font-family: Roobert,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+    font-size: 16px;
+    font-weight: 600;
+    line-height: normal;
+    margin: 0;
+    min-height: 3.75em;
+    min-width: 0;
+    outline: none;
+    padding: 1em 2.3em;
     text-align: center;
-    font-size: 17px;
-    padding: 16px;
-    width: 130px;
-    transition: all 0.5s;
-    cursor: pointer;
-    margin: 5px;
+    text-decoration: none;
+    transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    will-change: transform;
    }
    
-   button span {
-    cursor: pointer;
-    display: inline-block;
-    position: relative;
-    transition: 0.5s;
+   button:disabled {
+    pointer-events: none;
    }
    
-   button span:after {
-    content: '»';
-    position: absolute;
-    opacity: 0;
-    top: 0;
-    right: -15px;
-    transition: 0.5s;
+   button:hover {
+    color: #fff;
+    background-color: #1A1A1A;
+    box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+    transform: translateY(-2px);
    }
    
-   button:hover span {
-    padding-right: 15px;
-   }
-   
-   button:hover span:after {
-    opacity: 1;
-    right: 0;
+   button:active {
+    box-shadow: none;
+    transform: translateY(0);
    }
 
- 
+/*shapes perfil*/
+.curved-div {
+    position: relative;
+    background: #ff3c00;
+    color: #FFF;
+    text-align: center;
+    overflow: hidden;
+  }
+  .curved-div svg {
+    display: block;
+  }
+  .curved-div.upper {
+    background: #fff;
+    
+  }
+  .curved-div h1 {
+    font-size: 6rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    margin-top:0rem;
+  }
+  .curved-div p {
+    font-size: 1rem;
+    margin:0 5rem 0rem 5rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
