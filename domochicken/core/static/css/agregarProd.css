@@ -1,5 +1,4 @@
-/*fondo de la pagina*/
-body {
+/*fondo de la pagina*/body {
   background-image: url(/../../static/img/textura.jpg);
   background-attachment: fixed;
   background-position: center;

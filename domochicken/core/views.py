@@ -29,10 +29,10 @@ def index(request):
 
 
 @login_required(login_url="iniciar_sesion/")
-@role_required('1')
-@role_required('2')
-@role_required('3')
-@role_required('4')
+#@role_required('1')
+#@role_required('2')
+#@role_required('3')
+#@role_required('4')
 def index_admin(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
     contexto = {'usuario': usuario}

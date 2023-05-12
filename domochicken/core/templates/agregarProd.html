@@ -14,9 +14,11 @@
         </svg>
     </div>
     <!--Formulario Modificar Nuevo-->
+    
     <form class="form" action ="{% url 'addProd' %}" method="POST" enctype="multipart/form-data" id="formprod" name="formularioprod">
+        {% csrf_token %}
         <p class="title">Agregar Productos </p>
-        <p class="message">Formulario para modificar productos</p>
+        <p class="message">Formulario para agregar productos</p>
             <div class="flex">
             <label>
                 <input required="" name ="nomprod" id="nomprod"  placeholder="" type="text" class="input">
@@ -103,8 +105,5 @@
 
 -->
 
-</body>
-
-</html>
 
 {% endblock %}
