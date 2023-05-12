@@ -6,7 +6,6 @@ from django.db import models
 class Permiso(models.Model):
     id_permiso = models.BigAutoField(primary_key=True)
     nombre_permiso = models.CharField(max_length=40)
-
     def __str__(self):
         return self.nombre_permiso
 # Roles de cada usuario.
@@ -30,7 +29,6 @@ class Usuario(models.Model):
     celular = models.IntegerField()
     correo = models.CharField(max_length=50)
     direccion = models.CharField(max_length=100)
-    clave = models.CharField(max_length=100)
     fk_id_rol = models.ForeignKey(Rol,on_delete=models.CASCADE,)
     fk_id_comuna = models.ForeignKey(Comuna,on_delete=models.CASCADE,)
     def __str__(self):

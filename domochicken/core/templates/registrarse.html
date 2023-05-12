@@ -1,14 +1,14 @@
 {% extends "base/base.html" %}
 {% block css %}
 <link rel="stylesheet" href="/../static/css/registrarse.css">
-
 {% endblock %}
 {% block title %}Domo Chicken - Registrarse{% endblock %}
 {% block template %}
-{%load static%}
+
 
 <body>
   <div class="container">
+    {%load static%}
     <form class="form_container" action="{% url 'registrar_usuario' %}" method="POST" enctype="multipart/form-data"
       id="form" name="formRegistro">
       {% csrf_token %}
@@ -83,12 +83,11 @@
       </div>
       <div class="input_container">
         <label class="input_label" for="password_field">Comuna</label>
-        <select class="form-select" aria-label="Disabled select example" name="comuna" id="comuna" required>
-          <option selected value ="0">Selecciona una comuna</option>
-          {% for x in comunas_m %}
+        <select class="form-select" aria-label="Disabled select example" name="comuna" id="comuna">
+          <option selected disabled value="">Seleccione una comuna</option>
+          {% for x in comunas %}
           <option value="{{ x.id_comuna }}">{{ x.comuna }}</option>
           {% endfor %}
-
 
         </select>
       </div>
@@ -101,13 +100,10 @@
       <button title="Sign In" type="submit" class="sign-in_btn">
         <span>Registrarse</span>
       </button>
-      <p class="note">Terms of use &amp; Conditions</p>
+      <p class="alert alert-dismissible alert-success text-center d-none" id="mensajes"></p>
     </form>
   </div>
-  <script src="{% static '../../static/js/v-registro.js' %}"></script>
-
-</body>
-{% endblock %}
-
-
-</html>
+  <script>
+    
+  </script>
+  {% endblock %}

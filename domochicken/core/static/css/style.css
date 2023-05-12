@@ -5,8 +5,8 @@
 **********************************************
 **********************************************
 */
-body {
-    font-family: 'Questrial', sans-serif;
+* {
+    font-family: 'Merriweather Sans', sans-serif;
 }
 
 .carousel-item img {
