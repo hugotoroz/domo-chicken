@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import editarProducto, eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd
+from .views import eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd
 
 
 urlpatterns = [
@@ -18,10 +18,8 @@ urlpatterns = [
     path('agregarProd2/',newProd,name ="addProd"),
     #Render de pagina modificar o eliminar productor
     path('modificarIndex',modOrDeleteIndex,name="modOrDeleteIndex"),
-    #Formulario Modificar
+    #Modificar un producto
     path('modificarProducto/<idProd>',modificarProducto,name="modificarProducto"),
-    #Funcion modificar Producto
-    path('editarProducto/<idProd>',editarProducto,name="editarProducto"),
     #Funcion eliminar Producto
     path('eliminarProducto/<idProd>',eliminarProducto,name="eliminarProducto"),
 

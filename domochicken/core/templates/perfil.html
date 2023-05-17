@@ -17,20 +17,22 @@
 
     <div class="perfil-usuario-body">
         <div class="perfil-usuario-bio">
-            <h3 class="titulo">Yo el Avatar </h3>
+            <h3 class="titulo">{{usuario.nombre_usuario}} {{usuario.apellido_usuario}} </h3>
             <p class="texto">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
                 tempor incididunt ut labore et dolore magna aliqua.</p>
         </div>
         <div class="perfil-usuario-footer">
             <ul class="lista-datos">
-                <li><i class="bi bi-geo-alt"></i> Direccion de usuario:</li>
-                <li><i class="bi bi-telephone-fill"></i> Telefono:</li>
-                <li><i class="bi bi-person-workspace"></i> Cargo:</li>
+                <li><i class="bi bi-geo-alt"></i> Direccion de usuario: {{usuario.direccion}}</li>
+                <li><i class="bi bi-telephone-fill"></i> Telefono: {{usuario.celular}}</li>
+                {%if usuario.fk_id_rol_id != 5 %}
+
+                <li><i class="bi bi-person-workspace"></i> Cargo: {{usuario.fk_id_rol_id.rol.nombre_rol}}</li>
+                {% endif %}
             </ul>
             <ul class="lista-datos">
-                <li><i class="bi bi-envelope-at-fill"></i> Correo Electrónico:</li>
-                <li><i class="bi bi-calendar2-range"></i> Fecha en que se unió:</li>
-                <li><i class="bi bi-box-arrow-in-right"></i> Registro:</li>
+                <li><i class="bi bi-envelope-at-fill"></i> Correo Electrónico: {{usuario.correo}}</li>
+                <li><i class="bi bi-calendar2-range"></i> Fecha en que se unió: {{user.date_joined}}</li>
             </ul>
         </div>
     </div>

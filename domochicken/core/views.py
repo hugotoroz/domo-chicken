@@ -57,10 +57,23 @@ def modOrDeleteIndex(request):
 
 @login_required(login_url="iniciar_sesion/")
 def modificarProducto(request, idProd):
-    productoM = Producto.objects.get(id_producto=idProd)
-    proveedores = Proveedor.objects.all()
-
-    return render(request, 'modificar.html', {'producto': productoM, 'proveedor_m': proveedores})
+    if request.method == "POST":
+        producto = Producto.objects.get(id_producto=idProd)
+        provee = request.POST['proveedor']
+        proveedor = Proveedor.objects.get(id_proveedor=provee)
+        producto.nombre_producto = request.POST.get('nomprod')
+        producto.stock = request.POST.get('stockprod')
+        producto.precio = request.POST.get('precioprod')
+        producto.descripcion = request.POST.get('descprod')
+        producto.fk_id_proveedor = proveedor
+        producto.save()
+        messages.success(request, '¡Producto Modificado!')
+        return redirect('index_admin')
+        
+    else:
+        productoM = Producto.objects.get(id_producto=idProd)
+        proveedores = Proveedor.objects.all()
+        return render(request, 'modificar.html', {'producto': productoM, 'proveedor_m': proveedores})
 
 
 @login_required(login_url="iniciar_sesion/")
@@ -85,8 +98,9 @@ def carrito(request):
 
 @login_required(login_url="iniciar_sesion/")
 def perfil(request):
-
-    return render(request, 'perfil.html')
+    usuario = Usuario.objects.filter(correo=request.user.username).first()
+    contexto ={'usuario':usuario}
+    return render(request, 'perfil.html',contexto)
 
 # Registro de usuarios.
 
@@ -147,7 +161,7 @@ def iniciar_sesion(request):
                 elif (usuario.fk_id_rol_id == 4):
                     return redirect('index_admin')
                 elif (usuario.fk_id_rol_id == 5):
-                    return redirect('index')
+                    return redirect('perfil')
         else:
             messages.error(
                 request, 'El usuario o la contraseÃ±a son incorrectos')
@@ -179,21 +193,6 @@ def newProd(request):
 
 
 # Modificar Producto
-
-def editarProducto(request, idProd):
-    producto = Producto.objects.get(id_producto=idProd)
-    provee = request.POST['proveedor']
-    proveedor = Proveedor.objects.get(id_proveedor=provee)
-    producto.nombre_producto = request.POST.get('nomprod')
-    producto.stock = request.POST.get('stockprod')
-    producto.precio = request.POST.get('precioprod')
-    producto.descripcion = request.POST.get('descprod')
-    producto.fk_id_proveedor = proveedor
-    producto.save()
-    messages.success(request, '¡Producto Modificado!')
-    return redirect('index_admin')
-
-# Eliminar producto
 
 
 def eliminarProducto(request, idProd):
