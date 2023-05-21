@@ -29,10 +29,10 @@ def index(request):
 
 
 @login_required(login_url="iniciar_sesion/")
-#@role_required('1')
-#@role_required('2')
-#@role_required('3')
-#@role_required('4')
+# @role_required('1')
+# @role_required('2')
+# @role_required('3')
+# @role_required('4')
 def index_admin(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
     contexto = {'usuario': usuario}
@@ -69,7 +69,7 @@ def modificarProducto(request, idProd):
         producto.save()
         messages.success(request, '¡Producto Modificado!')
         return redirect('index_admin')
-        
+
     else:
         productoM = Producto.objects.get(id_producto=idProd)
         proveedores = Proveedor.objects.all()
@@ -99,8 +99,8 @@ def carrito(request):
 @login_required(login_url="iniciar_sesion/")
 def perfil(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
-    contexto ={'usuario':usuario}
-    return render(request, 'perfil.html',contexto)
+    contexto = {'usuario': usuario}
+    return render(request, 'perfil.html', contexto)
 
 # Registro de usuarios.
 
@@ -110,22 +110,29 @@ def registrar_usuario(request):
         # Tomar los datos del formulario
         nom_user = request.POST['nombre']
         app_user = request.POST['apellido']
-        correo = request.POST['email']
+        correo = request.POST['correo']
         clave = request.POST['clave']
         comuna = request.POST['comuna']
         direccion = request.POST['direccion']
         celular = request.POST['celular']
-        rol = Rol.objects.get(id_rol=5)
-        # Comuna que se va a insertar en la BD
-        c = Comuna.objects.get(id_comuna=comuna)
+        # Validar si el usuario existe en la base de datos.
+        existe_usuario = False
+        
+        if Usuario.objects.filter(correo=correo).exists():
+            messages.success(request, 'El correo ya está registrado.')
+            return redirect('registrar_usuario')
+        else:
+            # Rol que se va a insertar en la BD
+            rol = Rol.objects.get(id_rol=5)
+            # Comuna que se va a insertar en la BD
+            c = Comuna.objects.get(id_comuna=comuna)
+            usuario = User.objects.create_user(correo, '', clave)
 
-        usuario = User.objects.create_user(correo, '', clave)
-        # usuario.save()
-        Usuario.objects.create(nombre_usuario=nom_user, apellido_usuario=app_user, celular=celular,
-                               correo=correo, direccion=direccion, fk_id_rol=rol, fk_id_comuna=c)
-        u_auth = authenticate(request, username=correo, password=clave)
-        login(request, u_auth)
-        return redirect('index')
+            Usuario.objects.create(nombre_usuario=nom_user, apellido_usuario=app_user, celular=celular,
+                                   correo=correo, direccion=direccion, fk_id_rol=rol, fk_id_comuna=c)
+            u_auth = authenticate(request, username=correo, password=clave)
+            login(request, u_auth)
+            return redirect('index')
     else:
         comunas = Comuna.objects.all()
         contexto = {'comunas': comunas}
@@ -145,12 +152,12 @@ def iniciar_sesion(request):
         try:
             usuario = Usuario.objects.get(correo=correo)
         except:
-            es_superu = None
+            es_superu = True
 
         if u_auth is not None:
             login(request, u_auth)
-            if es_superu is None:
-                return redirect('index_admin')
+            if es_superu:
+                return redirect('admin:index')
             else:
                 if (usuario.fk_id_rol_id == 1):
                     return redirect('index_admin')
@@ -163,8 +170,8 @@ def iniciar_sesion(request):
                 elif (usuario.fk_id_rol_id == 5):
                     return redirect('perfil')
         else:
-            messages.error(
-                request, 'El usuario o la contraseÃ±a son incorrectos')
+            messages.success(
+                request, 'El correo o la contraseña son incorrectos.')
             return redirect('iniciar_sesion')
     else:
         return render(request, 'login.html')

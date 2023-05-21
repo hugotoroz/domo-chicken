@@ -10,7 +10,7 @@ urlpatterns = [
 
     path('catalogo', catalogo, name="catalogo"),
 
-    path('perfil', perfil, name="pefil"),
+    path('perfil/', perfil, name="perfil"),
     
     #Render de pagina de agregar producto
     path('agregarProd',agregarProd,name="agregarProd"),
