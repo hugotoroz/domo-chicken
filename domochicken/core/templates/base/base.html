@@ -50,7 +50,7 @@
                 <div class="iconos-usuario nav-link">
 
                     {% if user.is_authenticated %}
-                    <a href=""><i class="bi bi-person"></i></a>
+                    <a href="{% url 'perfil' %}"><i class="bi bi-person"></i></a>
                     <a href="{% url 'carrito' %}"><i class="bi bi-cart"></i></a>
                     <a type="button" class="btn btn-primary px-3 me-2" href="{% url 'cerrar_sesion' %}">Cerrar
                         sesión</a>

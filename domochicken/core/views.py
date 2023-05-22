@@ -52,9 +52,35 @@ def modOrDeleteIndex(request):
     producto = Producto.objects.all()
     contexto = {'producto': producto}
     return render(request, 'modOrDeleteIndex.html', contexto)
+
+
+#Pagina de stockIndex
+@login_required(login_url="iniciar_sesion/")
+def stockIndex(request):
+    producto = Producto.objects.all()
+    contexto = {'producto': producto}
+    return render(request, 'stock.html', contexto)
+
+#Formulario para solicitar stock
+@login_required(login_url="iniciar_sesion/")
+def stockSolicitar(request,id_prod):
+    producto = Producto.objects.get(id_producto = id_prod)
+    contexto = {'producto': producto}
+    return render(request, 'pedirStock.html', contexto)
+
+#Funcion para el solicitar stock
+def pedirStock(request,id_prod):
+    if request.method == "POST":
+        cantidad = int(request.POST['cantidad'])
+        producto = Producto.objects.get(id_producto = id_prod)
+        producto.stock += cantidad
+        producto.save()
+        return redirect('stockIndex')
+
+
+
+
 # Formulario de modificacion de producto
-
-
 @login_required(login_url="iniciar_sesion/")
 def modificarProducto(request, idProd):
     if request.method == "POST":
@@ -92,8 +118,16 @@ def iniciar_session(request):
 
 
 def carrito(request):
-
-    return render(request, 'carrito.html')
+    if request.user.is_authenticated:
+        usuario = request.user
+        carrito = Carrito.objects.filter(fk_id_usuario_id = usuario.id).order_by('fk_id_usuario_id').first()
+        productoCarrito = Producto.objects.filter(id_producto__in = carrito.fk_id_producto_id.all())
+        
+        
+        return render(request, 'carrito.html',{'productos': productoCarrito})
+    else:
+        return redirect('login')
+    
 
 
 @login_required(login_url="iniciar_sesion/")
@@ -150,8 +184,6 @@ def iniciar_sesion(request):
         if u_auth is not None:
             login(request, u_auth)
             if es_superu is None:
-                return redirect('index_admin')
-            else:
                 if (usuario.fk_id_rol_id == 1):
                     return redirect('index_admin')
                 elif (usuario.fk_id_rol_id == 2):
@@ -162,6 +194,8 @@ def iniciar_sesion(request):
                     return redirect('index_admin')
                 elif (usuario.fk_id_rol_id == 5):
                     return redirect('perfil')
+            else:
+              return redirect('index')
         else:
             messages.error(
                 request, 'El usuario o la contraseÃ±a son incorrectos')
@@ -183,17 +217,39 @@ def newProd(request):
     stock = request.POST['stockprod']
     desc = request.POST['descprod']
     prove = request.POST['proveedor']
+    imagen = request.FILES['imgprod']
     precio = request.POST['precioprod']
 
     proveedor = Proveedor.objects.get(id_proveedor=prove)
 
     Producto.objects.create(nombre_producto=nombre, stock=stock,
-                            precio=precio, descripcion=desc, fk_id_proveedor_id=prove)
+                            precio=precio, descripcion=desc,imagenProd = imagen,fk_id_proveedor_id=prove)
     return redirect('index_admin')
 
 
 # Modificar Producto
+@login_required(login_url="iniciar_sesion/")
+def modificarProducto(request, idProd):
+    if request.method == "POST":
+        producto = Producto.objects.get(id_producto=idProd)
+        provee = request.POST['proveedor']
+        proveedor = Proveedor.objects.get(id_proveedor=provee)
+        producto.nombre_producto = request.POST.get('nomprod')
+        producto.stock = request.POST.get('stockprod')
+        producto.precio = request.POST.get('precioprod')
+        producto.descripcion = request.POST.get('descprod')
+        producto.fk_id_proveedor = proveedor
+        if (request.FILES.get("imgprod")):
+            fotoprod =  request.FILES['imgprod']
+            producto.imagenProd = fotoprod
+        producto.save()
+        messages.success(request, '¡Producto Modificado!')
+        return redirect('index_admin')
 
+    else:
+        productoM = Producto.objects.get(id_producto=idProd)
+        proveedores = Proveedor.objects.all()
+        return render(request, 'modificar.html', {'producto': productoM, 'proveedor_m': proveedores})
 
 def eliminarProducto(request, idProd):
     producto = Producto.objects.get(id_producto=idProd)
@@ -249,3 +305,21 @@ def agregar_carrito(request,producto_id,precio):
     return redirect('carrito')
     
 """
+def agregar_producto(request, id_prod):
+    if request.user.is_authenticated:
+        usuario = request.user
+        productos = Producto.objects.get(id_producto=id_prod)
+        carrito = Carrito.objects.create(fk_id_usuario=usuario,total = productos.precio,fk_id_producto = productos)
+        return redirect('carrito')
+    else:
+        return redirect('login')
+
+def eliminar_producto(request, id_producto):
+    if request.user.is_authenticated:
+        producto = Producto.objects.get(id=id_producto)
+        carrito = Carrito.objects.get(usuario=request.user)
+        carrito.productos.remove(producto)
+        carrito.save()
+        return redirect('carrito')
+    else:
+        return redirect('login')

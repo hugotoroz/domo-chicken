@@ -1,7 +1,8 @@
 
 from django.urls import path
-from .views import eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd
-
+from .views import agregar_producto, eliminar_producto, eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, pedirStock, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd, stockIndex, stockSolicitar
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     path('', index, name="index"),
@@ -10,18 +11,29 @@ urlpatterns = [
 
     path('catalogo', catalogo, name="catalogo"),
 
-    path('perfil', perfil, name="pefil"),
+    path('perfil', perfil, name="perfil"),
     
     #Render de pagina de agregar producto
     path('agregarProd',agregarProd,name="agregarProd"),
     #Funcion de agregar producto
     path('agregarProd2/',newProd,name ="addProd"),
+    
+    #Render para ver el stock
+    path('stockIndex/',stockIndex,name ="stockIndex"),
+    #Render para el formulario de stock
+    path('stockSolicitar/<int:id_prod>/',stockSolicitar,name ="stockSolicitar"),
+    #Funcion para pedir stock
+    path('pedirStock/<id_prod>/',pedirStock,name ="pedirStock"),
+
     #Render de pagina modificar o eliminar productor
     path('modificarIndex',modOrDeleteIndex,name="modOrDeleteIndex"),
     #Modificar un producto
     path('modificarProducto/<idProd>',modificarProducto,name="modificarProducto"),
     #Funcion eliminar Producto
     path('eliminarProducto/<idProd>',eliminarProducto,name="eliminarProducto"),
+    #Carrito Funciones
+    path('carrito/agregar/<int:id_prod>/', agregar_producto, name='agregar_producto'),
+    path('carrito/eliminar/<int:id_prod>/', eliminar_producto, name='eliminar_producto'),
 
 
 
@@ -34,3 +46,4 @@ urlpatterns = [
     # Agregar Carrito
     #path('agregar_carrito/<int:id>/<int:precio>/',agregar_carrito, name="agregar_carrito"),
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
