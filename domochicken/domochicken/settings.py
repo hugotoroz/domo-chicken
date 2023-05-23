@@ -10,7 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-from pathlib import Path
+from pathlib import Path, os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -77,7 +78,7 @@ WSGI_APPLICATION = 'domochicken.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'prueba_dc3',
+        'NAME': 'prueba_dc4',
         'USER': 'domochicken',
         'PASSWORD': '123',
         'HOST': 'localhost',
@@ -126,3 +127,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

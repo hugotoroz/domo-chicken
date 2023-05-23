@@ -19,12 +19,19 @@
         {% csrf_token %}
         <p class="title">Modificar Productos </p>
         <p class="message">Formulario para modificar productos</p>
-            <div class="flex">
+        <div class="flex">
+            <div class="form-group mb-3 flex-column d-flex">
+                {% if producto.imagenProd %}
+                <img src="{{producto.imagenProd.url}}" alt="Error" class="prod-size">
+                {% endif %}
+                <label for="formFile" class="datos form-label">Seleccionar imagen<span class="text-danger"> *</span></label>
+                <input class="form-control negritas" type="file" name ="imgprod" id="imgprod"required>
+                <div class="invalid-feedback">Debe seleccionar una imagen para el producto</div>
+            </div>    
             <label>
                 <input required="" name ="nomprod" id="nomprod" value="{{producto.nombre_producto}}" placeholder="" type="text" class="input">
                 <span>Nombre:</span>
             </label>
-    
             <label>
                 <input required="" name ="stockprod" id="stockprod" value="{{producto.stock}}"  placeholder="" type="number" class="input">
                 <span>Stock:</span>

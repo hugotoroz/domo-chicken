@@ -34,7 +34,12 @@
         <label>
             <input required="" placeholder="" name ="precioprod" id="precioprod" type="number" class="input">
             <span>Precio:</span>
-        </label> 
+        </label>
+        <div class="form-group mb-3 flex-column d-flex">
+                <label for="formFile" class="datos form-label">Seleccionar imagen<span class="text-danger"> *</span></label>
+                <input class="form-control negritas" type="file" name ="imgprod" id="imgprod"required>
+                <div class="invalid-feedback">Debe seleccionar una imagen para el producto</div>
+        </div> 
         
         <select name="proveedor" id="proveedor" class="form-select" required>
             <option selected disabled value="">Seleccione un proveedor</option>
