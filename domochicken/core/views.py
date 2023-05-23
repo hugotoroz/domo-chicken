@@ -131,6 +131,9 @@ def registrar_usuario(request):
             Usuario.objects.create(nombre_usuario=nom_user, apellido_usuario=app_user, celular=celular,
                                    correo=correo, direccion=direccion, fk_id_rol=rol, fk_id_comuna=c)
             u_auth = authenticate(request, username=correo, password=clave)
+            ##
+            ## CREACION DEL CARRITO
+            ##
             login(request, u_auth)
             return redirect('index')
     else:
