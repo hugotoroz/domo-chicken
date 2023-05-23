@@ -277,4 +277,8 @@ CATALOGO
   }
 .hide {
     display: none;
- }
+}
+ .imagen-fija {
+    width: auto;
+    height: 250px;
+  }
