@@ -47,14 +47,15 @@ class Producto(models.Model):
     stock = models.IntegerField()
     precio = models.IntegerField()
     descripcion = models.CharField(max_length=400)
+    imagenProd =models.ImageField(upload_to="productos",verbose_name="Imagen del Producto",null=True, blank=False)
     fk_id_proveedor = models.ForeignKey(Proveedor,on_delete=models.CASCADE,)
     def __str__(self):
         return self.nombre_producto
 class Carrito(models.Model):
     id_carrito = models.BigAutoField(primary_key=True)
-    total = models.IntegerField()
-    producto = models.IntegerField(null=True)
+    total = models.IntegerField(null=True)
     fk_id_usuario = models.ForeignKey(User,on_delete=models.CASCADE,)
+    fk_id_producto = models.ForeignKey(Producto,on_delete=models.CASCADE,null=True)
     def __str__(self):
         return self.total
 class Pedido(models.Model):
