@@ -2,7 +2,7 @@
 {% block css %}
 <link rel="stylesheet" href="../static/css/perfil.css">
 {% endblock %}
-{% block title %}Mi perfil{% endblock %}
+{% block title %}Perfil - Domo Chicken{% endblock %}
 
 {% block template %}
 
@@ -13,42 +13,64 @@
         192L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path>
     </svg>
 </div>
-<section class="seccion-perfil-usuario">
+<section class="seccion-perfil-usuario" style="margin-bottom: 50px;">
 
     <div class="perfil-usuario-body">
-        <div class="perfil-usuario-bio">
-            <h3 class="titulo">{{usuario.nombre_usuario}} {{usuario.apellido_usuario}} </h3>
-            <p class="texto">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                tempor incididunt ut labore et dolore magna aliqua.</p>
-        </div>
+
         <div class="perfil-usuario-footer">
-            <ul class="lista-datos">
-                <li><i class="bi bi-geo-alt"></i> Direccion de usuario: {{usuario.direccion}}</li>
-                <li><i class="bi bi-telephone-fill"></i> Telefono: {{usuario.celular}}</li>
-                {%if usuario.fk_id_rol_id != 5 %}
-
-                <li><i class="bi bi-person-workspace"></i> Cargo: {{usuario.fk_id_rol_id.rol.nombre_rol}}</li>
-                {% endif %}
-            </ul>
-            <ul class="lista-datos">
-                <li><i class="bi bi-envelope-at-fill"></i> Correo Electrónico: {{usuario.correo}}</li>
-                <li><i class="bi bi-calendar2-range"></i> Fecha en que se unió: {{user.date_joined}}</li>
-            </ul>
+            <h3 class="titulo">{{usuario.nombre_usuario}} {{usuario.apellido_usuario}} </h3>
+            <div class="col-md-8">
+                <div class="card mb-3 align-items-center justify-content-center">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <h6 class="mb-0">Correo electrónico</h6>
+                            </div>
+                            <div class="col-sm-7 text-secondary">
+                                {{usuario.correo}}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <h6 class="mb-0">Celular</h6>
+                            </div>
+                            <div class="col-sm-7 text-secondary">
+                                {{usuario.celular}}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <h6 class="mb-0">Dirección</h6>
+                            </div>
+                            <div class="col-sm-7 text-secondary">
+                                {{usuario.direccion}}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <h6 class="mb-0">Fecha de creación</h6>
+                            </div>
+                            <div class="col-sm-7 text-secondary">
+                                {{user.date_joined}}
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <a href="#" class="boton">
+                                    Editar perfil
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div>
-        <button type="button">
-            <span>Editar información</span>
-        </button>
-    </div>
-
 </section>
-<div class="curved-div">
-    <svg viewBox="0 0 1440 319">
-        <path fill="#fff" fill-opacity="1"
-            d="M0,32L48,80C96,128,192,224,288,224C384,224,480,128,576,90.7C672,53,768,75,864,96C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
-        </path>
-    </svg>
-</div>
+
 
 {% endblock %}
