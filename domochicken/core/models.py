@@ -29,6 +29,8 @@ class Usuario(models.Model):
     celular = models.IntegerField()
     correo = models.CharField(max_length=50)
     direccion = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True) 
+    row_status = models.BooleanField(default=True)
     fk_id_rol = models.ForeignKey(Rol,on_delete=models.CASCADE,)
     fk_id_comuna = models.ForeignKey(Comuna,on_delete=models.CASCADE,)
     def __str__(self):
@@ -39,6 +41,8 @@ class Proveedor(models.Model):
     descripcion = models.CharField(max_length=400)
     rut_proveedor = models.CharField(max_length=100)
     direccion = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True) 
+    row_status = models.BooleanField(default=True)
     def __str__(self):
         return self.nombre_proveedor
 class Producto(models.Model):
@@ -49,6 +53,8 @@ class Producto(models.Model):
     descripcion = models.CharField(max_length=400)
     imagenProd =models.ImageField(upload_to="productos",verbose_name="Imagen del Producto",null=True, blank=False)
     fk_id_proveedor = models.ForeignKey(Proveedor,on_delete=models.CASCADE,)
+    is_active = models.BooleanField(default=True) 
+    row_status = models.BooleanField(default=True)
     def __str__(self):
         return self.nombre_producto
 class Carrito(models.Model):
@@ -65,5 +71,10 @@ class Pedido(models.Model):
     fk_id_usuario = models.ForeignKey(Usuario,on_delete=models.CASCADE,)
     def __str__(self):
         return self.descripcion
-
+class Solicitudes(models.Model):
+    id_solicitudes = models.BigAutoField(primary_key=True)
+    estado = models.CharField(max_length=50)
+    fk_id_proveedor = models.ForeignKey(Proveedor,on_delete=models.CASCADE,)
+    fk_id_producto = models.ForeignKey(Producto,on_delete=models.CASCADE,)
+    fk_id_usuario= models.ForeignKey(Usuario,on_delete=models.CASCADE,)
 
