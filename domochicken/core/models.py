@@ -29,7 +29,7 @@ class Usuario(models.Model):
     celular = models.IntegerField()
     correo = models.CharField(max_length=50)
     direccion = models.CharField(max_length=100)
-    is_active = models.BooleanField(default=True) 
+    u_is_active = models.BooleanField(default=True) 
     row_status = models.BooleanField(default=True)
     fk_id_rol = models.ForeignKey(Rol,on_delete=models.CASCADE,)
     fk_id_comuna = models.ForeignKey(Comuna,on_delete=models.CASCADE,)
@@ -41,7 +41,7 @@ class Proveedor(models.Model):
     descripcion = models.CharField(max_length=400)
     rut_proveedor = models.CharField(max_length=100)
     direccion = models.CharField(max_length=100)
-    is_active = models.BooleanField(default=True) 
+    prov_is_active = models.BooleanField(default=True) 
     row_status = models.BooleanField(default=True)
     def __str__(self):
         return self.nombre_proveedor
@@ -52,7 +52,7 @@ class Producto(models.Model):
     precio = models.IntegerField()
     descripcion = models.CharField(max_length=400)
     fk_id_proveedor = models.ForeignKey(Proveedor,on_delete=models.CASCADE,)
-    is_active = models.BooleanField(default=True) 
+    prod_is_active = models.BooleanField(default=True) 
     row_status = models.BooleanField(default=True)
     def __str__(self):
         return self.nombre_producto
