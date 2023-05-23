@@ -6,11 +6,10 @@
 {% block template %}
 
 <!--Imágenes en Carousel-->
-<div id="carouselExampleAutoplaying" class="carousel slide carousel-fade shadow-lg " data-bs-ride="carousel">
+<div id="carouselExampleAutoplaying" class="carousel c slide carousel-fade" data-bs-ride="carousel">
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="https://img.freepik.com/foto-gratis/delicioso-pollo-mesa_144627-8758.jpg?w=2000"
-                class="d-block w-100 " alt="...">
+            <img src="../static/img/carousel.png" class="d-block w-100 " alt="...">
         </div>
         <div class="carousel-item">
             <img src="https://images8.alphacoders.com/405/405706.jpg" class="d-block w-100 " alt="...">
@@ -26,48 +25,67 @@
         <i class="bi bi-caret-right-fill" style="font-size: 55px;"></i>
         <span class="visually-hidden">Next</span>
     </button>
-</div>
-
-<section class="catalogo">
+</div>  
+<section class="quienes_somos">
     <div class="container">
-        <h1>Algunos de nuestros productos</h1>
+        <h1 class="text-center">¿Quiénes somos?</h1>
         <div class="row">
-           {% for x in producto %}
-            <div class="col-xxl-4 col-xl-4 col-lg-4 col-sm-6 col-6">
-                <div class="card mb-3" style="max-width: 450px;">
-                    <div class="row g-0">
-                        {% if x.imagenProd %}
-                        <div class="col-md-4">
-                            <img src="{{x.imagenProd.url}}" alt="Error :D" id="img2" class="img-fluid">
-                        </div>
-                        {% else %}
-                        <div class="col-md-4">
-                            <img src="../media/Not_found.png" alt="Error :D" id="img2" class="img-fluid">
-                        </div>
-                        {% endif %}
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h5 class="card-title">{{x.nombre_producto}} </h5>
-                                <p class="card-text text-truncate">
-                                    {{x.descripcion}}
-                                </p>
-                                <p class="card-text"><small class="fw-bold"> Precio: ${{x.precio}}</small></p>
-                            </div>
-                        </div>
-                        {% if user.is_authenticated %}
-                        <a href="{% url 'agregar_producto' x.id_producto %}" class="btn btn-primary my-btn">Agregar carrito</a>
-                        <!---->
-                        {% endif %}
-                    </div>
-                </div>
+            <div class="col-6 d-flex align-items-center justify-content-center text-center">
+                <p style="padding: 7%;">
+                    Domochicken está dirigido a todo tipo de persona que valore la buena comida como niños, jóvenes,
+                    adultos y
+                    sobre todo a cualquier persona que quiera disfrutar de momentos únicos junto a todos sus seres
+                    queridos. <br style="margin-bottom: 3%;">
+                    La idea de la marca es crear una excelente experiencia de compra con una atención rápida y
+                    personalizada.
+                    <br style="margin-bottom: 3%;">
+                    Nuestro mix de sabores hace que la familia y los amigos puedan compartir un momento de unión e
+                    inolvidable ya que nuestros menú se preparan con dedicación y pasión.
+                </p>
             </div>
-            {% endfor %}
-            <div class="col-xxl-4 col-xl-4 col-lg-4 col-sm-6 col-6 d-flex align-items-end" style="margin-bottom: 15px;">
-                <button class="btn btn-primary align-items-end">Ver más...</button>
+            <div class="col-6 d-flex align-items-center justify-content-center">
+                <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzU3YzBhZDdjMjVjMDY1MWMwOGNmN2QzMmVkNzY1NzZkMGE3YWIyYSZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PXM/J46QcwhXBEVfmz4Qj8/giphy.gif"
+                    class="" style="max-height: 70vh;" alt="">
             </div>
         </div>
     </div>
 </section>
+
+<section class="catalogo">
+    <h1 class="text-center">Catálogo</h1>
+    <div class="row ">
+        {% for x in producto %}
+        <div class="col-xxl-4 col-xl-4 col-lg-4 col-sm-6 col-6 d-flex align-items-center justify-content-center">
+            <div class="card" style="max-width: 350px;">
+                {% if x.imagenProd %}
+                
+                    <img src="{{x.imagenProd.url}}" alt="Error :D" id="img2" class="imagen-fija">
+                
+                {% else %}
+                    <img src="../media/Not_found.png" alt="Error :D" id="img2" class="imagen-fija">
+                
+                {% endif %}
+                <div class="card-body">
+                    <div class="card-title">{{x.nombre_producto}}</div>
+                    <div class="card-text text-truncate">{{x.descripcion}}.</div>
+                    <p class="price card-text text-center">${{x.precio}}</p>
+                </div>
+                {% if usuario.fk_id_rol_id == 5 %}
+                <button href="{% url 'agregar_producto' x.id_producto %}" type="button " class="boton">
+                    Añadir al Carrito
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="d-flex align-items-center justify-content-center">
+        <a href="{% url 'catalogo' %}" class="ir-catalogo text-center">
+            Catálogo Completo
+        </a>
+    </div>
+</section>
+
 <section id="contacto">
     <div class="container">
         <h1>Síguenos y contáctanos</h1>
