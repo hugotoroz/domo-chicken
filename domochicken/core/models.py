@@ -52,6 +52,7 @@ class Producto(models.Model):
     precio = models.IntegerField()
     descripcion = models.CharField(max_length=400)
     fk_id_proveedor = models.ForeignKey(Proveedor,on_delete=models.CASCADE,)
+    imagenProd =models.ImageField(upload_to="productos",verbose_name="Imagen del Producto",null=True, blank=False)
     prod_is_active = models.BooleanField(default=True) 
     row_status = models.BooleanField(default=True)
     def __str__(self):
