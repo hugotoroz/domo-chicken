@@ -198,7 +198,8 @@ INSERT INTO `domochicken`.`core_comuna` (`comuna`) VALUES ('Lampa');
 
 INSERT INTO `domochicken`.`core_usuario` (`nombre_usuario`, `apellido_usuario`, `celular`, `correo`, `direccion`, `fk_id_comuna_id`, `fk_id_rol_id`) VALUES ('admin', 'admin', '975280957', 'admin@admin.cl', 'estero nifre 0206', '1', '1');
 
-INSERT INTO `domochicken`.`core_proveedor` (`nombre_proveedor`, `descripcion`, `rut_proveedor`, `direccion`) VALUES ('proveedor 1', 'provedoor1', '206712872', 'si');
+INSERT INTO `domochicken`.`core_proveedor` (`nombre_proveedor`, `descripcion`, `rut_proveedor`, `direccion`,`prov_is_active`,`row_status`) VALUES ('proveedor 1', 'provedoor1', '206712872', 'si',1,1);
 
 INSERT INTO `domochicken`.`core_producto` (`nombre_producto`, `stock`, `precio`, `descripcion`, `fk_id_proveedor_id`) VALUES ('Pollo', '2', '2000', 'Rico pollito ', '1');
 INSERT INTO `domochicken`.`core_producto` (`nombre_producto`, `stock`, `precio`, `descripcion`, `fk_id_proveedor_id`) VALUES ('Papas Fritas', '100', '200', 'RIcas papas fritas', '1');
+INSERT INTO `domochicken`.`core_producto` (`nombre_producto`, `stock`, `precio`, `descripcion`, `fk_id_proveedor_id`, `prod_is_active`, `row_status`) VALUES ('Nuggets', '2', '100', 'Nuggets d epolla', '1', '1', '1');
