@@ -21,21 +21,28 @@
                 <div class="text-header">Editar Perfil</div>
             </div>
             <div class="card-body">
-                <form action="{% url 'modificarPerfil' usuario.id_usuario %}" method="POST" enctype="multipart/form-data" name="formeditusu">
+                <form class="needs-validation" novalidate action="{% url 'modificarPerfil' usuario.id_usuario %}" method="POST" enctype="multipart/form-data" name="formeditusu" id="formeditusu">
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="username">Nombre:</label>
-                        <input required="" class="form-control" name="nomusu" id="nomusu" value="{{usuario.nombre_usuario}}" type="text">
+                        <input required="" class="form-control" name="nomusu" id="nomusu" value="{{usuario.nombre_usuario}}" type="text" required>
+                        <div class="invalid-feedback">Por favor ingrese un nombre</div>
                     </div>
                     <div class="form-group">
                         <label for="username">Apellido:</label>
-                        <input required="" class="form-control" name="apellidousu" id="apellidousu" value="{{usuario.apellido_usuario}}" type="text">
+                        <input required="" class="form-control" name="apellidousu" id="apellidousu" value="{{usuario.apellido_usuario}}" type="text" required>
+                        <div class="invalid-feedback">Por favor ingrese un apellido</div>
                     </div>
                     <div class="form-group">
                         <label for="cellphone">Número de teléfono | Celular:</label>
-                        <input required="" class="form-control" name="celularusu" id="celularusu" value="{{usuario.celular}}" type="cellphone">
+                        <input required="" class="form-control" name="celularusu" id="celularusu" value="{{usuario.celular}}" type="cellphone" required>
+                        <div class="invalid-feedback">Por favor ingrese un número celular</div>
                     </div>
-            
+                    <div class="form-group">
+                        <label for="cellphone">Dirección:</label>
+                        <input required="" class="form-control" name="direccionusu" id="direccionusu" value="{{usuario.direccion}}" type="text" required>
+                        <div class="invalid-feedback">Por favor ingrese un número celular</div>
+                    </div>
                     <input type="submit" class="btn" value="Cambiar">
                 </form>
             </div>
@@ -43,4 +50,7 @@
       
     </div>
 </section>
+{% block js %}
+<script src="/../static/js/v-editarperfil.js"></script>
+{% endblock %}
 {% endblock %}

@@ -145,6 +145,7 @@ def modificarPerfil(request, id_usuario):
         usuario.nombre_usuario = request.POST.get('nomusu')
         usuario.apellido_usuario = request.POST.get('apellidousu')
         usuario.celular = request.POST.get('celularusu')
+        usuario.direccion = request.POST.get('direccionusu')
         usuario.save()
         contexto = {'usuario': usuario}
         messages.success(request, '¡Información modificada!')
