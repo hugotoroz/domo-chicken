@@ -5,6 +5,7 @@ from django.urls import reverse
 from .models import Carrito, Comuna, Producto, Proveedor, Rol, Usuario
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 
 def role_required(role):
@@ -24,8 +25,8 @@ def role_required(role):
 
 def index(request):
     producto = Producto.objects.all()[:3]
-    usuario = Usuario.objects.filter(correo=request.user.username).first()
-    contexto = {'producto': producto}
+    usuario = Usuario.objects.filter(correo = request.user.username).first()
+    contexto = {'producto': producto,'usuario': usuario}
     return render(request, 'index.html', contexto)
 
 
@@ -271,51 +272,6 @@ def eliminarProducto(request, idProd):
     return redirect('index_admin')
 
 
-"""
-def agregar_carrito(request, id, precio):
-    if request.user.is_authenticated:
-        username_id = request.user.id
-    else:
-        username_id = None
-
-    user = User.objects.get(id=username_id)
-
-    Carrito.objects.create(total = precio,producto= id,fk_id_usuario=user)
-
-    return redirect('carrito')
-
-def obtener_carrito(request):
-    if request.user.is_authenticated:
-        username_id = request.user.id
-    else:
-        username_id = None
-
-    user = User.objects.get(id=username_id)
-    carrito = Carrito.objects.get(id=user)
-    contexto = {'carrito': carrito}
-    return render(request, 'carrito.html', contexto)
-
-
-def agregar_carrito(request,producto_id,precio):
-    # Obtener el usuario actual
-    usuario1 = request.user.username
-    usuario2= Usuario.objects.get(correo = usuario1)
-    
-    # Obtener el carrito del usuario actual (si existe)
-    usuario3 = 3
-    carrito, creado = Carrito.objects.get_or_create(fk_id_usuario=usuario1)
-    
-    # Agregar el producto al carrito
-    carrito.fk_id_producto.add(producto_id)
-    
-    # Calcular el nuevo total del carrito
-    carrito.total += precio
-    carrito.save()
-    
-    # Redirigir al usuario a la página del carrito
-    return redirect('carrito')
-    
-"""
 def agregar_producto(request, id_prod):
     if request.user.is_authenticated:
         usuario = request.user
@@ -334,3 +290,29 @@ def eliminar_producto(request, id_producto):
         return redirect('carrito')
     else:
         return redirect('login')
+    
+def Usuario_admin(request):
+    usuarios = Usuario.objects.filter(Q(fk_id_rol_id=2) | Q(fk_id_rol_id=3) | Q(fk_id_rol_id=4) | Q(fk_id_rol_id=5)  & Q(row_status=1))
+    contexto = {'usuarios': usuarios}
+    return render(request, 'Usuario_admin.html', contexto)
+
+#Funcion para desactivar al usuario
+def desactivar_usuario (request,id_usuario):
+    usuario = Usuario.objects.filter(id_usuario= id_usuario).first()
+    usuario.u_is_active = False
+    usuario.save()
+    return redirect('Usuario_admin')
+#Funcion para activar al usuario
+def activar_usuario (request,   id_usuario):
+    usuario = Usuario.objects.filter(id_usuario= id_usuario).first()
+    usuario.u_is_active = True
+    usuario.save()
+    return redirect('Usuario_admin')
+
+def eliminar_usuario (request,   id_usuario):
+    usuario = Usuario.objects.filter(id_usuario= id_usuario).first()
+    usuario.row_status = False
+    usuario.save()
+    return redirect('Usuario_admin')
+
+

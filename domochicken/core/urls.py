@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, pedirStock, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd, stockIndex,stockSolicitar,agregar_producto,eliminar_producto
+from .views import Usuario_admin, activar_usuario, desactivar_usuario, eliminar_usuario, eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, pedirStock, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd, stockIndex,stockSolicitar,agregar_producto,eliminar_producto
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -28,6 +28,15 @@ urlpatterns = [
     path('modificarProducto/<idProd>',modificarProducto,name="modificarProducto"),
     #Funcion eliminar Producto
     path('eliminarProducto/<idProd>',eliminarProducto,name="eliminarProducto"),
+    #Funciones ver usuarios admin
+    path('Usuario_admin/',Usuario_admin,name="Usuario_admin"),
+
+    #Funcion para desactivar un usuario
+    path('desactivar_usuario/<id_usuario>/',desactivar_usuario,name="desactivar_usuario"),
+    #Funcion para activar un usuario
+    path('activar_usuario/<id_usuario>/',activar_usuario,name="activar_usuario"),
+    #Funcion para eliminar un usuario
+    path('eliminar_usuario/<id_usuario>/',eliminar_usuario,name="eliminar_usuario"),
 
  #Carrito Funciones
     path('carrito/agregar/<int:id_prod>/', agregar_producto, name='agregar_producto'),

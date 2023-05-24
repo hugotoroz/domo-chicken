@@ -73,13 +73,13 @@
         </div>
     </div>
     {% endif %}
-    {% if usuario.fk_id_rol_id == 1 or usuario.fk_id_rol_id == 4 %}
+    {% if usuario.fk_id_rol_id == 1  %}
     <div class="row">
         <div class="col-6 columnas">
             <div class="card h-100 py-2">
-                <a href="#" style="text-decoration: none; color: #000;">
-                    <p class="align-items-start fw-bold titulo-card "><i class="bi bi-gear"></i></i> Modificar rol </p>
-                    <p class="desc">¡Presione acá si desea Modificar rol a algun empleado!</p>
+                <a href="{% url 'Usuario_admin' %}" style="text-decoration: none; color: #000;">
+                    <p class="align-items-start fw-bold titulo-card "><i class="bi bi-person-circle"></i></a></i> Ver Usuarios </p>
+                    <p class="desc">¡Presione acá si desea ver los usuarios del programa!</p>
                 </a>
             </div>
         </div>
