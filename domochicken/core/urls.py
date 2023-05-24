@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import Usuario_admin, activar_usuario, desactivar_usuario, eliminar_usuario, eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, pedirStock, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd, stockIndex,stockSolicitar,agregar_producto,eliminar_producto
+from .views import Usuario_admin, activar_usuario, desactivar_usuario, eliminar_usuario, eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, pedirStock, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd,editarperfil,modificarPerfil, stockIndex,stockSolicitar,agregar_producto,eliminar_producto
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -9,8 +9,12 @@ urlpatterns = [
     path('proveedores', proveedores, name="proveedores"),
 
     path('catalogo', catalogo, name="catalogo"),
-
+    
     path('perfil/', perfil, name="perfil"),
+    path('editarperfil/',editarperfil,name="editarperfil"),
+
+    path('modificarPerfil/<int:id_usuario>',modificarPerfil,name="modificarPerfil"),
+
     
     #Render de pagina de agregar producto
     path('agregarProd',agregarProd,name="agregarProd"),

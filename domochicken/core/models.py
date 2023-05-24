@@ -14,7 +14,7 @@ class Rol(models.Model):
     nombre_rol = models.CharField(max_length=30)
     fk_id_permiso = models.ForeignKey(Permiso,on_delete=models.CASCADE,)
     def __str__(self):
-        return self.nombre_role_name
+        return self.nombre_rol
 # Roles de cada usuario.
 class Comuna(models.Model):
     id_comuna = models.BigAutoField(primary_key=True)
@@ -77,4 +77,6 @@ class Solicitudes(models.Model):
     fk_id_proveedor = models.ForeignKey(Proveedor,on_delete=models.CASCADE,)
     fk_id_producto = models.ForeignKey(Producto,on_delete=models.CASCADE,)
     fk_id_usuario= models.ForeignKey(Usuario,on_delete=models.CASCADE,)
+    def __str__(self):
+        return self.estado
 
