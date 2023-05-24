@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from .models import Carrito, Comuna, Producto, Proveedor, Rol, Usuario
+from .models import Carrito, Comuna, Producto, Proveedor, Rol, Usuario, Solicitud
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
@@ -55,31 +55,26 @@ def modOrDeleteIndex(request):
     return render(request, 'modOrDeleteIndex.html', contexto)
 
 
-#Pagina de stockIndex
+#Pagina de stock de productos
 @login_required(login_url="iniciar_sesion/")
-def stockIndex(request):
+def stock_productos(request):
     producto = Producto.objects.all()
     contexto = {'producto': producto}
-    return render(request, 'stock.html', contexto)
+    return render(request, 'stock_productos.html', contexto)
 
-#Formulario para solicitar stock
+#Solicitar stock a proveedores
 @login_required(login_url="iniciar_sesion/")
-def stockSolicitar(request,id_prod):
+def solicitar_stock(request,id_prod):
     producto = Producto.objects.get(id_producto = id_prod)
-    contexto = {'producto': producto}
-    return render(request, 'pedirStock.html', contexto)
-
-#Funcion para el solicitar stock
-def pedirStock(request,id_prod):
     if request.method == "POST":
-        cantidad = int(request.POST['cantidad'])
-        producto = Producto.objects.get(id_producto = id_prod)
-        producto.stock += cantidad
+        usuario = Usuario.objects.filter(correo=request.user.username).first()
+        cantidad = request.POST['cantidad']
+        Solicitud.objects.create(cantidad_solicitud=cantidad,estado="pendiente",realizado_por=usuario.correo,fk_id_proveedor=producto.fk_id_proveedor,fk_id_producto_id=id_prod)
         producto.save()
-        return redirect('stockIndex')
-
-
-
+        return redirect('stock_productos')
+    else:
+        contexto = {'producto': producto}
+        return render(request, 'solicitar_stock.html', contexto)
 
 # Formulario de modificacion de producto
 @login_required(login_url="iniciar_sesion/")
@@ -123,7 +118,6 @@ def carrito(request):
         usuario = request.user
         carrito = Carrito.objects.filter(fk_id_usuario_id = usuario.id).order_by('fk_id_usuario_id').first()
         productoCarrito = Producto.objects.filter(id_producto__in = carrito.fk_id_producto_id.all())
-        
         
         return render(request, 'carrito.html',{'productos': productoCarrito})
     else:
@@ -195,14 +189,19 @@ def iniciar_sesion(request):
             if es_superu:
                 return redirect('admin:index')
             else:
+                #admin
                 if (usuario.fk_id_rol_id == 1):
                     return redirect('index_admin')
+                #jefe de local
                 elif (usuario.fk_id_rol_id == 2):
                     return redirect('index_admin')
+                #cocinero
                 elif (usuario.fk_id_rol_id == 3):
                     return redirect('index_admin')
+                #vendedor
                 elif (usuario.fk_id_rol_id == 4):
                     return redirect('index_admin')
+                #cliente
                 elif (usuario.fk_id_rol_id == 5):
                     return redirect('perfil')
         else:
@@ -265,10 +264,28 @@ def modificarProducto(request, idProd):
 def eliminarProducto(request, idProd):
     producto = Producto.objects.get(id_producto=idProd)
     producto.delete()
-
     messages.success(request, '¡Producto Eliminado!')
-
     return redirect('index_admin')
+
+@login_required(login_url="iniciar_sesion/")
+def agregar_prov(request):
+    if request.method == "POST":
+        nombre_proveedor = request.POST['nom_prov']
+        rut_proveedor = request.POST['rut_prov']
+        direccion_proveedor = request.POST['dir_prov']
+        descripcion_proveedor = request.POST['desc_prov']
+        Proveedor.objects.create(nombre_proveedor=nombre_proveedor, descripcion=descripcion_proveedor,rut_proveedor=rut_proveedor, direccion=direccion_proveedor,prov_is_active= True, row_status= True)
+        return redirect('index_admin')
+    else:
+        productos = Producto.objects.all()
+        contexto = {'productos': productos}
+        return render(request, 'agregar_prov.html', contexto)
+
+@login_required(login_url="iniciar_sesion/")
+def solicitudes_proveedor(request):
+    solicitudes = Solicitud.objects.all()
+    contexto = {'solicitudes': solicitudes}
+    return render(request, 'solicitudes_proveedor.html',contexto)
 
 
 """

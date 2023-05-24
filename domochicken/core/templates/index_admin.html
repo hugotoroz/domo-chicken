@@ -3,7 +3,7 @@
 {% block css %}
 <link rel="stylesheet" href="../static/css/style.css">
 {% endblock %}
-{% block title %}Domo Chicken - La mejor calidad{% endblock %}
+{% block title %}Domo Chicken - Panel de administración{% endblock %}
 {% block template %}
 
 <div class="container-fluid">
@@ -85,7 +85,7 @@
         </div>
         <div class="col-6 columnas">
             <div class="card h-100 py-2">
-                <a href="{% url 'stockIndex' %}" style="text-decoration: none; color: #000;">
+                <a href="{% url 'stock_productos' %}" style="text-decoration: none; color: #000;">
                     <p class="fw-bold align-items-start titulo-card"><i class="bi bi-truck"></i> Ver stock productos</p>
                     <p class="desc">¡Presione acá si desea ver el stock productos!</p>
                 </a>
@@ -93,17 +93,24 @@
         </div>
     </div>
     {% endif %}
-    {% if usuario.fk_id_rol_id == 2 or usuario.fk_id_rol_id == 4 %}
     <div class="row">
-        <div class="col-12 columnas">
+        <div class="col-6 columnas">
             <div class="card h-100 py-2">
-                <a href="#" style="text-decoration: none; color: #000;">
-                    <p class="align-items-start fw-bold titulo-card "><i class="bi bi-eye"></i> Ver Recetas </p>
-                    <p class="desc">¡Presione acá si desea ver alguna receta!</p>
+                <a href="{% url 'agregar_prov' %}" style="text-decoration: none; color: #000;">
+                    <p class="align-items-start fw-bold titulo-card "><i class="bi bi-eye"></i> Agregar proveedor </p>
+                    <p class="desc"></p>
+                </a>
+            </div>
+        </div>
+        <div class="col-6 columnas">
+            <div class="card h-100 py-2">
+                <a href="{% url 'solicitudes_proveedor' %}" style="text-decoration: none; color: #000;">
+                    <p class="align-items-start fw-bold titulo-card "><i class="bi bi-eye"></i> Solicitud proveedor </p>
+                    <p class="desc"></p>
                 </a>
             </div>
         </div>
     </div>
-    {% endif %}
+
 </div>
 {% endblock %}

@@ -71,12 +71,13 @@ class Pedido(models.Model):
     fk_id_usuario = models.ForeignKey(Usuario,on_delete=models.CASCADE,)
     def __str__(self):
         return self.descripcion
-class Solicitudes(models.Model):
-    id_solicitudes = models.BigAutoField(primary_key=True)
+class Solicitud(models.Model):
+    id_solicitud = models.BigAutoField(primary_key=True)
+    cantidad_solicitud = models.IntegerField(null=True)
     estado = models.CharField(max_length=50)
+    realizado_por= models.CharField(max_length=50,null=True)
     fk_id_proveedor = models.ForeignKey(Proveedor,on_delete=models.CASCADE,)
     fk_id_producto = models.ForeignKey(Producto,on_delete=models.CASCADE,)
-    fk_id_usuario= models.ForeignKey(Usuario,on_delete=models.CASCADE,)
     def __str__(self):
-        return self.estado
+        return f"{self.estado} - {self.realizado_por}"
 

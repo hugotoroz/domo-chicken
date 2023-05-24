@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'domochicken.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'prueba_dc4',
+        'NAME': 'domochicken',
         'USER': 'domochicken',
         'PASSWORD': '123',
         'HOST': 'localhost',
