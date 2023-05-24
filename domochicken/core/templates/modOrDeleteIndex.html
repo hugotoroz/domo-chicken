@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,22 +13,29 @@
 
     <link rel="stylesheet" href="static/css/style.css">
 </head>
+
 <body>
     <section>
         <div class="container">
             <h1>Algunos de nuestros productos</h1>
             <div class="row">
-               {% for x in producto %}
+                {% for x in producto %}
                 <div class="col-xxl-4 col-xl-4 col-lg-4 col-sm-6 col-6">
-                    
+
                     <div class="card mb-3" style="max-width: 450px;">
                         <div class="row g-0">
+                            {% if x.imagenProd %}
                             <div class="col-md-4">
-                                <img src="https://tofuu.getjusto.com/orioneat-prod-resized/s6JkYk49p3cgo2zcL-1200-1200.webp"
-                                    class="img-fluid img-card" alt="...">
+                                <img src="{{x.imagenProd.url}}" alt="Error :D" id="img2" class="img-fluid">
                             </div>
-                            
+                            {% else %}
+                            <div class="col-md-4">
+                                <img src="../media/Not_found.png" alt="Error :D" id="img2" class="img-fluid">
+                            </div>
+                            {% endif %}
+
                             <div class="col-md-8">
+
                                 <div class="card-body">
                                     <h5 class="card-title">{{x.nombre_producto}} </h5>
                                     <p class="card-text text-truncate">
@@ -37,11 +45,13 @@
                                 </div>
                             </div>
                             {% if user.is_authenticated %}
-                            <a href="{% url 'modificarProducto' x.id_producto%}" class="btn btn-primary my-btn">Modificar</a>
-                            <a href="{% url 'eliminarProducto' x.id_producto%}" class="btn btn-danger my-btn">Eliminar</a>
-                            
+                            <a href="{% url 'modificarProducto' x.id_producto%}"
+                                class="btn btn-primary my-btn">Modificar</a>
+                            <a href="{% url 'eliminarProducto' x.id_producto%}"
+                                class="btn btn-danger my-btn">Eliminar</a>
+
                             {% endif %}
-                            
+
                         </div>
                     </div>
                 </div>
@@ -49,6 +59,7 @@
             </div>
         </div>
     </section>
-    
+
 </body>
+
 </html>
