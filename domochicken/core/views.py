@@ -95,6 +95,27 @@ def carrito(request):
 
     return render(request, 'carrito.html')
 
+def editarperfil(request):
+    usuario = Usuario.objects.filter(correo=request.user.username).first()
+    contexto = {'usuario': usuario}
+    return render(request, 'editarperfil.html', contexto)
+
+
+@login_required(login_url="iniciar_sesion/")
+def modificarPerfil(request, id_usuario):
+    if request.method == "POST":
+        usuario = Usuario.objects.get(id_usuario=id_usuario)
+        usuario.nombre_usuario = request.POST.get('nomusu')
+        usuario.apellido_usuario = request.POST.get('apellidousu')
+        usuario.celular = request.POST.get('celularusu')
+        usuario.save()
+        contexto = {'usuario': usuario}
+        messages.success(request, '¡Información modificada!')
+        return render(request, 'perfil.html', contexto)
+    else:
+        usuarioM = Usuario.objects.get(id_usuario = id_usuario)
+    return render(request, 'editarperfil.html', {'usuario': usuarioM})
+
 
 @login_required(login_url="iniciar_sesion/")
 def perfil(request):

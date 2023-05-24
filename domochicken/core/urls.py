@@ -1,6 +1,6 @@
 
 from django.urls import path
-from .views import eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd
+from .views import eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd,editarperfil,modificarPerfil
 
 
 urlpatterns = [
@@ -9,8 +9,12 @@ urlpatterns = [
     path('proveedores', proveedores, name="proveedores"),
 
     path('catalogo', catalogo, name="catalogo"),
-
+    
     path('perfil/', perfil, name="perfil"),
+    path('editarperfil/',editarperfil,name="editarperfil"),
+
+    path('modificarPerfil/<int:id_usuario>',modificarPerfil,name="modificarPerfil"),
+
     
     #Render de pagina de agregar producto
     path('agregarProd',agregarProd,name="agregarProd"),
