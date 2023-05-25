@@ -7,25 +7,37 @@
 <div class="container" style="margin-bottom: 400px;">
     <h1>Solicitudes Pendientes</h1>
     <div class="row ">
-        {% for solicitud in solicitudes %}
-        <div class="col-xxl-4 col-xl-4 col-lg-4 col-sm-6 col-6 d-flex align-items-center justify-content-center">
-            <div class="card" style="max-width: 350px;">
-                <div class="card-body">
-                    <div class="card-title" style="text-transform: capitalize;">Proveedor: {{solicitud.fk_id_proveedor}}
-                    </div>
-                    <div class="card-text">Cantidad: {{solicitud.cantidad_solicitud}}</div>
-                    <div class="card-text" style="text-transform: capitalize;">Estado: {{solicitud.estado}}</div>
-
-                </div>
-                <div class="card-footer">
-                    <button href="#" type="button " class="btn btn-primary">
-                        Más información
-                    </button>
-                </div>
-
-            </div>
-        </div>
-        {% endfor %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Proveedor</th>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Cantidad</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">#</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for solicitud in solicitudes %}
+                <tr>
+                    <td>{{solicitud.fk_id_proveedor}}</td>
+                    <td>{{solicitud.fk_id_producto.nombre_producto}}</td>
+                    <td>{{solicitud.cantidad_solicitud}}</td>
+                    <td>{{solicitud.estado}}</td>
+                    <td>
+                        <button href="#" type="button " class="btn btn-primary">
+                            Finalizar
+                        </button>
+                        <button type="button" hx-get="{% url 'sp_mas_info' solicitud.id_solicitud %}" hx-target="#dialog" class="btn btn-secondary">
+                            Más información
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
+
+
 {% endblock %}

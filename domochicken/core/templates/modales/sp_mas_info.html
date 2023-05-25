@@ -1,0 +1,27 @@
+
+<div class="modal-content">
+    <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Información de Solicitud</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div style="text-transform: capitalize;">
+            <span class="fw-bold">Proveedor: </span>{{solicitud.fk_id_proveedor}}
+        </div>
+        <div style="text-transform: capitalize;">
+            <span class="fw-bold">Producto solicitado: </span>{{solicitud.fk_id_producto.nombre_producto}}
+        </div>
+        <div>
+            <span class="fw-bold">Cantidad: </span>{{solicitud.cantidad_solicitud}}
+        </div>
+        <div style="text-transform: capitalize;">
+            <span class="fw-bold">Estado: </span>{{solicitud.estado}}
+        </div>
+        <div>
+            <span class="fw-bold">Realizada por: </span>{{solicitud.realizado_por}}
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+    </div>
+</div>

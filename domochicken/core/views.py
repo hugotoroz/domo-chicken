@@ -314,6 +314,11 @@ def solicitudes_proveedor(request):
     contexto = {'solicitudes': solicitudes}
     return render(request, 'solicitudes_proveedor.html',contexto)
 
+@login_required(login_url="iniciar_sesion/")
+def sp_mas_info(request,id_solicitud):
+    solicitudes = Solicitud.objects.get(id_solicitud=id_solicitud)
+    return render(request, 'modales/sp_mas_info.html',{'solicitud': solicitudes})
+
 
 def agregar_producto(request, id_prod):
     if request.user.is_authenticated:
