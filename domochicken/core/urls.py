@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import sp_mas_info,Usuario_admin, activar_usuario, desactivar_usuario, eliminar_usuario, solicitudes_proveedor,agregar_prov,eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd,editarperfil,modificarPerfil, stock_productos,solicitar_stock,agregar_producto,eliminar_producto
+from .views import activar_producto, desactivar_producto, modificarRol, sp_mas_info,Usuario_admin, activar_usuario, desactivar_usuario, eliminar_usuario, solicitudes_proveedor,agregar_prov,eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd,editarperfil,modificarPerfil, stock_productos,solicitar_stock,agregar_producto,eliminar_producto
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -32,7 +32,15 @@ urlpatterns = [
     path('eliminarProducto/<idProd>',eliminarProducto,name="eliminarProducto"),
     #Funciones ver usuarios admin
     path('Usuario_admin/',Usuario_admin,name="Usuario_admin"),
+     #Funcione modificar rol
+    path('modificarRol/<id_rol>/<id_usuario>/',modificarRol,name="modificarRol"),
 
+    path('eliminarProducto/<idProd>/',eliminarProducto,name="eliminarProducto"),
+    
+    #Funcion eliminar Producto
+    path('activar_producto/<idProd>/',activar_producto,name="activar_producto"),
+    #Funcion eliminar Producto
+    path('desactivar_producto/<idProd>/',desactivar_producto,name="desactivar_producto"),
     #Funcion para desactivar un usuario
     path('desactivar_usuario/<id_usuario>/',desactivar_usuario,name="desactivar_usuario"),
     #Funcion para activar un usuario
