@@ -26,8 +26,8 @@ def role_required(role):
 
 def index(request):
     producto = Producto.objects.all()[:3]
-    usuario = Usuario.objects.filter(correo = request.user.username).first()
-    contexto = {'producto': producto,'usuario': usuario}
+    usuario = Usuario.objects.filter(correo=request.user.username).first()
+    contexto = {'producto': producto, 'usuario': usuario}
     return render(request, 'index.html', contexto)
 
 
@@ -39,7 +39,7 @@ def index(request):
 def index_admin(request):
     usuarios = Usuario.objects.filter(correo=request.user.username).first()
     roles = Rol.objects.all()
-    return render(request, 'index_admin.html', {'usuarios': usuarios,'roles':roles})
+    return render(request, 'index_admin.html', {'usuarios': usuarios, 'roles': roles})
 
 
 def agregarProd(request):
@@ -57,21 +57,24 @@ def modOrDeleteIndex(request):
     return render(request, 'modOrDeleteIndex.html', contexto)
 
 
-#Pagina de stock de productos
+# Pagina de stock de productos
 @login_required(login_url="iniciar_sesion/")
 def stock_productos(request):
     producto = Producto.objects.all()
     contexto = {'producto': producto}
     return render(request, 'stock_productos.html', contexto)
 
-#Solicitar stock a proveedores
+# Solicitar stock a proveedores
+
+
 @login_required(login_url="iniciar_sesion/")
-def solicitar_stock(request,id_prod):
-    producto = Producto.objects.get(id_producto = id_prod)
+def solicitar_stock(request, id_prod):
+    producto = Producto.objects.get(id_producto=id_prod)
     if request.method == "POST":
         usuario = Usuario.objects.filter(correo=request.user.username).first()
         cantidad = request.POST['cantidad']
-        Solicitud.objects.create(cantidad_solicitud=cantidad,estado="pendiente",realizado_por=usuario.correo,fk_id_proveedor=producto.fk_id_proveedor,fk_id_producto_id=id_prod)
+        Solicitud.objects.create(cantidad_solicitud=cantidad, estado="pendiente", realizado_por=usuario.correo,
+                                 fk_id_proveedor=producto.fk_id_proveedor, fk_id_producto_id=id_prod)
         producto.save()
         return redirect('stock_productos')
     else:
@@ -79,6 +82,8 @@ def solicitar_stock(request,id_prod):
         return render(request, 'solicitar_stock.html', contexto)
 
 # Formulario de modificacion de producto
+
+
 @login_required(login_url="iniciar_sesion/")
 def modificarProducto(request, idProd):
     if request.method == "POST":
@@ -118,15 +123,17 @@ def iniciar_session(request):
 def carrito(request):
     if request.user.is_authenticated:
         usuario = request.user
-        carrito = Carrito.objects.filter(fk_id_usuario_id = usuario.id).order_by('fk_id_usuario_id').first()
-        productoCarrito = Producto.objects.filter(id_producto__in = carrito.fk_id_producto_id.all())
-        
-        return render(request, 'carrito.html',{'productos': productoCarrito})
+        carrito = Carrito.objects.filter(
+            fk_id_usuario_id=usuario.id).order_by('fk_id_usuario_id').first()
+        productoCarrito = Producto.objects.filter(
+            id_producto__in=carrito.fk_id_producto_id.all())
+
+        return render(request, 'carrito.html', {'productos': productoCarrito})
     else:
         return redirect('login')
 
-
     return render(request, 'carrito.html')
+
 
 def editarperfil(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
@@ -147,7 +154,7 @@ def modificarPerfil(request, id_usuario):
         messages.success(request, '¡Información modificada!')
         return render(request, 'perfil.html', contexto)
     else:
-        usuarioM = Usuario.objects.get(id_usuario = id_usuario)
+        usuarioM = Usuario.objects.get(id_usuario=id_usuario)
     return render(request, 'editarperfil.html', {'usuario': usuarioM})
 
 
@@ -172,7 +179,7 @@ def registrar_usuario(request):
         celular = request.POST['celular']
         # Validar si el usuario existe en la base de datos.
         existe_usuario = False
-        
+
         if Usuario.objects.filter(correo=correo).exists():
             messages.success(request, 'El correo ya está registrado.')
             return redirect('registrar_usuario')
@@ -187,7 +194,7 @@ def registrar_usuario(request):
                                    correo=correo, direccion=direccion, fk_id_rol=rol, fk_id_comuna=c)
             u_auth = authenticate(request, username=correo, password=clave)
             ##
-            ## CREACION DEL CARRITO
+            # CREACION DEL CARRITO
             ##
             login(request, u_auth)
             return redirect('index')
@@ -217,19 +224,19 @@ def iniciar_sesion(request):
             if es_superu:
                 return redirect('admin:index')
             else:
-                #admin
+                # admin
                 if (usuario.fk_id_rol_id == 1):
                     return redirect('index_admin')
-                #jefe de local
+                # jefe de local
                 elif (usuario.fk_id_rol_id == 2):
                     return redirect('index_admin')
-                #cocinero
+                # cocinero
                 elif (usuario.fk_id_rol_id == 3):
                     return redirect('index_admin')
-                #vendedor
+                # vendedor
                 elif (usuario.fk_id_rol_id == 4):
                     return redirect('index_admin')
-                #cliente
+                # cliente
                 elif (usuario.fk_id_rol_id == 5):
                     return redirect('perfil')
         else:
@@ -259,9 +266,8 @@ def newProd(request):
     proveedor = Proveedor.objects.get(id_proveedor=prove)
 
     Producto.objects.create(nombre_producto=nombre, stock=stock,
-                            precio=precio, descripcion=desc,imagenProd = imagen,fk_id_proveedor_id=prove)
+                            precio=precio, descripcion=desc, imagenProd=imagen, fk_id_proveedor_id=prove)
     return redirect('index_admin')
-
 
 
 # Modificar Producto
@@ -277,7 +283,7 @@ def modificarProducto(request, idProd):
         producto.descripcion = request.POST.get('descprod')
         producto.fk_id_proveedor = proveedor
         if (request.FILES.get("imgprod")):
-            fotoprod =  request.FILES['imgprod']
+            fotoprod = request.FILES['imgprod']
             producto.imagenProd = fotoprod
         producto.save()
         messages.success(request, '¡Producto Modificado!')
@@ -295,6 +301,7 @@ def eliminarProducto(request, idProd):
     messages.success(request, '¡Producto Eliminado!')
     return redirect('index_admin')
 
+
 @login_required(login_url="iniciar_sesion/")
 def agregar_prov(request):
     if request.method == "POST":
@@ -302,30 +309,32 @@ def agregar_prov(request):
         rut_proveedor = request.POST['rut_prov']
         direccion_proveedor = request.POST['dir_prov']
         descripcion_proveedor = request.POST['desc_prov']
-        Proveedor.objects.create(nombre_proveedor=nombre_proveedor, descripcion=descripcion_proveedor,rut_proveedor=rut_proveedor, direccion=direccion_proveedor,prov_is_active= True, row_status= True)
+        Proveedor.objects.create(nombre_proveedor=nombre_proveedor, descripcion=descripcion_proveedor,
+                                 rut_proveedor=rut_proveedor, direccion=direccion_proveedor, prov_is_active=True, row_status=True)
         return redirect('index_admin')
     else:
         productos = Producto.objects.all()
         contexto = {'productos': productos}
         return render(request, 'agregar_prov.html', contexto)
 
+
 @login_required(login_url="iniciar_sesion/")
 def solicitudes_proveedor(request):
     solicitudes = Solicitud.objects.all()
     contexto = {'solicitudes': solicitudes}
-    return render(request, 'solicitudes_proveedor.html',contexto)
-
-
+    return render(request, 'solicitudes_proveedor.html', contexto)
 
 
 def agregar_producto(request, id_prod):
     if request.user.is_authenticated:
         usuario = request.user
         productos = Producto.objects.get(id_producto=id_prod)
-        carrito = Carrito.objects.create(fk_id_usuario=usuario,total = productos.precio,fk_id_producto = productos)
+        carrito = Carrito.objects.create(
+            fk_id_usuario=usuario, total=productos.precio, fk_id_producto=productos)
         return redirect('carrito')
     else:
         return redirect('login')
+
 
 def eliminar_producto(request, idProd):
     if request.user.is_authenticated:
@@ -335,76 +344,98 @@ def eliminar_producto(request, idProd):
         return redirect('modOrDeleteIndex')
     else:
         return redirect('login')
-#Funcion para desactivar al usuario
-def desactivar_producto (request,idProd):
+# Funcion para desactivar al usuario
+
+
+def desactivar_producto(request, idProd):
     producto = Producto.objects.filter(id_producto=idProd).first()
     producto.prod_is_active = False
     producto.save()
     return redirect('modOrDeleteIndex')
-#Funcion para activar al usuario
-def activar_producto (request,idProd):
+# Funcion para activar al usuario
+
+
+def activar_producto(request, idProd):
     producto = Producto.objects.filter(id_producto=idProd).first()
     producto.prod_is_active = True
     producto.save()
     return redirect('modOrDeleteIndex')
-    
+
+
 def Usuario_admin(request):
-    usuarios = Usuario.objects.filter(Q(fk_id_rol_id=2) | Q(fk_id_rol_id=3) | Q(fk_id_rol_id=4) | Q(fk_id_rol_id=5)  & Q(row_status=1))
-    roles = Rol.objects.all()
-    return render(request, 'Usuario_admin.html', {'usuarios': usuarios,'roles':roles})
 
-#Funcion para desactivar al usuario
-def desactivar_usuario (request,id_usuario):
-    usuario = Usuario.objects.filter(id_usuario= id_usuario).first()
-    usuario.u_is_active = False
-    usuario.save()
-    return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
-#Funcion para activar al usuario
-def activar_usuario (request,   id_usuario):
-    usuario = Usuario.objects.filter(id_usuario= id_usuario).first()
-    usuario.u_is_active = True
-    usuario.save()
-    return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
+    return render(request, 'Usuario_admin.html')
 
-#Funcion para eliminar usuario
-def eliminar_usuario (request,   id_usuario):
-    usuario = Usuario.objects.filter(id_usuario= id_usuario).first()
-    usuario.row_status = False
-    usuario.save()
-    return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
 
-def modificarRol (request,id_rol,id_usuario):
-    usuario = Usuario.objects.filter(id_usuario= id_usuario).first()
-    rol = Rol.objects.get(id_rol = id_rol)
+def modificarRol(request, id_rol, id_usuario):
+    usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
+    rol = Rol.objects.get(id_rol=id_rol)
     usuario.fk_id_rol_id = rol.id_rol
     usuario.save()
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
 
-#VIEWS MODALES
+# VIEWS MODALES
+
 
 @login_required(login_url="iniciar_sesion/")
-def sp_mas_info(request,id_solicitud):
+def sp_mas_info(request, id_solicitud):
     solicitudes = Solicitud.objects.get(id_solicitud=id_solicitud)
-    return render(request, 'modales/sp_mas_info.html',{'solicitud': solicitudes})
-
+    return render(request, 'modales/sp_mas_info.html', {'solicitud': solicitudes})
 
 
 @login_required(login_url="iniciar_sesion/")
 def ua_mod_rol(request):
     return render(request, 'modales/ua_mod_rol.html',)
 
-@login_required(login_url="iniciar_sesion/")
-def ua_eliminar_usuario(request,id_usuario):
-    usuario = Usuario.objects.filter(id_usuario= id_usuario).first()
-    
-    return render(request, 'modales/ua_eliminar_usuario.html',{'usuario':usuario})
 
 @login_required(login_url="iniciar_sesion/")
-def ua_desactivar_usuario(request,id_usuario):
-    usuario = Usuario.objects.filter(id_usuario= id_usuario).first()
-    
-    return render(request, 'modales/ua_desactivar_usuario.html',{'usuario':usuario})
-def ua_activar_usuario(request,id_usuario):
-    usuario = Usuario.objects.filter(id_usuario= id_usuario).first()
-    
-    return render(request, 'modales/ua_activar_usuario.html',{'usuario':usuario})
+def ua_eliminar_usuario(request, id_usuario):
+    usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
+
+    return render(request, 'modales/ua_eliminar_usuario.html', {'usuario': usuario})
+
+
+@login_required(login_url="iniciar_sesion/")
+def ua_desactivar_usuario(request, id_usuario):
+    usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
+
+    return render(request, 'modales/ua_desactivar_usuario.html', {'usuario': usuario})
+
+
+def ua_activar_usuario(request, id_usuario):
+    usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
+
+    return render(request, 'modales/ua_activar_usuario.html', {'usuario': usuario})
+
+# Funcion para desactivar al usuario
+
+
+def desactivar_usuario(id_usuario):
+    usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
+    usuario.u_is_active = False
+    usuario.save()
+    return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
+# Funcion para activar al usuario
+
+
+def activar_usuario(id_usuario):
+    usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
+    usuario.u_is_active = True
+    usuario.save()
+    return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
+
+# Funcion para eliminar usuario
+
+
+def eliminar_usuario(id_usuario):
+    usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
+    usuario.row_status = False
+    usuario.save()
+    return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
+
+
+def lista_usuarios(request):
+    usuarios = Usuario.objects.filter(Q(fk_id_rol_id=2) | Q(fk_id_rol_id=3) | Q(
+        fk_id_rol_id=4) | Q(fk_id_rol_id=5) & Q(row_status=1))
+    roles = Rol.objects.all()
+    return render(request, 'lista_usuarios.html', {'usuarios': usuarios, 'roles': roles})

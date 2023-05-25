@@ -133,15 +133,16 @@
         integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ"
         crossorigin="anonymous"></script>
     <script>
+        htmx.config.useTemplateFragments = true;
         ; (function () {
             const modal = new bootstrap.Modal(document.getElementById('modal'))
             htmx.on('htmx:afterSwap', (e) => {
-                if (e.detail.target.id === "dialog"){
+                if (e.detail.target.id === "dialog") {
                     modal.show()
                 }
             })
             htmx.on('htmx:beforeSwap', (e) => {
-                if (e.detail.target.id === "dialog" && !e.detail.xhr.response){
+                if (e.detail.target.id === "dialog" && !e.detail.xhr.response) {
                     modal.hide()
                     e.detail.shouldSwap = false
                 }
