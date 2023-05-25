@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import activar_producto, desactivar_producto, modificarRol, sp_mas_info,Usuario_admin, activar_usuario, desactivar_usuario, eliminar_usuario, solicitudes_proveedor,agregar_prov,eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd,editarperfil,modificarPerfil, stock_productos,solicitar_stock,agregar_producto,eliminar_producto
+from .views import activar_producto, desactivar_producto, modificarRol, sp_mas_info,Usuario_admin, activar_usuario, desactivar_usuario, eliminar_usuario, solicitudes_proveedor,agregar_prov,eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd,editarperfil,modificarPerfil, stock_productos,solicitar_stock,agregar_producto,eliminar_producto, ua_activar_usuario, ua_desactivar_usuario, ua_eliminar_usuario
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -62,7 +62,12 @@ urlpatterns = [
     path('agregar_prov/', agregar_prov, name="agregar_prov"),
     #Lista de solicitudes de proveedores
     path('solicitudes_proveedor/', solicitudes_proveedor, name="solicitudes_proveedor"),
+
+    #URL MODALES
     path('sp_mas_info/<int:id_solicitud>/', sp_mas_info, name="sp_mas_info"),
+    path('ua_desactivar_usuario/<int:id_usuario>/', ua_desactivar_usuario, name="ua_desactivar_usuario"),
+    path('ua_activar_usuario/<int:id_usuario>/', ua_activar_usuario, name="ua_activar_usuario"),
+    path('ua_eliminar_usuario/<int:id_usuario>/', ua_eliminar_usuario, name="ua_eliminar_usuario"),
     # Agregar Carrito
     #path('agregar_carrito/<int:id>/<int:precio>/',agregar_carrito, name="agregar_carrito"),
 ]
