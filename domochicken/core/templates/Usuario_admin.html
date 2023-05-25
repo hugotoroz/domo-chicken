@@ -17,7 +17,7 @@
                     <th>Estado</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody hx-trigger="load, actualizacion from:body" >
                 {% for x in usuarios %}
                 <tr>
                     <td>{{ x.nombre_usuario }}</td>
@@ -31,139 +31,36 @@
                     <td>Desactivado</td>
                     {% endif %}
                     {% if x.u_is_active == 1 %}
-                    <td><button href="" data-estado="{{x.id_usuario}}" type="button" class="boton btn-abrir-modal">
+                    <td><button type="button" hx-get="{% url 'ua_desactivar_usuario' x.id_usuario %}" hx-target="#dialog" class="boton btn-abrir-modal">
                             Desactivar
                         </button></td>
                     {% endif %}
                     {% if x.u_is_active == 0 %}
-                    <td><button href="" data-estado="{{x.id_usuario}}" type="button"
-                            class="boton btn-abrir-modal-activar">
+                    <td><button type="button"  hx-get="{% url 'ua_activar_usuario' x.id_usuario %}" hx-target="#dialog" class="boton btn-abrir-modal-activar">
                             Activar
                         </button></td>
                     {% endif %}
                     {% if x.row_status == 1 %}
-                    <td><button href="" data-estado="{{x.id_usuario}}" type="button"
-                            class="boton btn-abrir-modal-eliminar">
+                    <td><button type="button" hx-get="{% url 'ua_eliminar_usuario' x.id_usuario %}" hx-target="#dialog" class="boton btn-abrir-modal-eliminar">
                             Eliminar
                         </button></td>
                     {% endif %}
+                    <td>
+                        <button type="button" class="boton btn-abrir-modal-rol">
+                            Modificar Rol
+                        </button>
+                    </td>
+                    <!-- MODAL PARA MODIFICAR ROL USUARIO-->
+                    <div id="modalRol" class="modal">
+                        <div class="modal-dialog">
+                        </div>
+                    </div>
                 </tr>
+
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
-<!-- MODAL PARA DESACTIVAR USUARIO-->
-<div id="myModal" class="modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <!-- Contenido de la modal -->
-            <div class="modal-header">
-                <h5 class="modal-title">Desactivar usuario</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Estas seguro de que quieres desactivar a este usuario?</p>
-            </div>
-            <div class="modal-footer">
-                <span id="grupo-id"></span>
-                <button type="button" class="btn btn-secondary close" data-dismiss="modal">Cerrar</button>
-                <a href="#" class="btn btn-danger" id="btn-salir">Salir</a>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- MODAL PARA ACTIVAR USUARIO-->
-<div id="myModal2" class="modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <!-- Contenido de la modal -->
-            <div class="modal-header">
-                <h5 class="modal-title">Activar usuario</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Estas seguro de que quieres activar a este usuario?</p>
-            </div>
-            <div class="modal-footer">
-                <span id="grupo-id"></span>
-                <button type="button" class="btn btn-secondary close" data-dismiss="modal">Cerrar</button>
-                <a href="#" class="btn btn-danger" id="btn-activar">Aceptar</a>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- MODAL PARA ELIMINAR USUARIO-->
-<div id="myModal3" class="modal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <!-- Contenido de la modal -->
-            <div class="modal-header">
-                <h5 class="modal-title">Eliminar usuario</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Estas seguro de que quieres eliminar a este usuario?</p>
-            </div>
-            <div class="modal-footer">
-                <span id="grupo-id"></span>
-                <button type="button" class="btn btn-secondary close" data-dismiss="modal">Cerrar</button>
-                <a href="#" class="btn btn-danger" id="btn-eliminar">Aceptar</a>
-            </div>
-        </div>
-    </div>
-</div>
-<script>
-    $(document).ready(function () {
-        //MODAL DE DESACTIVAR
-        $(".btn-abrir-modal").click(function () {
-            // Mostrar la modal correspondiente al botón de eliminar
-            $("#myModal").modal("show");
-        });
-        $(".btn-abrir-modal").click(function () {
-            var estado = $(this).data("estado");
-            var desactivar = "/desactivar_usuario/" + estado + "/";
-            $("#btn-salir").attr("href", desactivar);
-        });
-        $(".close").click(function () {
-            // Mostrar la modal correspondiente al botón de eliminar
-            $("#myModal").modal("hide");
-        });
-        //MODAL DE ACTIVAR
-        $(".btn-abrir-modal-activar").click(function () {
-            // Mostrar la modal correspondiente al botón de eliminar
-            $("#myModal2").modal("show");
-        });
-        $(".btn-abrir-modal-activar").click(function () {
-            var estado = $(this).data("estado");
-            var activar = "/activar_usuario/" + estado + "/";
-            $("#btn-activar").attr("href", activar);
-        });
-        //MODAL DE ELIMINAR
-        $(".close").click(function () {
-            // Mostrar la modal correspondiente al botón de eliminar
-            $("#myModal2").modal("hide");
-        });
-        $(".btn-abrir-modal-eliminar").click(function () {
-            // Mostrar la modal correspondiente al botón de eliminar
-            $("#myModal3").modal("show");
-        });
-        $(".btn-abrir-modal-eliminar").click(function () {
-            var estado = $(this).data("estado");
-            var activar = "/eliminar_usuario/" + estado + "/";
-            $("#btn-eliminar").attr("href", activar);
-        });
-        $(".close").click(function () {
-            // Mostrar la modal correspondiente al botón de eliminar
-            $("#myModal3").modal("hide");
-        });
-    });
-</script>
 
 {% endblock %}

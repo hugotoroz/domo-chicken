@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -36,9 +37,9 @@ def index(request):
 # @role_required('3')
 # @role_required('4')
 def index_admin(request):
-    usuario = Usuario.objects.filter(correo=request.user.username).first()
-    contexto = {'usuario': usuario}
-    return render(request, 'index_admin.html', contexto)
+    usuarios = Usuario.objects.filter(correo=request.user.username).first()
+    roles = Rol.objects.all()
+    return render(request, 'index_admin.html', {'usuarios': usuarios,'roles':roles})
 
 
 def agregarProd(request):
@@ -51,7 +52,7 @@ def agregarProd(request):
 
 @login_required(login_url="iniciar_sesion/")
 def modOrDeleteIndex(request):
-    producto = Producto.objects.all()
+    producto = Producto.objects.filter(row_status=1)
     contexto = {'producto': producto}
     return render(request, 'modOrDeleteIndex.html', contexto)
 
@@ -96,7 +97,7 @@ def modificarProducto(request, idProd):
     else:
         productoM = Producto.objects.get(id_producto=idProd)
         proveedores = Proveedor.objects.all()
-        return render(request, 'modificar.html', {'producto': productoM, 'proveedor_m': proveedores})
+        return render(request, 'modificar.html', {'producto': productoM, 'proveedores': proveedores})
 
 
 @login_required(login_url="iniciar_sesion/")
@@ -314,10 +315,7 @@ def solicitudes_proveedor(request):
     contexto = {'solicitudes': solicitudes}
     return render(request, 'solicitudes_proveedor.html',contexto)
 
-@login_required(login_url="iniciar_sesion/")
-def sp_mas_info(request,id_solicitud):
-    solicitudes = Solicitud.objects.get(id_solicitud=id_solicitud)
-    return render(request, 'modales/sp_mas_info.html',{'solicitud': solicitudes})
+
 
 
 def agregar_producto(request, id_prod):
@@ -329,38 +327,84 @@ def agregar_producto(request, id_prod):
     else:
         return redirect('login')
 
-def eliminar_producto(request, id_producto):
+def eliminar_producto(request, idProd):
     if request.user.is_authenticated:
-        producto = Producto.objects.get(id=id_producto)
-        carrito = Carrito.objects.get(usuario=request.user)
-        carrito.productos.remove(producto)
-        carrito.save()
-        return redirect('carrito')
+        producto = Producto.objects.filter(id_producto=idProd).first()
+        producto.row_status = False
+        producto.save()
+        return redirect('modOrDeleteIndex')
     else:
         return redirect('login')
+#Funcion para desactivar al usuario
+def desactivar_producto (request,idProd):
+    producto = Producto.objects.filter(id_producto=idProd).first()
+    producto.prod_is_active = False
+    producto.save()
+    return redirect('modOrDeleteIndex')
+#Funcion para activar al usuario
+def activar_producto (request,idProd):
+    producto = Producto.objects.filter(id_producto=idProd).first()
+    producto.prod_is_active = True
+    producto.save()
+    return redirect('modOrDeleteIndex')
     
 def Usuario_admin(request):
     usuarios = Usuario.objects.filter(Q(fk_id_rol_id=2) | Q(fk_id_rol_id=3) | Q(fk_id_rol_id=4) | Q(fk_id_rol_id=5)  & Q(row_status=1))
-    contexto = {'usuarios': usuarios}
-    return render(request, 'Usuario_admin.html', contexto)
+    roles = Rol.objects.all()
+    return render(request, 'Usuario_admin.html', {'usuarios': usuarios,'roles':roles})
 
 #Funcion para desactivar al usuario
 def desactivar_usuario (request,id_usuario):
     usuario = Usuario.objects.filter(id_usuario= id_usuario).first()
     usuario.u_is_active = False
     usuario.save()
-    return redirect('Usuario_admin')
+    return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
 #Funcion para activar al usuario
 def activar_usuario (request,   id_usuario):
     usuario = Usuario.objects.filter(id_usuario= id_usuario).first()
     usuario.u_is_active = True
     usuario.save()
-    return redirect('Usuario_admin')
+    return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
 
+#Funcion para eliminar usuario
 def eliminar_usuario (request,   id_usuario):
     usuario = Usuario.objects.filter(id_usuario= id_usuario).first()
     usuario.row_status = False
     usuario.save()
-    return redirect('Usuario_admin')
+    return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
+
+def modificarRol (request,id_rol,id_usuario):
+    usuario = Usuario.objects.filter(id_usuario= id_usuario).first()
+    rol = Rol.objects.get(id_rol = id_rol)
+    usuario.fk_id_rol_id = rol.id_rol
+    usuario.save()
+    return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
+
+#VIEWS MODALES
+
+@login_required(login_url="iniciar_sesion/")
+def sp_mas_info(request,id_solicitud):
+    solicitudes = Solicitud.objects.get(id_solicitud=id_solicitud)
+    return render(request, 'modales/sp_mas_info.html',{'solicitud': solicitudes})
 
 
+
+@login_required(login_url="iniciar_sesion/")
+def ua_mod_rol(request):
+    return render(request, 'modales/ua_mod_rol.html',)
+
+@login_required(login_url="iniciar_sesion/")
+def ua_eliminar_usuario(request,id_usuario):
+    usuario = Usuario.objects.filter(id_usuario= id_usuario).first()
+    
+    return render(request, 'modales/ua_eliminar_usuario.html',{'usuario':usuario})
+
+@login_required(login_url="iniciar_sesion/")
+def ua_desactivar_usuario(request,id_usuario):
+    usuario = Usuario.objects.filter(id_usuario= id_usuario).first()
+    
+    return render(request, 'modales/ua_desactivar_usuario.html',{'usuario':usuario})
+def ua_activar_usuario(request,id_usuario):
+    usuario = Usuario.objects.filter(id_usuario= id_usuario).first()
+    
+    return render(request, 'modales/ua_activar_usuario.html',{'usuario':usuario})

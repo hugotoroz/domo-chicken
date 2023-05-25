@@ -26,7 +26,6 @@
 
 <div class="container">
     <h2 class="titulo">Acceso rápido</h2>
-    {% if usuario.fk_id_rol_id == 1 or usuario.fk_id_rol_id == 2 %}
     <div class="row">
         <div class="col-6 columnas">
             <div class="card h-100 py-2">
@@ -49,8 +48,7 @@
             </div>
         </div>
     </div>
-    {% endif %}
-    {% if usuario.fk_id_rol_id == 1 %}
+    
     <div class="row">
         <div class="col-6 columnas">
             <div class="card h-100 py-2">
@@ -72,8 +70,7 @@
             </div>
         </div>
     </div>
-    {% endif %}
-    {% if usuario.fk_id_rol_id == 1  %}
+    
     <div class="row">
         <div class="col-6 columnas">
             <div class="card h-100 py-2">
@@ -92,7 +89,7 @@
             </div>
         </div>
     </div>
-    {% endif %}
+    
     <div class="row">
         <div class="col-6 columnas">
             <div class="card h-100 py-2">
