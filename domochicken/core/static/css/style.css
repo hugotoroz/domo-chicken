@@ -66,6 +66,7 @@ CATALOGO
     transition: all 0.3s ease;
     margin-top: 50px;
     box-shadow: 20px 28px 36px rgba(0, 0, 0, 0.2);
+    
 }
 .price {
     font-size: 16px;
@@ -164,10 +165,7 @@ CATALOGO
     margin-bottom: 20px;
 }
 
-.card {
-    padding: 10px;
-    word-wrap: break-word;
-}
+
 
 .color-borde-1 {
     border-left: 0.25rem solid #2897e0 !important;
@@ -201,7 +199,6 @@ CATALOGO
     font-size: 19px;
     color: var(--negro);
 }
-
 /*
 **********************************************
 **********************************************

@@ -1,0 +1,31 @@
+<div class="modal-content">
+    <!-- Contenido de la modal -->
+    <div class="modal-header">
+        <h5 class="modal-title">Modificar rol usuario</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>Selecciona un rol </p>
+    </div>
+    <select name="roles" id="roles" class="form-select" required>
+        <option disabled value="">Seleccione un rol</option>
+        {% for rol in roles %}
+        {% if rol.id_rol == x.fk_id_rol_id %}
+        <option value="{{ x.fk_id_rol_id }}" selected>{{ x.fk_id_rol.nombre_rol }}</option>
+        {% else %}
+        <option value="{{ rol.id_rol}}">{{ rol.nombre_rol }}</option>
+        {% endif %}
+        {% endfor %}
+    </select>
+    <div class="modal-body">
+        <p>Estas seguro de que quieres cambiar el rol a este usuario?</p>
+    </div>
+    <div class="modal-footer">
+        <span id="grupo-id"></span>
+        <button type="button" class="btn btn-secondary close"
+            data-dismiss="modal">Cerrar</button>
+        <a href="#" class="btn btn-danger" id="btn-salir-rol">Aceptar</a>
+    </div>
+</div>

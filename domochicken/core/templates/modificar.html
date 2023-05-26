@@ -45,14 +45,13 @@
         
         <select name="proveedor" id="proveedor" class="form-select" required>
             <option disabled value="">Seleccione un proveedor</option>
-            {% for i in proveedor_m %}
-                {% if i.id_proveedor == producto.fk_id_proveedor_id.id_proveedor %}
-                <option value="{{ producto.fk_id_proveedor_id.id_proveedor }}" selected>{{ producto.fk_id_proveedor_id.nombre_proveedor }}</option>
-                {% else %}
-                <option value="{{ i.id_proveedor }}">{{ i.nombre_proveedor }}</option>
-                {% endif %}
+            {% for proveedor in proveedores %}
+              {% if proveedor.id_proveedor == producto.fk_id_proveedor_id %}
+                <option value="{{ producto.fk_id_proveedor_id }}" selected>{{ producto.fk_id_proveedor.nombre_proveedor }}</option>
+              {% else %}
+                <option value="{{ proveedor.id_proveedor }}">{{ proveedor.nombre_proveedor }}</option>
+              {% endif %}
             {% endfor %}
-
         </select>
         <label>
             <input required="" type="tel" placeholder="" name ="descprod" id="descprod" value="{{producto.descripcion}}"   class="input">
