@@ -77,7 +77,7 @@ def modOrDeleteIndexProv(request):
 # Pagina de stock de productos
 @login_required(login_url="iniciar_sesion/")
 def stock_productos(request):
-    producto = Producto.objects.all()
+    producto = Producto.objects.filter(row_status = 1)
     contexto = {'producto': producto}
     return render(request, 'stock_productos.html', contexto)
 
@@ -309,7 +309,7 @@ def modificarProducto(request, idProd):
     else:
         productoM = Producto.objects.get(id_producto=idProd)
         proveedores = Proveedor.objects.all()
-        return render(request, 'modificar.html', {'producto': productoM, 'proveedor_m': proveedores})
+        return render(request, 'modificar.html', {'producto': productoM, 'proveedor': proveedores})
 
 
 def eliminarProducto(request, idProd):
