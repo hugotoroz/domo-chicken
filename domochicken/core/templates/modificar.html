@@ -45,7 +45,7 @@
         
         <select name="proveedor" id="proveedor" class="form-select" required>
             <option disabled value="">Seleccione un proveedor</option>
-            {% for proveedor in proveedores %}
+            {% for proveedor in proveedor %}
               {% if proveedor.id_proveedor == producto.fk_id_proveedor_id %}
                 <option value="{{ producto.fk_id_proveedor_id }}" selected>{{ producto.fk_id_proveedor.nombre_proveedor }}</option>
               {% else %}
