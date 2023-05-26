@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import activar_proveedor, desactivar_proveedor, eliminar_proveedor, lista_proveedores, lista_usuarios,activar_producto, desactivar_producto, modOrDeleteIndexProv, modificarRol, pv_activar_proveedor, pv_desactivar_proveedor, pv_eliminar_proveedor, sp_mas_info,Usuario_admin, activar_usuario, desactivar_usuario, eliminar_usuario, solicitudes_proveedor,agregar_prov,eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd,editarperfil,modificarPerfil, stock_productos,solicitar_stock,agregar_producto,eliminar_producto, ua_activar_usuario, ua_desactivar_usuario, ua_eliminar_usuario, ua_mod_rol
+from .views import activar_proveedor, desactivar_proveedor, eliminar_proveedor, lista_proveedores, lista_usuarios,activar_producto, desactivar_producto, modOrDeleteIndexProv, modificarRol, pv_activar_proveedor, pv_desactivar_proveedor, pv_eliminar_proveedor, sp_mas_info,Usuario_admin, activar_usuario, desactivar_usuario, eliminar_usuario, solicitudes_proveedor,agregar_prov,eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd,editarperfil,modificarPerfil, stock_productos,solicitar_stock,agregar_producto,eliminar_producto, webpay,commit, create, refundform,refund, ua_activar_usuario, ua_desactivar_usuario, ua_eliminar_usuario, ua_mod_rol
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -84,5 +84,12 @@ urlpatterns = [
 
     # Agregar Carrito
     #path('agregar_carrito/<int:id>/<int:precio>/',agregar_carrito, name="agregar_carrito"),
+
+    #webpay
+    path('webpay/', webpay, name="webpay"),
+    path('create/', create, name="create"),
+    path('commit/', commit, name="commit"),
+    path('refund-form/', refundform, name="refund-form"),
+    path('refund/', refund, name="refund"),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

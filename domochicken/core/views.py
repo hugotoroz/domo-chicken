@@ -476,7 +476,20 @@ def eliminar_usuario(request,id_usuario):
     usuario.save()
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
 
+def webpay(request):
+    return render(request, 'webpay.html')
 
+def create(request):
+    return render(request, 'webpay/plus/create.html')
+
+def commit(request):
+    return render(request, 'webpay/plus/commit.html')
+
+def refund(request):
+    return render(request, 'webpay/plus/refund-form.html')
+
+def refundform(request):
+    return render(request, 'webpay/plus/refund.html')
 def lista_usuarios(request):
     usuarios = Usuario.objects.filter(Q(fk_id_rol_id=2) | Q(fk_id_rol_id=3) | Q(
         fk_id_rol_id=4) | Q(fk_id_rol_id=5) & Q(row_status=1))
