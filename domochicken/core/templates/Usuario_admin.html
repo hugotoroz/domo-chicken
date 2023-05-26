@@ -1,20 +1,22 @@
 {% extends "base/base.html" %}
 {% load static %}
 {% block css %}
-<link rel="stylesheet" href="../static/css/style.css">
+<link rel="stylesheet" href="../static/css/lista_usuarios.css">
 {% endblock %}
 {% block title %}Domo Chicken - La mejor calidad{% endblock %}
 {% block template %}
-<div class="container">
-    <div class="table-responsive">
-        <table class="table table-striped">
+<div class="container" style="overflow-x: auto;">
+    <h1 class="titulo">Usuarios</h1>
+    <div class="row">
+        <table class="table">
             <thead>
                 <tr>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>Correo</th>
-                    <th>Tipo de usuario</th>
-                    <th>Estado</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Apellido</th>
+                    <th scope="col">Correo</th>
+                    <th scope="col" style="text-transform: capitalize;">Tipo de usuario</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Opciones</th>
                 </tr>
             </thead>
             <!--hx-trigger="load, actualizacion from:body" hx-target="this"-->

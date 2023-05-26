@@ -15,7 +15,7 @@
     </svg>
 </div>
 <div class="container-fluid">
-    <h1 class="titulo">¡Bienvenido {{ usuario.fk_id_rol_id.nombre_rol }}!</h1>
+    <h1 class="titulo">¡Bienvenido administrador!</h1>
     <div class="row">
         <div class="col-md-6 col-sm-12 columnas">
             <div class="card color-borde-1 shadow h-100 py-2">
@@ -33,9 +33,10 @@
 </div>
 
 <div class="container">
-    <h2 class="titulo">Acceso rápido</h2>
+    <h2 class="titulo">Opciones</h2>
     <div class="row">
         <div class="col-6 columnas">
+            <!--
             <div class="card h-100 py-2">
                 <a href="{% url 'agregarProd' %}" style="text-decoration: none; color: #000;">
                     <p class="align-items-start fw-bold titulo-card "><i
@@ -43,55 +44,22 @@
                     <p class="desc">¡Presione acá si desea agregar un nuevo producto a la tienda!</p>
                 </a>
             </div>
+            -->
         </div>
         <div class="col-6 columnas">
             <div class="card h-100 py-2">
                 <a href="{% url 'modOrDeleteIndex' %}" style="text-decoration: none; color: #000;">
                     <p class="fw-bold align-items-start titulo-card"><i
-                            class="fa-solid fa-arrow-right-arrow-left iconos"></i> Modificar y/o Eliminar un producto
+                            class="fa-solid fa-arrow-right-arrow-left iconos"></i> Productos
                     </p>
-                    <p class="desc">¡Presione acá si desea modificar cualquier producto de la tienda (También para
-                        aplicar descuentos)!</p>
+                    <p class="desc">Opciones de productos</p>
                 </a>
             </div>
         </div>
     </div>
-   <!--
+    
     <div class="row">
-        <div class="col-6 columnas">
-            <div class="card h-100 py-2">
-                <a href="#" style="text-decoration: none; color: #000;">
-                    <p class="align-items-start fw-bold titulo-card "><i class="bi bi-gear"></i></i> Dar o quitar
-                        permisos </p>
-                    <p class="desc">¡Presione acá si desea Dar o quitar permisos a algun empleado!</p>
-                </a>
-            </div>
-        </div>
-        <div class="col-6 columnas">
-            <div class="card h-100 py-2">
-                <a href="{% url 'Usuario_admin' %}" style="text-decoration: none; color: #000;">
-                    <p class="align-items-start fw-bold titulo-card "><i class="bi bi-person-circle"></i></a></i> Ver Usuarios </p>
-                    <p class="desc">¡Presione acá si desea ver los usuarios del programa!</p>
-                </a>
-            </div>
-        </div>
-    </div>
-   --> 
-
-   
-<!--       <div class="col-6 columnas ">
-            <div class="card h-100 py-2">
-                <a href="#" style="text-decoration: none; color: #000;">
-                    <p class="fw-bold align-items-start titulo-card"><i class="bi bi-book"></i> Modificar y/o Eliminar
-                        una receta</p>
-                    <p class="desc">¡Presione acá si desea modificar cualquier receta!</p>
-                </a>
-            </div>
-        </div>
-    </div>
-    -->
- 
-    <div class="row">
+        <!--
         <div class="col-6 columnas">
             <div class="card h-100 py-2">
                 <a href="{% url 'stock_productos' %}" style="text-decoration: none; color: #000;">
@@ -100,6 +68,8 @@
                 </a>
             </div>
         </div>
+        -->
+        <!--
         <div class="col-6 columnas">
             <div class="card h-100 py-2">
                 <a href="{% url 'agregar_prov' %}" style="text-decoration: none; color: #000;">
@@ -116,11 +86,23 @@
                 </a>
             </div>
         </div>
+        -->
         <div class="col-6 columnas">
             <div class="card h-100 py-2">
                 <a href="{% url 'modOrDeleteIndexProv' %}" style="text-decoration: none; color: #000;">
-                    <p class="align-items-start fw-bold titulo-card "><p class="fw-bold align-items-start titulo-card"><i class="bi bi-truck"></i> Modificar proveedor </p>
-                    <p class="desc">¡Presione acá si desea modificar o elminar algun proveedor!</p>
+                    <p class="align-items-start fw-bold titulo-card ">
+                        <p class="fw-bold align-items-start titulo-card"><i class="bi bi-truck"></i> Proveedores </p>
+                        <p class="desc">Lista de proveedores, solciitudes, agregar, modificar o desactivar un proveedor
+                        </p>
+                </a>
+            </div>
+        </div>
+        <div class="col-6 columnas">
+            <div class="card h-100 py-2">
+                <a href="{% url 'Usuario_admin' %}" style="text-decoration: none; color: #000;">
+                    <p class="align-items-start fw-bold titulo-card ">
+                        <p class="fw-bold align-items-start titulo-card"><i class="bi bi-truck"></i> Usuarios </p>
+                        <p class="desc">Lista de usuarios, agregar, modificar o desactivar un usuario</p>
                 </a>
             </div>
         </div>

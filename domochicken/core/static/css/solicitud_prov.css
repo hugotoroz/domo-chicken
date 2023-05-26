@@ -1,6 +1,9 @@
+*{
+    font-family: "Merriweather Sans",sans-serif;
+
+}
 body {
     color: #404040;
-    font-family: "Arial", Segoe UI, Tahoma, sans-serifl, Helvetica Neue, Helvetica;
     background-image: url(/../../static/img/textura.jpg);
     background-attachment: fixed;
     background-position: center;
@@ -13,8 +16,17 @@ body {
     margin-bottom: 25px;
     margin-top: 50px;
     text-align: center;
-
 }
+.btn{
+    width: 160px;
+}
+@media screen and (max-width: 768px) {
+    .btn {
+        margin-top: 10px;
+    }
+}
+
+
 
 th{
     color: white;

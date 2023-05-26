@@ -12,32 +12,27 @@
     {% endif %}
     {% if x.u_is_active == 1 %}
     <td><button type="button" hx-get="{% url 'ua_desactivar_usuario' x.id_usuario %}" hx-target="#dialog"
-            class="boton btn-abrir-modal">
+            class="btn btn-primary">
             Desactivar
         </button></td>
     {% endif %}
     {% if x.u_is_active == 0 %}
     <td><button type="button" hx-get="{% url 'ua_activar_usuario' x.id_usuario %}" hx-target="#dialog"
-            class="boton btn-abrir-modal-activar">
+            class="btn btn-primary">
             Activar
         </button></td>
     {% endif %}
     {% if x.row_status == 1 %}
     <td><button type="button" hx-get="{% url 'ua_eliminar_usuario' x.id_usuario %}" hx-target="#dialog"
-            class="boton btn-abrir-modal-eliminar">
+            class="btn btn-primary">
             Eliminar
         </button></td>
     {% endif %}
     <td>
-        <button type="button" hx-get="{% url 'ua_mod_rol' x.id_usuario %}" hx-target="#dialog" class="boton btn-abrir-modal-rol">
+        <button type="button" hx-get="{% url 'ua_mod_rol' x.id_usuario %}" hx-target="#dialog" class="btn btn-primary">
             Modificar Rol
         </button>
     </td>
-    <!-- MODAL PARA MODIFICAR ROL USUARIO-->
-    <div id="modalRol" class="modal">
-        <div class="modal-dialog">
-        </div>
-    </div>
 </tr>
 
 {% endfor %}

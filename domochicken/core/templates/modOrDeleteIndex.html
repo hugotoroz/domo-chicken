@@ -60,30 +60,35 @@
                             <p class="card-text"><small class="fw-bold"> Precio: ${{x.precio}}</small></p>
                         </div>
                     </div>
-                    <a href="{% url 'modificarProducto' x.id_producto%}"
-                        class="btn btn-primary my-btn">Modificar</a>
+                    <a href="{% url 'modificarProducto' x.id_producto%}" class="btn btn-primary my-btn">Modificar</a>
                     {% if x.prod_is_active == 1 %}
                     <button href="" data-prod_is_active="{{x.id_producto}}" type="button"
-                            class="btn btn-primary my-btn btn-danger btn-abrir-modal">
-                            Desactivar
+                        class="btn btn-primary my-btn btn-danger btn-abrir-modal">
+                        Desactivar
                     </button>
                     {% endif %}
                     {% if x.prod_is_active == 0 %}
                     <button href="" data-prod_is_active="{{x.id_producto}}" type="button"
-                            class="btn btn-success my-btn btn-abrir-modal-activar">
-                            Activar
+                        class="btn btn-success my-btn btn-abrir-modal-activar">
+                        Activar
                     </button>
                     {% endif %}
                     {% if x.row_status == 1 %}
                     <button href="" data-row_status="{{x.id_producto}}" type="button"
-                            class="btn btn-primary my-btn btn-danger btn-abrir-modal-eliminar">
-                            Eliminar
+                        class="btn btn-primary my-btn btn-danger btn-abrir-modal-eliminar">
+                        Eliminar
                     </button>
                     {% endif %}
                 </div>
-            </div> 
+            </div>
         </div>
         {% endfor %}
+    </div>
+    <div class="row">
+        <div class="col">
+            <a href="{% url 'agregarProd' %}" class="btn btn-primary">Agregar</a>
+            <a href="{% url 'stock_productos' %}" class="btn btn-primary">Stock</a>
+        </div>
     </div>
 </div>
 <!-- MODAL PARA DESACTIVAR USUARIO-->
@@ -120,7 +125,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>Estas seguro de que quieres activar  este producto?</p>
+                <p>Estas seguro de que quieres activar este producto?</p>
             </div>
             <div class="modal-footer">
                 <span id="grupo-id"></span>

@@ -318,7 +318,7 @@ def agregar_prov(request):
         descripcion_proveedor = request.POST['desc_prov']
         Proveedor.objects.create(nombre_proveedor=nombre_proveedor, descripcion=descripcion_proveedor,
                                  rut_proveedor=rut_proveedor, direccion=direccion_proveedor, prov_is_active=True, row_status=True)
-        return redirect('index_admin')
+        return redirect('modOrDeleteIndexProv')
     else:
         productos = Producto.objects.all()
         contexto = {'productos': productos}
