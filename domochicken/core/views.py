@@ -28,7 +28,17 @@ def index(request):
     producto = Producto.objects.all()[:3]
     usuario = Usuario.objects.filter(correo=request.user.username).first()
     contexto = {'producto': producto, 'usuario': usuario}
-    return render(request, 'index.html', contexto)
+    rol_admin = None
+    try:
+        rol= usuario.fk_id_rol_id
+        rol_admin = True
+    except:
+        rol_admin= False
+
+    if rol_admin:
+        return render(request, 'index_admin.html')
+    else:
+        return render(request, 'index.html', contexto)
 
 
 @login_required(login_url="iniciar_sesion/")
