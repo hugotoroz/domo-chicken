@@ -2,10 +2,18 @@
 {% load static %}
 {% block css %}
 <link rel="stylesheet" href="../static/css/style.css">
+<link rel="stylesheet" href="../static/css/styleadmin.css">
 {% endblock %}
 {% block title %}Domo Chicken - Panel de administración{% endblock %}
 {% block template %}
 
+<div class="curved-div upper">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+        <path fill="#fff" fill-opacity="1"
+            d="M0,160L48,176C96,192,192,224,288,224C384,224,480,192,576,181.3C672,171,768,181,864,197.3C960,213,1056,235,1152,234.7C1248,235,1344,213,1392,202.7L1440,
+        192L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path>
+    </svg>
+</div>
 <div class="container-fluid">
     <h1 class="titulo">¡Bienvenido {{ usuario.fk_id_rol_id.nombre_rol }}!</h1>
     <div class="row">
@@ -48,7 +56,7 @@
             </div>
         </div>
     </div>
-    
+   <!--
     <div class="row">
         <div class="col-6 columnas">
             <div class="card h-100 py-2">
@@ -59,8 +67,19 @@
                 </a>
             </div>
         </div>
+        <div class="col-6 columnas">
+            <div class="card h-100 py-2">
+                <a href="{% url 'Usuario_admin' %}" style="text-decoration: none; color: #000;">
+                    <p class="align-items-start fw-bold titulo-card "><i class="bi bi-person-circle"></i></a></i> Ver Usuarios </p>
+                    <p class="desc">¡Presione acá si desea ver los usuarios del programa!</p>
+                </a>
+            </div>
+        </div>
+    </div>
+   --> 
 
-        <div class="col-6 columnas ">
+   
+<!--       <div class="col-6 columnas ">
             <div class="card h-100 py-2">
                 <a href="#" style="text-decoration: none; color: #000;">
                     <p class="fw-bold align-items-start titulo-card"><i class="bi bi-book"></i> Modificar y/o Eliminar
@@ -70,16 +89,9 @@
             </div>
         </div>
     </div>
-    
+    -->
+ 
     <div class="row">
-        <div class="col-6 columnas">
-            <div class="card h-100 py-2">
-                <a href="{% url 'Usuario_admin' %}" style="text-decoration: none; color: #000;">
-                    <p class="align-items-start fw-bold titulo-card "><i class="bi bi-person-circle"></i></a></i> Ver Usuarios </p>
-                    <p class="desc">¡Presione acá si desea ver los usuarios del programa!</p>
-                </a>
-            </div>
-        </div>
         <div class="col-6 columnas">
             <div class="card h-100 py-2">
                 <a href="{% url 'stock_productos' %}" style="text-decoration: none; color: #000;">
@@ -88,9 +100,6 @@
                 </a>
             </div>
         </div>
-    </div>
-    
-    <div class="row">
         <div class="col-6 columnas">
             <div class="card h-100 py-2">
                 <a href="{% url 'agregar_prov' %}" style="text-decoration: none; color: #000;">
@@ -107,17 +116,22 @@
                 </a>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-12 columnas">
+        <div class="col-6 columnas">
             <div class="card h-100 py-2">
                 <a href="{% url 'modOrDeleteIndexProv' %}" style="text-decoration: none; color: #000;">
-                    <p class="align-items-start fw-bold titulo-card "><p class="fw-bold align-items-start titulo-card"><i class="bi bi-truck"></i> Agregar proveedor </p>
+                    <p class="align-items-start fw-bold titulo-card "><p class="fw-bold align-items-start titulo-card"><i class="bi bi-truck"></i> Modificar proveedor </p>
                     <p class="desc">¡Presione acá si desea modificar o elminar algun proveedor!</p>
                 </a>
             </div>
         </div>
     </div>
-
 </div>
+<div class="curved-div">
+    <svg viewBox="0 0 1440 319">
+        <path fill="#fff" fill-opacity="1"
+            d="M0,32L48,80C96,128,192,224,288,224C384,224,480,128,576,90.7C672,53,768,75,864,96C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+        </path>
+    </svg>
+</div>
+
 {% endblock %}
