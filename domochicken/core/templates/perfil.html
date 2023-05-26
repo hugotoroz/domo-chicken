@@ -15,64 +15,46 @@
 </div>
 <section class="seccion-perfil-usuario" style="margin-bottom: 50px;">
 
+
+</div>
     <div class="perfil-usuario-body">
 
         <div class="perfil-usuario-footer">
             <h3 class="titulo">{{usuario.nombre_usuario}} {{usuario.apellido_usuario}} </h3>
-            <div class="col-md-8">
-                <div class="card mb-3 align-items-center justify-content-center">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="text-header">Editar Perfil</div>
+                    </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-sm-5">
-                                <h6 class="mb-0">Correo electrónico</h6>
+                        <form class="needs-validation" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="email">Correo electrónico: </label>
+                                <input disabled class="form-control" value="{{usuario.correo}}" type="email">
                             </div>
-                            <div class="col-sm-7 text-secondary">
-                                {{usuario.correo}}
+                            <div class="form-group">
+                                <label for="cellphone">Número de teléfono | Celular:</label>
+                                <input disabled class="form-control" value="{{usuario.celular}}" type="cellphone">
                             </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-5">
-                                <h6 class="mb-0">Celular</h6>
+                            <div class="form-group">
+                                <label for="text">Dirección:</label>
+                                <input disabled  class="form-control" value="{{usuario.direccion}}" type="text">
+                                <div class="invalid-feedback">Por favor ingrese un número celular</div>
                             </div>
-                            <div class="col-sm-7 text-secondary">
-                                {{usuario.celular}}
+                            <div class="form-group">
+                                <label for="cellphone">Fecha de creación:</label>
+                                <input disabled  class="form-control" value="{{user.date_joined}}" type="text">
                             </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-5">
-                                <h6 class="mb-0">Dirección</h6>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <a href="{% url 'editarperfil' %}" class="boton">Editar perfil</a>
+                                </div>
                             </div>
-                            <div class="col-sm-7 text-secondary">
-                                {{usuario.direccion}}
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-5">
-                                <h6 class="mb-0">Fecha de creación</h6>
-                            </div>
-                            <div class="col-sm-7 text-secondary">
-                                {{user.date_joined}}
-                            </div>
-                        </div>
-                        <hr>
-                       
-                        <div class="row">
-                            <div class="col-sm-12">
-                                
-                                <a href="{% url 'editarperfil' %}" class="boton">Editar perfil</a>
-                               
-                            </div>
-                        </div>
-                      
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-
 {% endblock %}

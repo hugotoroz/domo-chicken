@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import Usuario_admin, activar_usuario, desactivar_usuario, eliminar_usuario, eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, pedirStock, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd,editarperfil,modificarPerfil, stockIndex,stockSolicitar,agregar_producto,eliminar_producto
+from .views import Usuario_admin, activar_usuario, desactivar_usuario, eliminar_usuario, eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, pedirStock, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd,editarperfil,modificarPerfil, stockIndex,stockSolicitar,agregar_producto,eliminar_producto, webpay,commit, create, refundform,refund
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -54,5 +54,12 @@ urlpatterns = [
     path('cerrar_sesion/', cerrar_sesion, name="cerrar_sesion"),
     # Agregar Carrito
     #path('agregar_carrito/<int:id>/<int:precio>/',agregar_carrito, name="agregar_carrito"),
+
+    #webpay
+    path('webpay/', webpay, name="webpay"),
+    path('create/', create, name="create"),
+    path('commit/', commit, name="commit"),
+    path('refund-form/', refundform, name="refund-form"),
+    path('refund/', refund, name="refund"),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

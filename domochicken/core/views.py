@@ -341,4 +341,17 @@ def eliminar_usuario (request,   id_usuario):
     usuario.save()
     return redirect('Usuario_admin')
 
+def webpay(request):
+    return render(request, 'webpay.html')
 
+def create(request):
+    return render(request, 'webpay/plus/create.html')
+
+def commit(request):
+    return render(request, 'webpay/plus/commit.html')
+
+def refund(request):
+    return render(request, 'webpay/plus/refund-form.html')
+
+def refundform(request):
+    return render(request, 'webpay/plus/refund.html')
