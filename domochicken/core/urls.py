@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import lista_usuarios,activar_producto, desactivar_producto, modificarRol, sp_mas_info,Usuario_admin, activar_usuario, desactivar_usuario, eliminar_usuario, solicitudes_proveedor,agregar_prov,eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd,editarperfil,modificarPerfil, stock_productos,solicitar_stock,agregar_producto,eliminar_producto, ua_activar_usuario, ua_desactivar_usuario, ua_eliminar_usuario
+from .views import lista_usuarios,activar_producto, desactivar_producto, modificarRol, sp_mas_info,Usuario_admin, activar_usuario, desactivar_usuario, eliminar_usuario, solicitudes_proveedor,agregar_prov,eliminarProducto, index, index_admin, modOrDeleteIndex, modificarProducto, newProd, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd,editarperfil,modificarPerfil, stock_productos,solicitar_stock,agregar_producto,eliminar_producto, ua_activar_usuario, ua_desactivar_usuario, ua_eliminar_usuario, ua_mod_rol
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -33,7 +33,7 @@ urlpatterns = [
     #Funciones ver usuarios admin
     path('Usuario_admin/',Usuario_admin,name="Usuario_admin"),
     #Funciones modificar rol
-    path('modificarRol/<id_rol>/<id_usuario>/',modificarRol,name="modificarRol"),
+    path('modificarRol/<id_usuario>/',modificarRol,name="modificarRol"),
 
     path('eliminarProducto/<idProd>/',eliminarProducto,name="eliminarProducto"),
     
@@ -67,6 +67,7 @@ urlpatterns = [
     path('ua_desactivar_usuario/<int:id_usuario>/', ua_desactivar_usuario, name="ua_desactivar_usuario"),
     path('ua_activar_usuario/<int:id_usuario>/', ua_activar_usuario, name="ua_activar_usuario"),
     path('ua_eliminar_usuario/<int:id_usuario>/', ua_eliminar_usuario, name="ua_eliminar_usuario"),
+    path('ua_mod_rol/<int:id_usuario>/', ua_mod_rol, name="ua_mod_rol"),
     path('lista_usuarios/', lista_usuarios, name="lista_usuarios"),
 
     # Agregar Carrito

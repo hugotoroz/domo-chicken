@@ -29,7 +29,7 @@
         </button></td>
     {% endif %}
     <td>
-        <button type="button" class="boton btn-abrir-modal-rol">
+        <button type="button" hx-get="{% url 'ua_mod_rol' x.id_usuario %}" hx-target="#dialog" class="boton btn-abrir-modal-rol">
             Modificar Rol
         </button>
     </td>

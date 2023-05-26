@@ -367,12 +367,14 @@ def Usuario_admin(request):
     return render(request, 'Usuario_admin.html')
 
 
-def modificarRol(request, id_rol, id_usuario):
-    usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
-    rol = Rol.objects.get(id_rol=id_rol)
-    usuario.fk_id_rol_id = rol.id_rol
-    usuario.save()
-    return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
+def modificarRol(request,id_usuario):
+    if request.method == "POST":
+        rol = request.POST['roles']
+        usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
+        rol = Rol.objects.get(id_rol=rol)
+        usuario.fk_id_rol_id = rol.id_rol
+        usuario.save()
+        return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
 
 # VIEWS MODALES
 
@@ -384,8 +386,11 @@ def sp_mas_info(request, id_solicitud):
 
 
 @login_required(login_url="iniciar_sesion/")
-def ua_mod_rol(request):
-    return render(request, 'modales/ua_mod_rol.html',)
+def ua_mod_rol(request,id_usuario):
+    usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
+    roles = Rol.objects.all()
+
+    return render(request, 'modales/ua_mod_rol.html', {'usuario': usuario,'roles':roles})
 
 
 @login_required(login_url="iniciar_sesion/")
