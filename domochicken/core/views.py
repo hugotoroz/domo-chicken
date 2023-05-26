@@ -56,6 +56,13 @@ def modOrDeleteIndex(request):
     contexto = {'producto': producto}
     return render(request, 'modOrDeleteIndex.html', contexto)
 
+@login_required(login_url="iniciar_sesion/")
+def modOrDeleteIndexProv(request):
+    
+    return render(request, 'modOrDeleteIndexProv.html')
+
+
+
 
 # Pagina de stock de productos
 @login_required(login_url="iniciar_sesion/")
@@ -412,9 +419,40 @@ def ua_activar_usuario(request, id_usuario):
 
     return render(request, 'modales/ua_activar_usuario.html', {'usuario': usuario})
 
+def pv_desactivar_proveedor(request, id_proveedor):
+    provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
+
+    return render(request, 'modales/pv_desactivar_prove.html', {'proveedor': provee})
+
+def pv_activar_proveedor(request, id_proveedor):
+    provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
+
+    return render(request, 'modales/pv_activar_prove.html', {'proveedor': provee})
+
+def pv_eliminar_proveedor(request, id_proveedor):
+    provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
+
+    return render(request, 'modales/pv_eliminar_prove.html', {'proveedor': provee})
+
+def desactivar_proveedor(request,id_proveedor):
+    provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
+    provee.prov_is_active = False
+    provee.save()
+    return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
+
+def activar_proveedor(request,id_proveedor):
+    provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
+    provee.prov_is_active = True
+    provee.save()
+    return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
+
+def eliminar_proveedor(request,id_proveedor):
+    provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
+    provee.row_status = False
+    provee.save()
+    return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
+
 # Funcion para desactivar al usuario
-
-
 def desactivar_usuario(request,id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
     usuario.u_is_active = False
@@ -444,3 +482,11 @@ def lista_usuarios(request):
         fk_id_rol_id=4) | Q(fk_id_rol_id=5) & Q(row_status=1))
     roles = Rol.objects.all()
     return render(request, 'lista_usuarios.html', {'usuarios': usuarios, 'roles': roles})
+
+
+def lista_proveedores(request):
+    provee = Proveedor.objects.filter(row_status=1)
+    contexto = {'proveedor': provee}
+    return render(request, 'lista_proveedores.html', contexto)
+
+

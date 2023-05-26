@@ -1,0 +1,38 @@
+{% for x in proveedor %}
+        <div class="col-xxl-4 col-xl-4 col-lg-4 col-sm-6 col-6">
+            <div class="card mb-3" style="max-width: 450px;">
+                <div class="row g-0">
+
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">{{x.nombre_proveedor}} </h5>
+                            <p class="card-text text-truncate">
+                                {{x.descripcion}}
+                            </p>
+                            <p class="card-text"><small class="fw-bold"> Rut: {{x.rut_proveedor}}</small></p>
+                        </div>
+                    </div>
+                    <a href="#"
+                        class="btn btn-primary my-btn">Modificar</a>
+                    {% if x.prov_is_active == 1 %}
+                    <button href="" hx-get="{% url 'pv_desactivar_proveedor' x.id_proveedor %}" hx-target="#dialog" type="button"
+                            class="btn btn-primary my-btn btn-danger btn-abrir-modal">
+                            Desactivar
+                    </button>
+                    {% endif %}
+                    {% if x.prov_is_active == 0 %}
+                    <button href="" hx-get="{% url 'pv_activar_proveedor' x.id_proveedor %}" hx-target="#dialog" type="button"
+                            class="btn btn-success my-btn btn-abrir-modal-activar">
+                            Activar
+                    </button>
+                    {% endif %}
+                    {% if x.row_status == 1 %}
+                    <button href="" hx-get="{% url 'pv_eliminar_proveedor' x.id_proveedor %}" hx-target="#dialog" type="button"
+                            class="btn btn-primary my-btn btn-danger btn-abrir-modal-eliminar">
+                            Eliminar
+                    </button>
+                    {% endif %}
+                </div>
+            </div> 
+        </div>
+{% endfor %}

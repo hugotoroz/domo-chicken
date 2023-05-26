@@ -1,0 +1,17 @@
+<div class="modal-content">
+    <!-- Contenido de la modal -->
+    <div class="modal-header">
+        <h5 class="modal-title">Proveedor usuario</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>Estas seguro de que quieres activar a este proveedor?</p>
+    </div>
+    <div class="modal-footer">
+        <span id="grupo-id"></span>
+        <button type="button" class="btn btn-secondary close" data-dismiss="modal">Cerrar</button>
+        <button type="button" hx-get="{% url 'activar_proveedor' proveedor.id_proveedor %}" class="btn btn-danger" id="btn-salir">Aceptar</button>
+    </div>
+</div>

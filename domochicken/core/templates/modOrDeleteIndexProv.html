@@ -1,0 +1,13 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href="../static/css/style.css">
+{% endblock %}
+{% block title %}Domo Chicken - La mejor calidad{% endblock %}
+{% block template %}
+<div class="container">
+    <h1>Algunos de nuestros productos</h1>
+    <div class="row" hx-get="{% url 'lista_proveedores' %}" hx-trigger="load, actualizar from:body" hx-target="this">
+    </div>
+</div>
+{% endblock %}
