@@ -410,7 +410,7 @@ def ua_activar_usuario(request, id_usuario):
 # Funcion para desactivar al usuario
 
 
-def desactivar_usuario(id_usuario):
+def desactivar_usuario(request,id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
     usuario.u_is_active = False
     usuario.save()
@@ -418,7 +418,7 @@ def desactivar_usuario(id_usuario):
 # Funcion para activar al usuario
 
 
-def activar_usuario(id_usuario):
+def activar_usuario(request,id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
     usuario.u_is_active = True
     usuario.save()
@@ -427,7 +427,7 @@ def activar_usuario(id_usuario):
 # Funcion para eliminar usuario
 
 
-def eliminar_usuario(id_usuario):
+def eliminar_usuario(request,id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
     usuario.row_status = False
     usuario.save()
