@@ -1,0 +1,16 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Finalizar Solicitud</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div style="text-transform: capitalize;">
+            <span class="fw-bold">¿Está seguro que desea finalizar la solicitud?</span>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" hx-get="{% url 'finalizar_solicitud' solicitud.id_solicitud %}" data-bs-dismiss="modal">Finalizar</button>
+
+    </div>
+</div>

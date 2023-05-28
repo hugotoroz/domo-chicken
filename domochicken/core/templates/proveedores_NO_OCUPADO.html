@@ -1,0 +1,71 @@
+{% extends "base/base.html" %}
+{% block css %}  
+<link rel="stylesheet" href="../static/css/style.css">
+{% endblock %}
+{% block title %}Proveedores{% endblock %}
+{% block template %}
+<div class="cuerpoP">
+
+  <div class="container">
+    <h1 class="tituloP">Listado de Proveedores</h1>
+    <div class="row">
+      <div class="col-md-6 col-sm-12 columnas">
+        <div class="card color-borde-3 shadow h-100 py-2">
+          <div class="titulo-card fw-bold"><i class="fa-solid fa-coins"></i> Proveedores Disponibles</div>
+          <div class="desc">Proveedor 1</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-12 columnas">
+        <div class="card color-borde-3 shadow h-100 py-2">
+          <div class="titulo-card fw-bold"><i class="fa-solid fa-calendar"></i> Productos en Stock</div>
+          <div class="desc">Total productos en stock</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!--Contenido cartas de proveedores-->
+  <div class="container">
+    <div class="card color-borde-3 shadow h-100 py-2">
+    <div class="row">
+      <h1 class="centradoR"><i class="bi bi-box2-fill"></i>Registro de Proveedores</h1>
+      <div class="col-md-6 col-sm-12 columnas">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Nombre del proveedor</h5>
+            <p class="card-text">Producto 1</p>
+            <p class="card-text">Producto 2</p>
+            <p class="card-text">Producto 3</p>
+            <p class="card-text">Producto 4</p>
+            <p class="card-text">Producto 5</p>
+            <p class="card-text">Producto 6</p>
+            <a href="#" class="btn btn-dark">Actualizar información</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-sm-12 columnas">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Nombre del proveedor</h5>
+              <p class="card-text">Producto 1</p>
+              <p class="card-text">Producto 2</p>
+              <p class="card-text">Producto 3</p>
+              <p class="card-text">Producto 4</p>
+              <p class="card-text">Producto 5</p>
+              <p class="card-text">Producto 6</p>
+              <a href="#" class="btn btn-dark">Actualizar información</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!--Fin contenido cartas de proveedores-->
+
+
+</div>
+
+{% endblock %}
+</body>
+
+</html>

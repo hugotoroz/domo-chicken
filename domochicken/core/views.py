@@ -25,15 +25,15 @@ def role_required(role):
 
 
 def index(request):
-    producto = Producto.objects.all()[:3]
+    producto = Producto.objects.filter(fk_id_proveedor=1, prod_is_active=1)[:3]
     usuario = Usuario.objects.filter(correo=request.user.username).first()
     contexto = {'producto': producto, 'usuario': usuario}
     rol_admin = None
     try:
-        rol= usuario.fk_id_rol_id
+        rol = usuario.fk_id_rol_id
         rol_admin = True
     except:
-        rol_admin= False
+        rol_admin = False
 
     if rol_admin:
         return render(request, 'index_admin.html')
@@ -61,23 +61,20 @@ def agregarProd(request):
 
 
 @login_required(login_url="iniciar_sesion/")
-def modOrDeleteIndex(request):
-    producto = Producto.objects.filter(row_status=1)
-    contexto = {'producto': producto}
-    return render(request, 'modOrDeleteIndex.html', contexto)
+def productos(request):
+    return render(request, 'productos.html')
+
 
 @login_required(login_url="iniciar_sesion/")
-def modOrDeleteIndexProv(request):
-    
-    return render(request, 'modOrDeleteIndexProv.html')
+def proveedores(request):
 
-
+    return render(request, 'proveedores.html')
 
 
 # Pagina de stock de productos
 @login_required(login_url="iniciar_sesion/")
 def stock_productos(request):
-    producto = Producto.objects.filter(row_status = 1)
+    producto = Producto.objects.filter(row_status=1)
     contexto = {'producto': producto}
     return render(request, 'stock_productos.html', contexto)
 
@@ -122,14 +119,12 @@ def modificarProducto(request, idProd):
         return render(request, 'modificar.html', {'producto': productoM, 'proveedores': proveedores})
 
 
-@login_required(login_url="iniciar_sesion/")
-def proveedores(request):
-    return render(request, 'proveedores.html')
-
-
 def catalogo(request):
+    producto = Producto.objects.filter(fk_id_proveedor=1, prod_is_active=1)
 
-    return render(request, 'catalogo.html')
+    contexto = {'producto': producto}
+
+    return render(request, 'catalogo.html', contexto)
 
 
 def iniciar_session(request):
@@ -312,13 +307,6 @@ def modificarProducto(request, idProd):
         return render(request, 'modificar.html', {'producto': productoM, 'proveedor': proveedores})
 
 
-def eliminarProducto(request, idProd):
-    producto = Producto.objects.get(id_producto=idProd)
-    producto.delete()
-    messages.success(request, '¡Producto Eliminado!')
-    return redirect('index_admin')
-
-
 @login_required(login_url="iniciar_sesion/")
 def agregar_prov(request):
     if request.method == "POST":
@@ -328,7 +316,7 @@ def agregar_prov(request):
         descripcion_proveedor = request.POST['desc_prov']
         Proveedor.objects.create(nombre_proveedor=nombre_proveedor, descripcion=descripcion_proveedor,
                                  rut_proveedor=rut_proveedor, direccion=direccion_proveedor, prov_is_active=True, row_status=True)
-        return redirect('modOrDeleteIndexProv')
+        return redirect('proveedores')
     else:
         productos = Producto.objects.all()
         contexto = {'productos': productos}
@@ -353,47 +341,64 @@ def agregar_producto(request, id_prod):
         return redirect('login')
 
 
-def eliminar_producto(request, idProd):
-    if request.user.is_authenticated:
-        producto = Producto.objects.filter(id_producto=idProd).first()
-        producto.row_status = False
-        producto.save()
-        return redirect('modOrDeleteIndex')
-    else:
-        return redirect('login')
-# Funcion para desactivar al usuario
+def usuarios(request):
+
+    return render(request, 'usuarios.html')
+
+#
+# WEBPAY
+#
 
 
-def desactivar_producto(request, idProd):
-    producto = Producto.objects.filter(id_producto=idProd).first()
-    producto.prod_is_active = False
-    producto.save()
-    return redirect('modOrDeleteIndex')
-# Funcion para activar al usuario
+def webpay(request):
+    return render(request, 'webpay.html')
 
 
-def activar_producto(request, idProd):
-    producto = Producto.objects.filter(id_producto=idProd).first()
-    producto.prod_is_active = True
-    producto.save()
-    return redirect('modOrDeleteIndex')
+def create(request):
+    return render(request, 'webpay/plus/create.html')
 
 
-def Usuario_admin(request):
+def commit(request):
+    return render(request, 'webpay/plus/commit.html')
 
-    return render(request, 'Usuario_admin.html')
+
+def refund(request):
+    return render(request, 'webpay/plus/refund-form.html')
 
 
-def modificarRol(request,id_usuario):
-    if request.method == "POST":
-        rol = request.POST['roles']
-        usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
-        rol = Rol.objects.get(id_rol=rol)
-        usuario.fk_id_rol_id = rol.id_rol
-        usuario.save()
-        return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
-
+def refundform(request):
+    return render(request, 'webpay/plus/refund.html')
 # VIEWS MODALES
+#
+#
+# URLS
+#
+#
+
+
+def sp_lista_solicitudes(request):
+    solicitudes = Solicitud.objects.filter(estado="pendiente")
+    contexto = {'solicitudes': solicitudes}
+    return render(request, 'modales/lista_solicitudes.html', contexto)
+
+
+def u_lista_usuarios(request):
+    usuarios = Usuario.objects.filter(Q(fk_id_rol_id=2) | Q(fk_id_rol_id=3) | Q(
+        fk_id_rol_id=4) | Q(fk_id_rol_id=5) & Q(row_status=1))
+    roles = Rol.objects.all()
+    return render(request, 'modales/lista_usuarios.html', {'usuarios': usuarios, 'roles': roles})
+
+
+def p_lista_proveedores(request):
+    provee = Proveedor.objects.filter(row_status=1)
+    contexto = {'proveedor': provee}
+    return render(request, 'modales/lista_proveedores.html', contexto)
+
+
+def sp_finalizar_solicitud(request, id_solicitud):
+    solicitud = Solicitud.objects.filter(id_solicitud=id_solicitud).first()
+    contexto = {'solicitud': solicitud}
+    return render(request, 'modales/sp_finalizar_solicitud.html', contexto)
 
 
 @login_required(login_url="iniciar_sesion/")
@@ -403,11 +408,11 @@ def sp_mas_info(request, id_solicitud):
 
 
 @login_required(login_url="iniciar_sesion/")
-def ua_mod_rol(request,id_usuario):
+def ua_mod_rol(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
     roles = Rol.objects.all()
 
-    return render(request, 'modales/ua_mod_rol.html', {'usuario': usuario,'roles':roles})
+    return render(request, 'modales/ua_mod_rol.html', {'usuario': usuario, 'roles': roles})
 
 
 @login_required(login_url="iniciar_sesion/")
@@ -429,41 +434,78 @@ def ua_activar_usuario(request, id_usuario):
 
     return render(request, 'modales/ua_activar_usuario.html', {'usuario': usuario})
 
+
 def pv_desactivar_proveedor(request, id_proveedor):
     provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
 
     return render(request, 'modales/pv_desactivar_prove.html', {'proveedor': provee})
+
 
 def pv_activar_proveedor(request, id_proveedor):
     provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
 
     return render(request, 'modales/pv_activar_prove.html', {'proveedor': provee})
 
+
 def pv_eliminar_proveedor(request, id_proveedor):
     provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
 
     return render(request, 'modales/pv_eliminar_prove.html', {'proveedor': provee})
 
-def desactivar_proveedor(request,id_proveedor):
+
+def p_lista_productos(request):
+    producto = Producto.objects.filter(row_status=1)
+
+    return render(request, 'modales/lista_productos.html', {'producto': producto})
+
+
+def p_activar_producto(request, id_producto):
+    producto = Producto.objects.filter(id_producto=id_producto).first()
+
+    return render(request, 'modales/p_activar_producto.html', {'producto': producto})
+
+
+def p_desactivar_producto(request, id_producto):
+    producto = Producto.objects.filter(id_producto=id_producto).first()
+
+    return render(request, 'modales/p_desactivar_producto.html', {'producto': producto})
+
+
+def p_eliminar_producto(request, id_producto):
+    producto = Producto.objects.filter(id_producto=id_producto).first()
+
+    return render(request, 'modales/p_eliminar_producto.html', {'producto': producto})
+#
+#
+# FUNCIONES
+#
+#
+
+
+def desactivar_proveedor(request, id_proveedor):
     provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
     provee.prov_is_active = False
     provee.save()
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
 
-def activar_proveedor(request,id_proveedor):
+
+def activar_proveedor(request, id_proveedor):
     provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
     provee.prov_is_active = True
     provee.save()
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
 
-def eliminar_proveedor(request,id_proveedor):
+
+def eliminar_proveedor(request, id_proveedor):
     provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
     provee.row_status = False
     provee.save()
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
 
 # Funcion para desactivar al usuario
-def desactivar_usuario(request,id_usuario):
+
+
+def desactivar_usuario(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
     usuario.u_is_active = False
     usuario.save()
@@ -471,7 +513,7 @@ def desactivar_usuario(request,id_usuario):
 # Funcion para activar al usuario
 
 
-def activar_usuario(request,id_usuario):
+def activar_usuario(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
     usuario.u_is_active = True
     usuario.save()
@@ -480,36 +522,50 @@ def activar_usuario(request,id_usuario):
 # Funcion para eliminar usuario
 
 
-def eliminar_usuario(request,id_usuario):
+def eliminar_usuario(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
     usuario.row_status = False
     usuario.save()
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
 
-def webpay(request):
-    return render(request, 'webpay.html')
 
-def create(request):
-    return render(request, 'webpay/plus/create.html')
-
-def commit(request):
-    return render(request, 'webpay/plus/commit.html')
-
-def refund(request):
-    return render(request, 'webpay/plus/refund-form.html')
-
-def refundform(request):
-    return render(request, 'webpay/plus/refund.html')
-def lista_usuarios(request):
-    usuarios = Usuario.objects.filter(Q(fk_id_rol_id=2) | Q(fk_id_rol_id=3) | Q(
-        fk_id_rol_id=4) | Q(fk_id_rol_id=5) & Q(row_status=1))
-    roles = Rol.objects.all()
-    return render(request, 'lista_usuarios.html', {'usuarios': usuarios, 'roles': roles})
+def modificarRol(request, id_usuario):
+    if request.method == "POST":
+        rol = request.POST['roles']
+        usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
+        rol = Rol.objects.get(id_rol=rol)
+        usuario.fk_id_rol_id = rol.id_rol
+        usuario.save()
+        return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
 
 
-def lista_proveedores(request):
-    provee = Proveedor.objects.filter(row_status=1)
-    contexto = {'proveedor': provee}
-    return render(request, 'lista_proveedores.html', contexto)
+def finalizar_solicitud(request, id_solicitud):
+    solicitud = Solicitud.objects.filter(id_solicitud=id_solicitud).first()
+    solicitud.estado = "finalizado"
+    producto = Producto.objects.filter(
+        id_producto=solicitud.fk_id_producto_id).first()
+    # producto.stock + solicitud.cantidad_solicitudz
+
+    solicitud.save()
+    return HttpResponse(status=204, headers={'HX-Trigger': 'act'})
 
 
+def activar_producto(request, id_producto):
+    producto = Producto.objects.filter(id_producto=id_producto).first()
+    producto.prod_is_active = True
+    producto.save()
+    return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
+
+
+def desactivar_producto(request, id_producto):
+    producto = Producto.objects.filter(id_producto=id_producto).first()
+    producto.prod_is_active = False
+    producto.save()
+    return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
+
+
+def eliminar_producto(request, id_producto):
+    producto = Producto.objects.filter(id_producto=id_producto).first()
+    producto.row_status = False
+    producto.save()
+    return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
