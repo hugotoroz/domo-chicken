@@ -346,6 +346,17 @@ def usuarios(request):
     return render(request, 'usuarios.html')
 
 #
+# COCINERO 
+#
+
+def index_cocinero(request):
+    solicitudes = Solicitud.objects.filter(estado="pendiente")
+    contexto = {'solicitudes': solicitudes}
+    return render(request, 'index_cocinero.html', contexto)
+
+
+
+#
 # WEBPAY
 #
 
