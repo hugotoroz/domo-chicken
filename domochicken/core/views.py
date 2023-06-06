@@ -3,9 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-
-from .Carrito import Carrito
-from .models import Comuna, Producto, Proveedor, Rol, Usuario, Solicitud
+from .models import Carrito, Comuna, Producto, Proveedor, Rol, Usuario, Solicitud
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -136,10 +134,17 @@ def iniciar_session(request):
 
 def carrito(request):
     if request.user.is_authenticated:
+        usuario = request.user
+        carrito = Carrito.objects.filter(
+            fk_id_usuario_id=usuario.id).order_by('fk_id_usuario_id').first()
+        productoCarrito = Producto.objects.filter(
+            id_producto__in=carrito.fk_id_producto_id.all())
 
-        return render(request, 'carrito.html')
+        return render(request, 'carrito.html', {'productos': productoCarrito})
     else:
         return redirect('login')
+
+    return render(request, 'carrito.html')
 
 
 def editarperfil(request):
@@ -325,6 +330,15 @@ def solicitudes_proveedor(request):
     return render(request, 'solicitudes_proveedor.html', contexto)
 
 
+def agregar_producto(request, id_prod):
+    if request.user.is_authenticated:
+        usuario = request.user
+        productos = Producto.objects.get(id_producto=id_prod)
+        carrito = Carrito.objects.create(
+            fk_id_usuario=usuario, total=productos.precio, fk_id_producto=productos)
+        return redirect('carrito')
+    else:
+        return redirect('login')
 
 
 def usuarios(request):
@@ -546,6 +560,7 @@ def finalizar_solicitud(request, id_solicitud):
     solicitud.save()
     return HttpResponse(status=204, headers={'HX-Trigger': 'act'})
 
+
 def activar_producto(request, id_producto):
     producto = Producto.objects.filter(id_producto=id_producto).first()
     producto.prod_is_active = True
@@ -565,30 +580,3 @@ def eliminar_producto(request, id_producto):
     producto.row_status = False
     producto.save()
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
-
-####FUNCIONES CARRITO
-
-
-
-def agregar_producto(request, idProducto):
-    carrito = Carrito(request)
-    producto = Producto.objects.get(id_producto = idProducto)
-    carrito.agregar(producto)
-    return redirect("carrito")
-
-def eliminar_prod_cart(request, idProducto):
-    carrito = Carrito(request)
-    producto = Producto.objects.get(id_producto = idProducto)
-    carrito.eliminar(producto)
-    return redirect("carrito")
-
-def restar_producto(request, idProducto):
-    carrito = Carrito(request)
-    producto = Producto.objects.get(id_producto = idProducto)
-    carrito.restar(producto)
-    return redirect("carrito")
-
-def limpiar_carrito(request):
-    carrito = Carrito(request)
-    carrito.limpiar()
-    return redirect("carrito")
