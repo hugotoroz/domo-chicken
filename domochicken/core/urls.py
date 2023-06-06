@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import p_activar_producto,p_desactivar_producto,p_eliminar_producto,p_lista_productos,finalizar_solicitud,sp_finalizar_solicitud,sp_lista_solicitudes,activar_proveedor, desactivar_proveedor, eliminar_proveedor, p_lista_proveedores, u_lista_usuarios,activar_producto, desactivar_producto, proveedores, modificarRol, pv_activar_proveedor, pv_desactivar_proveedor, pv_eliminar_proveedor, sp_mas_info,usuarios, activar_usuario, desactivar_usuario, eliminar_usuario, solicitudes_proveedor,agregar_prov, index, index_admin, productos, modificarProducto, newProd, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd,editarperfil,modificarPerfil, stock_productos,solicitar_stock,agregar_producto,eliminar_producto, webpay,commit, create, refundform,refund, ua_activar_usuario, ua_desactivar_usuario, ua_eliminar_usuario, ua_mod_rol, index_cocinero
+from .views import eliminar_prod_cart, limpiar_carrito, p_activar_producto,p_desactivar_producto,p_eliminar_producto,p_lista_productos,finalizar_solicitud, restar_producto,sp_finalizar_solicitud,sp_lista_solicitudes,activar_proveedor, desactivar_proveedor, eliminar_proveedor, p_lista_proveedores, u_lista_usuarios,activar_producto, desactivar_producto, proveedores, modificarRol, pv_activar_proveedor, pv_desactivar_proveedor, pv_eliminar_proveedor, sp_mas_info,usuarios, activar_usuario, desactivar_usuario, eliminar_usuario, solicitudes_proveedor,agregar_prov, index, index_admin, productos, modificarProducto, newProd, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregarProd,editarperfil,modificarPerfil, stock_productos,solicitar_stock,agregar_producto,eliminar_producto, webpay,commit, create, refundform,refund, ua_activar_usuario, ua_desactivar_usuario, ua_eliminar_usuario, ua_mod_rol, index_cocinero
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -45,9 +45,7 @@ urlpatterns = [
     path('desactivar_proveedor/<id_proveedor>/',desactivar_proveedor,name="desactivar_proveedor"),
     path('eliminar_proveedor/<id_proveedor>/',eliminar_proveedor,name="eliminar_proveedor"),
     path('activar_proveedor/<id_proveedor>/',activar_proveedor,name="activar_proveedor"),
-    #Carrito Funciones
-    path('carrito/agregar/<int:id_prod>/', agregar_producto, name='agregar_producto'),
-    path('carrito/eliminar/<int:id_prod>/', eliminar_producto, name='eliminar_producto'),
+
 
     path('iniciar_sesion/', iniciar_sesion, name="iniciar_sesion"),
     path('carrito', carrito, name="carrito"),
@@ -82,7 +80,10 @@ urlpatterns = [
     path('eliminar_producto/<int:id_producto>/',eliminar_producto,name="eliminar_producto"),
 
     # Agregar Carrito
-    #path('agregar_carrito/<int:id>/<int:precio>/',agregar_carrito, name="agregar_carrito"),
+    path('agregar3/<int:idProducto>',agregar_producto,name="Add"),
+    path('eliminar/<int:idProducto>',eliminar_prod_cart,name="Del"),
+    path('restar/<int:idProducto>',restar_producto,name="Sub"),
+    path('limpiar/',limpiar_carrito,name="CLS"),
 
     #webpay
     path('webpay/', webpay, name="webpay"),
