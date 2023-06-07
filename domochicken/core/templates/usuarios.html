@@ -1,4 +1,4 @@
-{% extends "base/base.html" %}
+{% extends "base/base_admin.html" %}
 {% load static %}
 {% block css %}
 <link rel="stylesheet" href="../static/css/lista_usuarios.css">
@@ -6,7 +6,7 @@
 {% block title %}Domo Chicken - La mejor calidad{% endblock %}
 {% block template %}
 <div class="container" style="overflow-x: auto;">
-    <h1 class="titulo">Usuarios</h1>
+    <h1 class="text-white text-center" style="margin-bottom: 10px;">Usuarios</h1>
     <div class="row">
         <table class="table">
             <thead>
@@ -24,6 +24,11 @@
             </tbody>
         </table>
     </div>
+    <a href="{% url 'agregar_usuario' %}">
+        <button type="button" class="btn btn-primary">
+            Agregar usuario
+        </button>
+    </a>
 </div>
 
 {% endblock %}

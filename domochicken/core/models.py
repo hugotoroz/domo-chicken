@@ -26,21 +26,21 @@ class Usuario(models.Model):
     id_usuario = models.BigAutoField(primary_key=True)
     nombre_usuario = models.CharField(max_length=50)
     apellido_usuario = models.CharField(max_length=50)
-    celular = models.IntegerField()
     correo = models.CharField(max_length=50)
     direccion = models.CharField(max_length=100)
+    fk_id_comuna = models.ForeignKey(Comuna,on_delete=models.CASCADE,)
+    celular = models.IntegerField()
     u_is_active = models.BooleanField(default=True) 
     row_status = models.BooleanField(default=True)
-    fk_id_rol = models.ForeignKey(Rol,on_delete=models.CASCADE,)
-    fk_id_comuna = models.ForeignKey(Comuna,on_delete=models.CASCADE,)
+    fk_id_rol = models.ForeignKey(Rol,on_delete=models.CASCADE,default=5)
     def __str__(self):
         return self.nombre_usuario
 class Proveedor(models.Model):
     id_proveedor = models.BigAutoField(primary_key=True)
     nombre_proveedor = models.CharField(max_length=100)
-    descripcion = models.CharField(max_length=400)
     rut_proveedor = models.CharField(max_length=100)
     direccion = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=400)
     prov_is_active = models.BooleanField(default=True) 
     row_status = models.BooleanField(default=True)
     def __str__(self):
@@ -50,9 +50,9 @@ class Producto(models.Model):
     nombre_producto = models.CharField(max_length=100)
     stock = models.IntegerField()
     precio = models.IntegerField()
+    imagenProd =models.ImageField(upload_to="productos/",default='images/Not_found.png',verbose_name="Imagen del Producto",null=True, blank=False)
     descripcion = models.CharField(max_length=400)
     fk_id_proveedor = models.ForeignKey(Proveedor,on_delete=models.CASCADE,)
-    imagenProd =models.ImageField(upload_to="productos/",default='images/Not_found.png',verbose_name="Imagen del Producto",null=True, blank=False)
     prod_is_active = models.BooleanField(default=True) 
     row_status = models.BooleanField(default=True)
     def __str__(self):

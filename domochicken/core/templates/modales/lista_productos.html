@@ -9,7 +9,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{x.nombre_producto}} </h5>
                     <p class="card-text ">
-                        {{x.descripcion}}
+                        {{x.descripcion|linebreaksbr}}
                     </p>
                     <p class="card-text"><small class="fw-bold"> Precio: ${{x.precio}}</small></p>
                 </div>
@@ -18,7 +18,7 @@
                 <div class="row">
                     <div
                         class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 d-flex align-items-center justify-content-center">
-                        <a href="{% url 'modificarProducto' x.id_producto%}"
+                        <a href="{% url 'modificar_producto' x.id_producto%}"
                             class="btn btn-primary my-btn">Modificar</a>
                     </div>
                     <div

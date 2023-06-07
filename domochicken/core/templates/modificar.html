@@ -1,8 +1,10 @@
-{% extends "base/base.html" %}
+{% extends "base/base_admin.html" %}
 {% block css %}
 <link rel="stylesheet" href="../static/css/style.css">
-<link rel="stylesheet" href="../static/css/agregarProd.css">
+<link rel="stylesheet" href="../static/css/agregar_producto.css">
 {% endblock %}
+{% load static %}
+{% load crispy_forms_tags %}
 {% block title %}Domo Chicken - La mejor calidad{% endblock %}
 {% block template %}
 
@@ -13,53 +15,11 @@
             192L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path>
         </svg>
     </div>
-    <!--Formulario Modificar Nuevo-->
-    
-    <form class="form" action ="{% url 'modificarProducto' producto.id_producto %}" method="POST" enctype="multipart/form-data" id="formprod" name="formularioprod">
+    <form method="post" class="form" name="form_agregar_producto" enctype="multipart/form-data">
         {% csrf_token %}
-        <p class="title">Modificar Productos </p>
-        <p class="message">Formulario para modificar productos</p>
-        <div class="flex">
-            <div class="form-group mb-3 flex-column d-flex">
-                {% if producto.imagenProd %}
-                <img src="{{producto.imagenProd.url}}" alt="Error" class="prod-size">
-                {% endif %}
-                <label for="formFile" class="datos form-label">Seleccionar imagen<span class="text-danger"> *</span></label>
-                <input class="form-control negritas" type="file" name ="imgprod" id="imgprod"required>
-                <div class="invalid-feedback">Debe seleccionar una imagen para el producto</div>
-            </div>    
-            <label>
-                <input required="" name ="nomprod" id="nomprod" value="{{producto.nombre_producto}}" placeholder="" type="text" class="input">
-                <span>Nombre:</span>
-            </label>
-            <label>
-                <input required="" name ="stockprod" id="stockprod" value="{{producto.stock}}"  placeholder="" type="number" class="input">
-                <span>Stock:</span>
-            </label>
-        </div>  
-                
-        <label>
-            <input required="" placeholder="" name ="precioprod" id="precioprod" value="{{producto.precio}}" type="number" class="input">
-            <span>Precio:</span>
-        </label> 
+        {{form|crispy}}
         
-        <select name="proveedor" id="proveedor" class="form-select" required>
-            <option disabled value="">Seleccione un proveedor</option>
-            {% for proveedor in proveedor %}
-              {% if proveedor.id_proveedor == producto.fk_id_proveedor_id %}
-                <option value="{{ producto.fk_id_proveedor_id }}" selected>{{ producto.fk_id_proveedor.nombre_proveedor }}</option>
-              {% else %}
-                <option value="{{ proveedor.id_proveedor }}">{{ proveedor.nombre_proveedor }}</option>
-              {% endif %}
-            {% endfor %}
-        </select>
-        <label>
-            <input required="" type="tel" placeholder="" name ="descprod" id="descprod" value="{{producto.descripcion}}"   class="input">
-            <span>Descripción</span>
-        </label>
-       
         <button class="submit">Modificar</button>
-
     </form>
     <div class="curved-div">
         <svg viewBox="0 0 1440 319">

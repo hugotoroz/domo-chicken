@@ -1,11 +1,12 @@
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from .models import Carrito, Comuna, Producto, Proveedor, Rol, Usuario, Solicitud
-from django.contrib.auth import authenticate, login, logout
+from .models import Carrito, Comuna, Producto, Proveedor, Rol, Usuario, Solicitud,Pedido
 from django.contrib.auth.models import User
+from .forms import producto_form, proveedor_form, usuario_form,modificar_usuario_form,registrar_usuario_form
 from django.db.models import Q
 
 
@@ -28,14 +29,13 @@ def index(request):
     producto = Producto.objects.filter(fk_id_proveedor=1, prod_is_active=1)[:3]
     usuario = Usuario.objects.filter(correo=request.user.username).first()
     contexto = {'producto': producto, 'usuario': usuario}
-    rol_admin = None
+    rol = None
     try:
         rol = usuario.fk_id_rol_id
-        rol_admin = True
     except:
-        rol_admin = False
+        rol=5
 
-    if rol_admin:
+    if rol==1:
         return render(request, 'index_admin.html')
     else:
         return render(request, 'index.html', contexto)
@@ -52,12 +52,17 @@ def index_admin(request):
     return render(request, 'index_admin.html', {'usuarios': usuarios, 'roles': roles})
 
 
-def agregarProd(request):
-    proveedores = Proveedor.objects.all()
-    contexto = {'proveedor_m': proveedores}
-
-    return render(request, 'agregarProd.html', contexto)
-# Index de modificar o eliminar producto
+def agregar_producto(request):
+    if request.method == "POST":
+        form_agregar_producto = producto_form(
+            request.POST, request.FILES)
+        if form_agregar_producto.is_valid():
+            form_agregar_producto.save()
+            return redirect('productos')
+    else:
+        form_agregar_producto = producto_form()
+        contexto = {'form': form_agregar_producto}
+        return render(request, 'agregar_producto.html', contexto)
 
 
 @login_required(login_url="iniciar_sesion/")
@@ -95,28 +100,19 @@ def solicitar_stock(request, id_prod):
         contexto = {'producto': producto}
         return render(request, 'solicitar_stock.html', contexto)
 
-# Formulario de modificacion de producto
-
-
 @login_required(login_url="iniciar_sesion/")
-def modificarProducto(request, idProd):
+def modificar_producto(request, idProd):
+    producto_filter = Producto.objects.get(id_producto=idProd)
     if request.method == "POST":
-        producto = Producto.objects.get(id_producto=idProd)
-        provee = request.POST['proveedor']
-        proveedor = Proveedor.objects.get(id_proveedor=provee)
-        producto.nombre_producto = request.POST.get('nomprod')
-        producto.stock = request.POST.get('stockprod')
-        producto.precio = request.POST.get('precioprod')
-        producto.descripcion = request.POST.get('descprod')
-        producto.fk_id_proveedor = proveedor
-        producto.save()
-        messages.success(request, '¡Producto Modificado!')
-        return redirect('index_admin')
-
+        form_agregar_producto = producto_form(
+            request.POST, request.FILES, instance=producto_filter)
+        if form_agregar_producto.is_valid():
+            form_agregar_producto.save()
+            return redirect('productos')
     else:
-        productoM = Producto.objects.get(id_producto=idProd)
-        proveedores = Proveedor.objects.all()
-        return render(request, 'modificar.html', {'producto': productoM, 'proveedores': proveedores})
+        form_agregar_producto = producto_form(instance=producto_filter)
+        contexto = {'producto': producto_filter, 'form': form_agregar_producto}
+        return render(request, 'modificar.html', contexto)
 
 
 def catalogo(request):
@@ -181,39 +177,28 @@ def perfil(request):
 
 def registrar_usuario(request):
     if request.method == "POST":
-        # Tomar los datos del formulario
-        nom_user = request.POST['nombre']
-        app_user = request.POST['apellido']
-        correo = request.POST['correo']
-        clave = request.POST['clave']
-        comuna = request.POST['comuna']
-        direccion = request.POST['direccion']
-        celular = request.POST['celular']
-        # Validar si el usuario existe en la base de datos.
-        existe_usuario = False
+        form_registrar_usuario = registrar_usuario_form(request.POST)
+        if form_registrar_usuario.is_valid():
+            nombre_usuario = request.POST['nombre_usuario']
+            apellido_usuario = request.POST['apellido_usuario']
+            correo = request.POST['correo']
+            clave = request.POST['clave']
+            comuna = request.POST['comuna']
+            direccion = request.POST['direccion']
+            celular = request.POST['celular']
 
-        if Usuario.objects.filter(correo=correo).exists():
-            messages.success(request, 'El correo ya está registrado.')
-            return redirect('registrar_usuario')
-        else:
-            # Rol que se va a insertar en la BD
-            rol = Rol.objects.get(id_rol=5)
-            # Comuna que se va a insertar en la BD
-            c = Comuna.objects.get(id_comuna=comuna)
-            usuario = User.objects.create_user(correo, '', clave)
-
-            Usuario.objects.create(nombre_usuario=nom_user, apellido_usuario=app_user, celular=celular,
-                                   correo=correo, direccion=direccion, fk_id_rol=rol, fk_id_comuna=c)
+            User.objects.create_user(correo, '', clave)
+            Usuario.objects.create(nombre_usuario=nombre_usuario, apellido_usuario=apellido_usuario,correo=correo,  direccion=direccion,fk_id_comuna_id=comuna,celular=celular)
             u_auth = authenticate(request, username=correo, password=clave)
-            ##
-            # CREACION DEL CARRITO
-            ##
             login(request, u_auth)
+            
+            #form_agregar_usuario.save()
             return redirect('index')
     else:
-        comunas = Comuna.objects.all()
-        contexto = {'comunas': comunas}
+        form_registrar_usuario = registrar_usuario_form()
+        contexto = {'form': form_registrar_usuario}
         return render(request, 'registrarse.html', contexto)
+    
 
 
 def iniciar_sesion(request):
@@ -266,61 +251,31 @@ def cerrar_sesion(request):
     return redirect('iniciar_sesion')
 
 
-# Nuevo producto
-def newProd(request):
-    nombre = request.POST['nomprod']
-    stock = request.POST['stockprod']
-    desc = request.POST['descprod']
-    prove = request.POST['proveedor']
-    imagen = request.FILES['imgprod']
-    precio = request.POST['precioprod']
-
-    proveedor = Proveedor.objects.get(id_proveedor=prove)
-
-    Producto.objects.create(nombre_producto=nombre, stock=stock,
-                            precio=precio, descripcion=desc, imagenProd=imagen, fk_id_proveedor_id=prove)
-    return redirect('index_admin')
-
-
-# Modificar Producto
-@login_required(login_url="iniciar_sesion/")
-def modificarProducto(request, idProd):
-    if request.method == "POST":
-        producto = Producto.objects.get(id_producto=idProd)
-        provee = request.POST['proveedor']
-        proveedor = Proveedor.objects.get(id_proveedor=provee)
-        producto.nombre_producto = request.POST.get('nomprod')
-        producto.stock = request.POST.get('stockprod')
-        producto.precio = request.POST.get('precioprod')
-        producto.descripcion = request.POST.get('descprod')
-        producto.fk_id_proveedor = proveedor
-        if (request.FILES.get("imgprod")):
-            fotoprod = request.FILES['imgprod']
-            producto.imagenProd = fotoprod
-        producto.save()
-        messages.success(request, '¡Producto Modificado!')
-        return redirect('index_admin')
-
-    else:
-        productoM = Producto.objects.get(id_producto=idProd)
-        proveedores = Proveedor.objects.all()
-        return render(request, 'modificar.html', {'producto': productoM, 'proveedor': proveedores})
-
-
-@login_required(login_url="iniciar_sesion/")
 def agregar_prov(request):
     if request.method == "POST":
-        nombre_proveedor = request.POST['nom_prov']
-        rut_proveedor = request.POST['rut_prov']
-        direccion_proveedor = request.POST['dir_prov']
-        descripcion_proveedor = request.POST['desc_prov']
-        Proveedor.objects.create(nombre_proveedor=nombre_proveedor, descripcion=descripcion_proveedor,
-                                 rut_proveedor=rut_proveedor, direccion=direccion_proveedor, prov_is_active=True, row_status=True)
-        return redirect('proveedores')
+        form_agregar_proveedor = proveedor_form(request.POST)
+        if form_agregar_proveedor.is_valid():
+            form_agregar_proveedor.save()
+            return redirect('proveedores')
     else:
-        productos = Producto.objects.all()
-        contexto = {'productos': productos}
+        form_agregar_proveedor = proveedor_form()
+        contexto = {'form': form_agregar_proveedor}
         return render(request, 'agregar_prov.html', contexto)
+
+
+@login_required(login_url="iniciar_sesion/")
+def modificar_proveedor(request, id_prov):
+    prov_filter = Proveedor.objects.get(id_proveedor=id_prov)
+    if request.method == "POST":
+        form_agregar_proveedor = proveedor_form(
+            request.POST, instance=prov_filter)
+        if form_agregar_proveedor.is_valid():
+            form_agregar_proveedor.save()
+            return redirect('proveedores')
+    else:
+        form_agregar_proveedor = proveedor_form(instance=prov_filter)
+        contexto = {'form': form_agregar_proveedor}
+        return render(request, 'modificar_prov.html', contexto)
 
 
 @login_required(login_url="iniciar_sesion/")
@@ -330,7 +285,7 @@ def solicitudes_proveedor(request):
     return render(request, 'solicitudes_proveedor.html', contexto)
 
 
-def agregar_producto(request, id_prod):
+def agregar_producto_carrito(request, id_prod):
     if request.user.is_authenticated:
         usuario = request.user
         productos = Producto.objects.get(id_producto=id_prod)
@@ -344,6 +299,48 @@ def agregar_producto(request, id_prod):
 def usuarios(request):
 
     return render(request, 'usuarios.html')
+
+@login_required(login_url="iniciar_sesion/")
+def agregar_usuario(request):
+    if request.method == "POST":
+        form_agregar_usuario = usuario_form(request.POST)
+        if form_agregar_usuario.is_valid():
+            nombre_usuario = request.POST['nombre_usuario']
+            apellido_usuario = request.POST['apellido_usuario']
+            correo = request.POST['correo']
+            clave = request.POST['clave']
+            comuna = request.POST['comuna']
+            direccion = request.POST['direccion']
+            celular = request.POST['celular']
+            rol = request.POST['rol']
+
+            User.objects.create_user(correo, '', clave)
+            Usuario.objects.create(nombre_usuario=nombre_usuario, apellido_usuario=apellido_usuario,correo=correo,  direccion=direccion,fk_id_comuna_id=comuna,celular=celular,fk_id_rol_id=rol)
+            #form_agregar_usuario.save()
+            return redirect('usuarios')
+    else:
+        form_agregar_usuario = usuario_form()
+        contexto = {'form': form_agregar_usuario}
+        return render(request, 'agregar_usuario.html', contexto)
+
+@login_required(login_url="iniciar_sesion/")
+def modificar_usuario(request, id_user):
+    usuario_filter = Usuario.objects.get(id_usuario=id_user)
+    if request.method == "POST":
+        form_modificar_usuario = modificar_usuario_form(request.POST, instance=usuario_filter)
+        if form_modificar_usuario.is_valid():
+            form_modificar_usuario.save()
+            return redirect('usuarios')
+    else:
+        form_modificar_usuario = modificar_usuario_form(instance=usuario_filter)
+        contexto = {'form': form_modificar_usuario}
+        return render(request, 'modificar_usuario.html', contexto)
+@login_required(login_url="iniciar_sesion/")
+def pedidos(request):
+    pedidos = Pedido.objects.all()
+    contexto = {'solicitudes': pedidos}
+    return render(request, 'pedidos.html', contexto)
+
 
 #
 # WEBPAY

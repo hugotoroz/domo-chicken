@@ -2,6 +2,8 @@
 {% block css %}
 <link rel="stylesheet" href="/../static/css/registrarse.css">
 {% endblock %}
+{% load static %}
+{% load crispy_forms_tags %}
 {% block title %}Domo Chicken - Registrarse{% endblock %}
 {% block template %}
 {%load static%}
@@ -29,99 +31,12 @@
         <div class="row d-flex justify-content-center">
           <div class="col-lg-8">
             <h2 class="fw-bold mb-5">Registrarse</h2>
-            <form class="form-signup needs-validation" action="{% url 'registrar_usuario' %}" method="post"
-              onSubmit="return checkPassword(this)" novalidate>
+            <form class="form-signup" method="post">
               {% csrf_token %}
-              <!-- 2 column grid layout with text inputs for the first and last names -->
-              <div class="row">
-                <div class="col-md-6 mb-4">
-                  <div class="form-outline">
-                    <input type="text" id="form3Example1" name="nombre" class="form-control" placeholder="Nombre"
-                      required />
-                  </div>
-                  <div class="invalid-feedback">
-                    Ingrese un nombre.
-                  </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                  <div class="form-outline">
-                    <input type="text" id="form3Example2" name="apellido" class="form-control" placeholder="Apellido"
-                      required />
-                  </div>
-                  <div class="invalid-feedback">
-                    Ingrese un apellido.
-                  </div>
-                </div>
-              </div>
-              <!-- Email input -->
-              <div class="form-outline mb-4">
-                <input type="email" id="form3Example3" name="correo" class="form-control"
-                  placeholder="Correo electrónico" required />
-                <div class="invalid-feedback">
-                  Ingrese un correo electrónico.
-                </div>
-              </div>
-              <div class="form-outline mb-4">
-                <input type="text" id="form3Example3" name="direccion" class="form-control" placeholder="Dirección"
-                  required />
-                <div class="invalid-feedback">
-                  Ingrese una dirección.
-                </div>
-              </div>
-
-              <div class="form-outline mb-4">
-                <select class="form-select" name="comuna" aria-label="Default select example" required>
-                  <option selected disabled value="">Seleccione una comuna...</option>
-                  {% for x in comunas %}
-                  <option value="{{ x.id_comuna }}">{{ x.comuna }}</option>
-                  {% endfor %}
-                </select>
-                <div class="invalid-feedback">
-                  Seleccione una comuna.
-                </div>
-              </div>
-              <div class="form-outline mb-4">
-                <input type="number" id="form3Example1" name="celular" class="form-control" placeholder="Celular"
-                  required />
-                <div class="invalid-feedback">
-                  Ingrese un celular.
-                </div>
-              </div>
-
-
-              <!-- Password input -->
-              <div class="form-outline mb-4">
-                <input type="password" id="password" name="clave" class="form-control" placeholder="Contraseña"
-                  required />
-                <div class="invalid-feedback">
-                  Ingrese una contraseña.
-                </div>
-              </div>
-              <!-- Password input -->
-              <div class="form-outline mb-4">
-                <input type="password" id="confirm_password" class="form-control" placeholder="Repetir contraseña"
-                  required />
-                <div class="invalid-feedback" id="1">
-                  Repita su contrseña.
-                </div>
-                <div class="invalid-feedback d-none" id="2">
-                  Las contraseñas no coinciden.
-                </div>
-              </div>
-
-              <!-- Submit button -->
-              <button type="submit" class="btn btn-primary btn-block mb-4">
-                Registrar
+              {{form|crispy}}
+              <button title="Sign In" type="submit" class="btn btn-primary">
+                <span>Registrarse</span>
               </button>
-              {% if messages %}
-              {% for message_r in messages %}
-              <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                {{ message_r }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>
-              {% endfor %}
-              {% endif %}
-
             </form>
           </div>
         </div>
@@ -131,4 +46,5 @@
   {% block js %}
   <script src="/../static/js/registro.js"></script>
   {% endblock %}
+
   {% endblock %}

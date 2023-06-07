@@ -1,17 +1,17 @@
 body {
-    color: #404040;
-    font-family: "Arial", Segoe UI, Tahoma, sans-serifl, Helvetica Neue, Helvetica;
-    background-image: url(/../../static/img/textura.jpg);
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+  color: #404040;
+  font-family: "Arial", Segoe UI, Tahoma, sans-serifl, Helvetica Neue, Helvetica;
+  background-image: url(/../../static/img/textura.jpg);
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .titulo {
-    font-size: 40px;
-    color: white;
-    margin-bottom: 25px;
-    margin-top: 50px;
-    text-align: center;
+  font-size: 40px;
+  color: white;
+  margin-bottom: 25px;
+  margin-top: 50px;
+  text-align: center;
 
 }

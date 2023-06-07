@@ -29,7 +29,7 @@
                     <div class="card-text text-truncate">{{x.descripcion}}.</div>
                     <p class="price card-text text-center">${{x.precio}}</p>
                 </div>
-                <button href="{% url 'agregar_producto' x.id_producto %}" type="button " class="boton">
+                <button href="{% url 'agregar_producto_carrito' x.id_producto %}" type="button " class="boton">
                     Añadir al Carrito
                 </button>
             </div>

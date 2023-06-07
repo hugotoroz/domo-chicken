@@ -1,4 +1,4 @@
-{% extends "base/base.html" %}
+{% extends "base/base_admin.html" %}
 {% load static %}
 {% block css %}
 <link rel="stylesheet" href="../static/css/style.css">
@@ -6,16 +6,8 @@
 {% endblock %}
 {% block title %}Domo Chicken - Panel de administración{% endblock %}
 {% block template %}
-
-<div class="curved-div upper">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-        <path fill="#fff" fill-opacity="1"
-            d="M0,160L48,176C96,192,192,224,288,224C384,224,480,192,576,181.3C672,171,768,181,864,197.3C960,213,1056,235,1152,234.7C1248,235,1344,213,1392,202.7L1440,
-        192L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path>
-    </svg>
-</div>
 <div class="container-fluid">
-    <h1 class="titulo">¡Bienvenido administrador!</h1>
+    <h1 class="text-white text-center" style="margin-bottom: 10px;">¡Bienvenido administrador!</h1>
     <div class="row">
         <div class="col-md-6 col-sm-12 columnas">
             <div class="card color-borde-1 shadow h-100 py-2">
@@ -33,19 +25,8 @@
 </div>
 
 <div class="container">
-    <h2 class="titulo">Opciones</h2>
+    <h2 class="titulo">Acceso rápido</h2>
     <div class="row">
-        <div class="col-6 columnas">
-            <!--
-            <div class="card h-100 py-2">
-                <a href="{% url 'agregarProd' %}" style="text-decoration: none; color: #000;">
-                    <p class="align-items-start fw-bold titulo-card "><i
-                            class="fa-solid fa-plus align-items-end iconos"></i> Agregar un nuevo producto </p>
-                    <p class="desc">¡Presione acá si desea agregar un nuevo producto a la tienda!</p>
-                </a>
-            </div>
-            -->
-        </div>
         <div class="col-12 columnas">
             <div class="card h-100 py-2">
                 <a href="{% url 'productos' %}" style="text-decoration: none; color: #000;">
@@ -56,52 +37,24 @@
             </div>
         </div>
     </div>
-    
+
     <div class="row">
-        <!--
-        <div class="col-6 columnas">
-            <div class="card h-100 py-2">
-                <a href="{% url 'stock_productos' %}" style="text-decoration: none; color: #000;">
-                    <p class="fw-bold align-items-start titulo-card"><i class="bi bi-truck"></i> Ver stock productos</p>
-                    <p class="desc">¡Presione acá si desea ver el stock productos!</p>
-                </a>
-            </div>
-        </div>
-        -->
-        <!--
-        <div class="col-6 columnas">
-            <div class="card h-100 py-2">
-                <a href="{% url 'agregar_prov' %}" style="text-decoration: none; color: #000;">
-                    <p class="align-items-start fw-bold titulo-card "><i class="bi bi-eye"></i> Agregar proveedor </p>
-                    <p class="desc"></p>
-                </a>
-            </div>
-        </div>
-        <div class="col-6 columnas">
-            <div class="card h-100 py-2">
-                <a href="{% url 'solicitudes_proveedor' %}" style="text-decoration: none; color: #000;">
-                    <p class="align-items-start fw-bold titulo-card "><i class="bi bi-eye"></i> Solicitud proveedor </p>
-                    <p class="desc"></p>
-                </a>
-            </div>
-        </div>
-        -->
         <div class="col-6 columnas">
             <div class="card h-100 py-2">
                 <a href="{% url 'proveedores' %}" style="text-decoration: none; color: #000;">
-                    <p class="align-items-start fw-bold titulo-card ">
-                        <p class="fw-bold align-items-start titulo-card"><i class="bi bi-truck"></i> Proveedores </p>
-                        <p class="desc">Lista de proveedores, solciitudes, agregar, modificar o desactivar un proveedor
-                        </p>
+                    <p class="fw-bold align-items-start titulo-card"><i class="bi bi-truck"></i> Proveedores </p>
+                    <p class="desc">Lista de proveedores, solciitudes, agregar, modificar o desactivar un proveedor
+                    </p>
                 </a>
             </div>
         </div>
         <div class="col-6 columnas">
             <div class="card h-100 py-2">
                 <a href="{% url 'usuarios' %}" style="text-decoration: none; color: #000;">
-                    <p class="align-items-start fw-bold titulo-card ">
-                        <p class="fw-bold align-items-start titulo-card"><i class="bi bi-truck"></i> Usuarios </p>
-                        <p class="desc">Lista de usuarios, agregar, modificar o desactivar un usuario</p>
+
+                    <p class="fw-bold align-items-start titulo-card"><i class="bi bi-truck"></i> Usuarios </p>
+                    <p class="desc">Lista de usuarios, agregar, modificar o desactivar un usuario
+                    </p>
                 </a>
             </div>
         </div>
@@ -114,5 +67,8 @@
         </path>
     </svg>
 </div>
+{% block js %}
+<link rel="stylesheet" href="../static/js/sidebar.js">
+{% endblock %}
 
 {% endblock %}
