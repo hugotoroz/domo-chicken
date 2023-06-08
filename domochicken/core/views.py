@@ -68,19 +68,19 @@ def agregar_producto(request):
         return render(request, 'agregar_producto.html', contexto)
 
 @login_required(login_url="/")
-@role_required('1','2')
+@role_required('1','4')
 def productos(request):
     return render(request, 'productos.html')
 
 @login_required(login_url="/")
+@role_required('1','4')
 def proveedores(request):
-
     return render(request, 'proveedores.html')
 
 
 # Pagina de stock de productos
 @login_required(login_url="/")
-#@role_required('1')
+@role_required('1','4')
 def stock_productos(request):
     producto = Producto.objects.filter(row_status=1)
     contexto = {'producto': producto}
@@ -90,6 +90,7 @@ def stock_productos(request):
 
 
 @login_required(login_url="/")
+@role_required('1','4')
 def solicitar_stock(request, id_prod):
     producto = Producto.objects.get(id_producto=id_prod)
     if request.method == "POST":
@@ -104,6 +105,7 @@ def solicitar_stock(request, id_prod):
         return render(request, 'solicitar_stock.html', contexto)
 
 @login_required(login_url="/")
+@role_required('1')
 def modificar_producto(request, idProd):
     producto_filter = Producto.objects.get(id_producto=idProd)
     if request.method == "POST":
@@ -120,9 +122,7 @@ def modificar_producto(request, idProd):
 
 def catalogo(request):
     producto = Producto.objects.filter(fk_id_proveedor=1, prod_is_active=1)
-
     contexto = {'producto': producto}
-
     return render(request, 'catalogo.html', contexto)
 
 def carrito(request):
@@ -296,6 +296,7 @@ def usuarios(request):
     return render(request, 'usuarios.html')
 
 @login_required(login_url="/")
+@role_required('1')
 def agregar_usuario(request):
     if request.method == "POST":
         form_agregar_usuario = usuario_form(request.POST)
@@ -319,6 +320,7 @@ def agregar_usuario(request):
         return render(request, 'agregar_usuario.html', contexto)
 
 @login_required(login_url="/")
+@role_required('1')
 def modificar_usuario(request, id_user):
     usuario_filter = Usuario.objects.get(id_usuario=id_user)
     if request.method == "POST":
@@ -331,10 +333,11 @@ def modificar_usuario(request, id_user):
         contexto = {'form': form_modificar_usuario}
         return render(request, 'modificar_usuario.html', contexto)
 @login_required(login_url="/")
-def pedidos(request):
+@role_required('1','3')
+def index_repartidor(request):
     pedidos = Pedido.objects.all()
     contexto = {'solicitudes': pedidos}
-    return render(request, 'pedidos.html', contexto)
+    return render(request, 'index_repartidor.html', contexto)
 
 
 #
@@ -367,26 +370,30 @@ def refundform(request):
 #
 #
 
-
+@login_required(login_url="/")
+@role_required('1','4')
 def sp_lista_solicitudes(request):
     solicitudes = Solicitud.objects.filter(estado="pendiente")
     contexto = {'solicitudes': solicitudes}
     return render(request, 'modales/lista_solicitudes.html', contexto)
 
-
+@login_required(login_url="/")
+@role_required('1')
 def u_lista_usuarios(request):
     usuarios = Usuario.objects.filter(Q(fk_id_rol_id=2) | Q(fk_id_rol_id=3) | Q(
         fk_id_rol_id=4) | Q(fk_id_rol_id=5) & Q(row_status=1))
     roles = Rol.objects.all()
     return render(request, 'modales/lista_usuarios.html', {'usuarios': usuarios, 'roles': roles})
 
-
+@login_required(login_url="/")
+@role_required('1','4')
 def p_lista_proveedores(request):
     provee = Proveedor.objects.filter(row_status=1)
     contexto = {'proveedor': provee}
     return render(request, 'modales/lista_proveedores.html', contexto)
 
-
+@login_required(login_url="/")
+@role_required('1','4')
 def sp_finalizar_solicitud(request, id_solicitud):
     solicitud = Solicitud.objects.filter(id_solicitud=id_solicitud).first()
     contexto = {'solicitud': solicitud}
@@ -394,12 +401,14 @@ def sp_finalizar_solicitud(request, id_solicitud):
 
 
 @login_required(login_url="/")
+@role_required('1','4')
 def sp_mas_info(request, id_solicitud):
     solicitudes = Solicitud.objects.get(id_solicitud=id_solicitud)
     return render(request, 'modales/sp_mas_info.html', {'solicitud': solicitudes})
 
 
 @login_required(login_url="/")
+@role_required('1')
 def ua_mod_rol(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
     roles = Rol.objects.all()
@@ -408,6 +417,7 @@ def ua_mod_rol(request, id_usuario):
 
 
 @login_required(login_url="/")
+@role_required('1')
 def ua_eliminar_usuario(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
 
@@ -415,54 +425,63 @@ def ua_eliminar_usuario(request, id_usuario):
 
 
 @login_required(login_url="/")
+@role_required('1')
 def ua_desactivar_usuario(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
 
     return render(request, 'modales/ua_desactivar_usuario.html', {'usuario': usuario})
 
-
+@login_required(login_url="/")
+@role_required('1')
 def ua_activar_usuario(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
 
     return render(request, 'modales/ua_activar_usuario.html', {'usuario': usuario})
 
-
+@login_required(login_url="/")
+@role_required('1')
 def pv_desactivar_proveedor(request, id_proveedor):
     provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
 
     return render(request, 'modales/pv_desactivar_prove.html', {'proveedor': provee})
 
-
+@login_required(login_url="/")
+@role_required('1')
 def pv_activar_proveedor(request, id_proveedor):
     provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
 
     return render(request, 'modales/pv_activar_prove.html', {'proveedor': provee})
 
-
+@login_required(login_url="/")
+@role_required('1')
 def pv_eliminar_proveedor(request, id_proveedor):
     provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
 
     return render(request, 'modales/pv_eliminar_prove.html', {'proveedor': provee})
 
-
+@login_required(login_url="/")
+@role_required('1','4')
 def p_lista_productos(request):
     producto = Producto.objects.filter(row_status=1)
 
     return render(request, 'modales/lista_productos.html', {'producto': producto})
 
-
+@login_required(login_url="/")
+@role_required('1')
 def p_activar_producto(request, id_producto):
     producto = Producto.objects.filter(id_producto=id_producto).first()
 
     return render(request, 'modales/p_activar_producto.html', {'producto': producto})
 
-
+@login_required(login_url="/")
+@role_required('1')
 def p_desactivar_producto(request, id_producto):
     producto = Producto.objects.filter(id_producto=id_producto).first()
 
     return render(request, 'modales/p_desactivar_producto.html', {'producto': producto})
 
-
+@login_required(login_url="/")
+@role_required('1')
 def p_eliminar_producto(request, id_producto):
     producto = Producto.objects.filter(id_producto=id_producto).first()
 
@@ -473,21 +492,24 @@ def p_eliminar_producto(request, id_producto):
 #
 #
 
-
+@login_required(login_url="/")
+@role_required('1')
 def desactivar_proveedor(request, id_proveedor):
     provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
     provee.prov_is_active = False
     provee.save()
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
 
-
+@login_required(login_url="/")
+@role_required('1')
 def activar_proveedor(request, id_proveedor):
     provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
     provee.prov_is_active = True
     provee.save()
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
 
-
+@login_required(login_url="/")
+@role_required('1')
 def eliminar_proveedor(request, id_proveedor):
     provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
     provee.row_status = False
@@ -496,7 +518,8 @@ def eliminar_proveedor(request, id_proveedor):
 
 # Funcion para desactivar al usuario
 
-
+@login_required(login_url="/")
+@role_required('1')
 def desactivar_usuario(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
     usuario.u_is_active = False
@@ -504,7 +527,8 @@ def desactivar_usuario(request, id_usuario):
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
 # Funcion para activar al usuario
 
-
+@login_required(login_url="/")
+@role_required('1')
 def activar_usuario(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
     usuario.u_is_active = True
@@ -513,14 +537,16 @@ def activar_usuario(request, id_usuario):
 
 # Funcion para eliminar usuario
 
-
+@login_required(login_url="/")
+@role_required('1')
 def eliminar_usuario(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
     usuario.row_status = False
     usuario.save()
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
 
-
+@login_required(login_url="/")
+@role_required('1')
 def modificarRol(request, id_usuario):
     if request.method == "POST":
         rol = request.POST['roles']
@@ -530,7 +556,8 @@ def modificarRol(request, id_usuario):
         usuario.save()
         return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
 
-
+@login_required(login_url="/")
+@role_required('1','4')
 def finalizar_solicitud(request, id_solicitud):
     solicitud = Solicitud.objects.filter(id_solicitud=id_solicitud).first()
     solicitud.estado = "finalizado"
@@ -541,21 +568,24 @@ def finalizar_solicitud(request, id_solicitud):
     solicitud.save()
     return HttpResponse(status=204, headers={'HX-Trigger': 'act'})
 
-
+@login_required(login_url="/")
+@role_required('1')
 def activar_producto(request, id_producto):
     producto = Producto.objects.filter(id_producto=id_producto).first()
     producto.prod_is_active = True
     producto.save()
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
 
-
+@login_required(login_url="/")
+@role_required('1')
 def desactivar_producto(request, id_producto):
     producto = Producto.objects.filter(id_producto=id_producto).first()
     producto.prod_is_active = False
     producto.save()
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
 
-
+@login_required(login_url="/")
+@role_required('1')
 def eliminar_producto(request, id_producto):
     producto = Producto.objects.filter(id_producto=id_producto).first()
     producto.row_status = False
