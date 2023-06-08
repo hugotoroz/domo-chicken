@@ -1,0 +1,21 @@
+{% extends "base/base.html" %}
+{% block css %}
+<link rel="stylesheet" href="../static/css/style.css">
+{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Domo Chicken - La mejor calidad{% endblock %}
+{% block template %}
+<style>
+
+</style>
+{% block navbar %}
+{% endblock %}
+<div class="container d-flex flex-column justify-content-center align-items-center">
+    <h1 style="margin-top: 50px">Página no encontrada :(</h1>
+    <img src="https://i0.wp.com/www.silocreativo.com/en/wp-content/uploads/2017/11/diseno-web-404-CSS.gif?resize=600%2C323&quality=100&strip=all&ssl=1" alt="">
+    <div class="text">
+        Lo sentimos, la página que estás buscando no existe. <a href="{% url 'index' %}">Volver al inicio</a>
+    </div>
+</div>
+{% endblock %}

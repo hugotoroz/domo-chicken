@@ -1,9 +1,14 @@
 from django.urls import path
-from .views import pedidos,modificar_usuario,agregar_usuario,modificar_proveedor,p_activar_producto,p_desactivar_producto,p_eliminar_producto,p_lista_productos,finalizar_solicitud,sp_finalizar_solicitud,sp_lista_solicitudes,activar_proveedor, desactivar_proveedor, eliminar_proveedor, p_lista_proveedores, u_lista_usuarios,activar_producto, desactivar_producto, proveedores, modificarRol, pv_activar_proveedor, pv_desactivar_proveedor, pv_eliminar_proveedor, sp_mas_info,usuarios, activar_usuario, desactivar_usuario, eliminar_usuario, solicitudes_proveedor,agregar_prov, index, index_admin, productos, modificar_producto, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregar_producto,editarperfil,modificarPerfil, stock_productos,solicitar_stock,agregar_producto_carrito,eliminar_producto, webpay,commit, create, refundform,refund, ua_activar_usuario, ua_desactivar_usuario, ua_eliminar_usuario, ua_mod_rol
+from .views import error_servidor,pagina_no_encontrada,pedidos,modificar_usuario,agregar_usuario,modificar_proveedor,p_activar_producto,p_desactivar_producto,p_eliminar_producto,p_lista_productos,finalizar_solicitud,sp_finalizar_solicitud,sp_lista_solicitudes,activar_proveedor, desactivar_proveedor, eliminar_proveedor, p_lista_proveedores, u_lista_usuarios,activar_producto, desactivar_producto, proveedores, modificarRol, pv_activar_proveedor, pv_desactivar_proveedor, pv_eliminar_proveedor, sp_mas_info,usuarios, activar_usuario, desactivar_usuario, eliminar_usuario, solicitudes_proveedor,agregar_prov, index, index_admin, productos, modificar_producto, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,agregar_producto,editarperfil,modificarPerfil, stock_productos,solicitar_stock,agregar_producto_carrito,eliminar_producto, webpay,commit, create, refundform,refund, ua_activar_usuario, ua_desactivar_usuario, ua_eliminar_usuario, ua_mod_rol
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    #ERRORES
+    path('pagina_no_encontrada', pagina_no_encontrada, name="pagina_no_encontrada"),
+    path('error_servidor', error_servidor, name="error_servidor"),
+
+    
     path('', index, name="index"),
     path('index_admin', index_admin, name="index_admin"),
     path('proveedores', proveedores, name="proveedores"),

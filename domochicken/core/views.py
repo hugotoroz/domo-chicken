@@ -1,29 +1,34 @@
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse,Http404
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
 from django.urls import reverse
 from .models import Carrito, Comuna, Producto, Proveedor, Rol, Usuario, Solicitud,Pedido
 from django.contrib.auth.models import User
 from .forms import producto_form, proveedor_form, usuario_form,modificar_usuario_form,registrar_usuario_form
 from django.db.models import Q
 
+#ERRORES
+def pagina_no_encontrada(request, exception):
+    return render(request, 'handlers/404.html', status=404)
+def error_servidor(request):
+    return render(request, 'handlers/500.html', status=500)
 
-def role_required(role):
-    def check_role(user):
-        return user.is_authenticated and Usuario.objects.filter(fk_id_rol=role).exists()
-
+def check_role(role):
+    def test(user):
+        return user.is_authenticated and Usuario.objects.filter(fk_id_rol=role, correo=user.username).exists()
+    return test
+def role_required(*role):
     def decorator(view_func):
+        decorated_view_func = user_passes_test(check_role(role), login_url="/", redirect_field_name=None)(view_func)
         def wrapper(request, *args, **kwargs):
-            if not check_role(request.user):
-                # redirigir a la página principal
-                return redirect(reverse('index'))
-            return view_func(request, *args, **kwargs)
+            if check_role(role)(request.user):
+                return decorated_view_func(request, *args, **kwargs)
+            else:
+                raise Http404
         return wrapper
-
     return decorator
-
 
 def index(request):
     producto = Producto.objects.filter(fk_id_proveedor=1, prod_is_active=1)[:3]
@@ -36,22 +41,20 @@ def index(request):
         rol=5
 
     if rol==1:
-        return render(request, 'index_admin.html')
+        return redirect('index_admin')
     else:
         return render(request, 'index.html', contexto)
 
 
-@login_required(login_url="iniciar_sesion/")
-# @role_required('1')
-# @role_required('2')
-# @role_required('3')
-# @role_required('4')
+@login_required(login_url="/")
+@role_required('1')
 def index_admin(request):
     usuarios = Usuario.objects.filter(correo=request.user.username).first()
     roles = Rol.objects.all()
     return render(request, 'index_admin.html', {'usuarios': usuarios, 'roles': roles})
 
-
+@login_required(login_url="/")
+@role_required('1','2')
 def agregar_producto(request):
     if request.method == "POST":
         form_agregar_producto = producto_form(
@@ -64,20 +67,20 @@ def agregar_producto(request):
         contexto = {'form': form_agregar_producto}
         return render(request, 'agregar_producto.html', contexto)
 
-
-@login_required(login_url="iniciar_sesion/")
+@login_required(login_url="/")
+@role_required('1','2')
 def productos(request):
     return render(request, 'productos.html')
 
-
-@login_required(login_url="iniciar_sesion/")
+@login_required(login_url="/")
 def proveedores(request):
 
     return render(request, 'proveedores.html')
 
 
 # Pagina de stock de productos
-@login_required(login_url="iniciar_sesion/")
+@login_required(login_url="/")
+#@role_required('1')
 def stock_productos(request):
     producto = Producto.objects.filter(row_status=1)
     contexto = {'producto': producto}
@@ -86,7 +89,7 @@ def stock_productos(request):
 # Solicitar stock a proveedores
 
 
-@login_required(login_url="iniciar_sesion/")
+@login_required(login_url="/")
 def solicitar_stock(request, id_prod):
     producto = Producto.objects.get(id_producto=id_prod)
     if request.method == "POST":
@@ -100,7 +103,7 @@ def solicitar_stock(request, id_prod):
         contexto = {'producto': producto}
         return render(request, 'solicitar_stock.html', contexto)
 
-@login_required(login_url="iniciar_sesion/")
+@login_required(login_url="/")
 def modificar_producto(request, idProd):
     producto_filter = Producto.objects.get(id_producto=idProd)
     if request.method == "POST":
@@ -121,12 +124,6 @@ def catalogo(request):
     contexto = {'producto': producto}
 
     return render(request, 'catalogo.html', contexto)
-
-
-def iniciar_session(request):
-
-    return render(request, 'login.html')
-
 
 def carrito(request):
     if request.user.is_authenticated:
@@ -149,7 +146,7 @@ def editarperfil(request):
     return render(request, 'editarperfil.html', contexto)
 
 
-@login_required(login_url="iniciar_sesion/")
+@login_required(login_url="/")
 def modificarPerfil(request, id_usuario):
     if request.method == "POST":
         usuario = Usuario.objects.get(id_usuario=id_usuario)
@@ -166,7 +163,7 @@ def modificarPerfil(request, id_usuario):
     return render(request, 'editarperfil.html', {'usuario': usuarioM})
 
 
-@login_required(login_url="iniciar_sesion/")
+@login_required(login_url="/")
 def perfil(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
     contexto = {'usuario': usuario}
@@ -200,7 +197,6 @@ def registrar_usuario(request):
         return render(request, 'registrarse.html', contexto)
     
 
-
 def iniciar_sesion(request):
     if request.method == "POST":
         # Tomar los datos del formulario.
@@ -213,10 +209,11 @@ def iniciar_sesion(request):
         es_superu = None
         try:
             usuario = Usuario.objects.get(correo=correo)
+            is_act= usuario.u_is_active
         except:
             es_superu = True
 
-        if u_auth is not None:
+        if u_auth is not None and is_act==1 :
             login(request, u_auth)
             if es_superu:
                 return redirect('admin:index')
@@ -242,8 +239,6 @@ def iniciar_sesion(request):
             return redirect('iniciar_sesion')
     else:
         return render(request, 'login.html')
-# Para hacer que solo pueda ingresar si es que esta logeado
-# @login_required
 
 
 def cerrar_sesion(request):
@@ -263,7 +258,7 @@ def agregar_prov(request):
         return render(request, 'agregar_prov.html', contexto)
 
 
-@login_required(login_url="iniciar_sesion/")
+@login_required(login_url="/")
 def modificar_proveedor(request, id_prov):
     prov_filter = Proveedor.objects.get(id_proveedor=id_prov)
     if request.method == "POST":
@@ -278,7 +273,7 @@ def modificar_proveedor(request, id_prov):
         return render(request, 'modificar_prov.html', contexto)
 
 
-@login_required(login_url="iniciar_sesion/")
+@login_required(login_url="/")
 def solicitudes_proveedor(request):
     solicitudes = Solicitud.objects.all()
     contexto = {'solicitudes': solicitudes}
@@ -300,7 +295,7 @@ def usuarios(request):
 
     return render(request, 'usuarios.html')
 
-@login_required(login_url="iniciar_sesion/")
+@login_required(login_url="/")
 def agregar_usuario(request):
     if request.method == "POST":
         form_agregar_usuario = usuario_form(request.POST)
@@ -323,7 +318,7 @@ def agregar_usuario(request):
         contexto = {'form': form_agregar_usuario}
         return render(request, 'agregar_usuario.html', contexto)
 
-@login_required(login_url="iniciar_sesion/")
+@login_required(login_url="/")
 def modificar_usuario(request, id_user):
     usuario_filter = Usuario.objects.get(id_usuario=id_user)
     if request.method == "POST":
@@ -335,7 +330,7 @@ def modificar_usuario(request, id_user):
         form_modificar_usuario = modificar_usuario_form(instance=usuario_filter)
         contexto = {'form': form_modificar_usuario}
         return render(request, 'modificar_usuario.html', contexto)
-@login_required(login_url="iniciar_sesion/")
+@login_required(login_url="/")
 def pedidos(request):
     pedidos = Pedido.objects.all()
     contexto = {'solicitudes': pedidos}
@@ -398,13 +393,13 @@ def sp_finalizar_solicitud(request, id_solicitud):
     return render(request, 'modales/sp_finalizar_solicitud.html', contexto)
 
 
-@login_required(login_url="iniciar_sesion/")
+@login_required(login_url="/")
 def sp_mas_info(request, id_solicitud):
     solicitudes = Solicitud.objects.get(id_solicitud=id_solicitud)
     return render(request, 'modales/sp_mas_info.html', {'solicitud': solicitudes})
 
 
-@login_required(login_url="iniciar_sesion/")
+@login_required(login_url="/")
 def ua_mod_rol(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
     roles = Rol.objects.all()
@@ -412,14 +407,14 @@ def ua_mod_rol(request, id_usuario):
     return render(request, 'modales/ua_mod_rol.html', {'usuario': usuario, 'roles': roles})
 
 
-@login_required(login_url="iniciar_sesion/")
+@login_required(login_url="/")
 def ua_eliminar_usuario(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
 
     return render(request, 'modales/ua_eliminar_usuario.html', {'usuario': usuario})
 
 
-@login_required(login_url="iniciar_sesion/")
+@login_required(login_url="/")
 def ua_desactivar_usuario(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
 
