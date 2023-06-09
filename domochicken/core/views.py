@@ -592,17 +592,22 @@ def obtener_fecha_actual():
 
 def guardarPedido(request,total):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
-    direccion_desc = 'Hacia la dirección ' + usuario.direccion
+    direccion_desc = 'Hacia la direcciÃ³n ' + usuario.direccion
     fecha_actual = obtener_fecha_actual().date()
     # Crear un nuevo pedido
     pedido = Pedido.objects.create(descripcion=direccion_desc, fecha=fecha_actual, fk_id_usuario_id=usuario.id_usuario,total = total)
-    # Crear un nuevo recibo de pedido asociado al pedido y usuario
-    recibo_pedido = ReciboPedido.objects.create(estado_pedido='En proceso', fk_id_pedido=pedido, fk_id_usuario=usuario)
     # Obtener los IDs de los productos en el carrito
-    ids_productos = request.session.carrito.items.values_list('producto_id', flat=True)
+    #ids_productos = request.session.carrito.items.values_list('producto_id', flat=True)
+    carrito = request.session.get('carrito', {})
+    ids_productos = []
+    for clave, valor in carrito.items():
+        producto_id = valor['producto_id']
+        ids_productos.append(producto_id)
+    # Crear un nuevo recibo de pedido asociado al pedido y usuario
+    recibo_pedido = ReciboPedido.objects.create(estado_pedido='En proceso', fk_id_pedido_id=pedido.id_pedido, fk_id_usuario_id=usuario.id_usuario)
+    recibo_pedido.fk_id_productos.add(*ids_productos)
     # Agregar los productos al recibo de pedido
-    recibo_pedido.fk_id_productos.add(ids_productos)
-    
+    #recibo_pedido.fk_id_productos.add(ids_productos)
     return redirect("carrito")
 
 
