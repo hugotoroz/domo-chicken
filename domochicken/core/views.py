@@ -10,8 +10,6 @@ from .Carrito import Carrito
 from .models import Comuna, Pedido, Producto, Proveedor, ReciboPedido, Rol, Usuario, Solicitud
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required,user_passes_test
-from django.urls import reverse
-from .models import Carrito, Comuna, Producto, Proveedor, Rol, Usuario, Solicitud,Pedido
 from django.contrib.auth.models import User
 from .forms import producto_form, proveedor_form, usuario_form,modificar_usuario_form,registrar_usuario_form
 from django.db.models import Q
@@ -62,7 +60,7 @@ def index_admin(request):
 
 @login_required(login_url="/")
 @role_required('1','2')
-def agregar_producto(request):
+def agregar_producto_nuevo(request):
     if request.method == "POST":
         form_agregar_producto = producto_form(
             request.POST, request.FILES)
@@ -278,18 +276,6 @@ def solicitudes_proveedor(request):
     solicitudes = Solicitud.objects.all()
     contexto = {'solicitudes': solicitudes}
     return render(request, 'solicitudes_proveedor.html', contexto)
-
-
-def agregar_producto_carrito(request, id_prod):
-    if request.user.is_authenticated:
-        usuario = request.user
-        productos = Producto.objects.get(id_producto=id_prod)
-        carrito = Carrito.objects.create(
-            fk_id_usuario=usuario, total=productos.precio, fk_id_producto=productos)
-        return redirect('carrito')
-    else:
-        return redirect('login')
-
 
 def usuarios(request):
 
