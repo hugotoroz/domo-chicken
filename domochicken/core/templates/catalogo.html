@@ -16,25 +16,25 @@
 <section class="catalogo">
     <h1 class="text-center" style="color: #fff;">Catálogo</h1>
     <div class="row">
-        {% for x in producto %}
+        {% for productos in producto %}
         <div class="col-xxl-4 col-xl-4 col-lg-4 col-sm-6 col-6 d-flex align-items-center justify-content-center">
             <div class="card" style="max-width: 350px;">
-                {% if x.imagenProd %}
+                {% if productos.imagenProd %}
                 <img src="{{x.imagenProd.url}}" alt="Error :D" id="img2" class="imagen-fija">
                 {% else %}
                 <img src="../media/Not_found.png" alt="Error :D" id="img2" class="imagen-fija">
                 {% endif %}
                 <div class="card-body">
-                    <div class="card-title">{{x.nombre_producto}}</div>
-                    <div class="card-text text-truncate">{{x.descripcion}}.</div>
-                    <p class="price card-text text-center">${{x.precio}}</p>
+                    <div class="card-title">{{productos.nombre_producto}}</div>
+                    <div class="card-text text-truncate">{{productos.descripcion}}.</div>
+                    <p class="price card-text text-center">${{productos.precio}}</p>
                 </div>
-                <button href="{% url 'agregar_producto' x.id_producto %}" type="button " class="boton">
+                <a href="{% url 'Add' productos.id_producto %}" type="button " class="boton">
                     Añadir al Carrito
-                </button>
+                </a>
             </div>
         </div>
-        
+
         {% endfor %}
     </div>
 </section>
