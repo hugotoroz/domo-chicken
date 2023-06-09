@@ -336,7 +336,7 @@ def modificar_usuario(request, id_user):
 @role_required('1','3')
 def index_repartidor(request):
     pedidos = Pedido.objects.all()
-    contexto = {'solicitudes': pedidos}
+    contexto = {'pedidos': pedidos}
     return render(request, 'index_repartidor.html', contexto)
 
 
