@@ -327,11 +327,31 @@ def solicitudes_proveedor(request):
     return render(request, 'solicitudes_proveedor.html', contexto)
 
 
+def agregar_producto(request, id_prod):
+    if request.user.is_authenticated:
+        usuario = request.user
+        productos = Producto.objects.get(id_producto=id_prod)
+        carrito = Carrito.objects.create(
+            fk_id_usuario=usuario, total=productos.precio, fk_id_producto=productos)
+        return redirect('carrito')
+    else:
+        return redirect('login')
 
 
 def usuarios(request):
 
     return render(request, 'usuarios.html')
+
+#
+# COCINERO 
+#
+
+def index_cocinero(request):
+    solicitudes = Solicitud.objects.filter(estado="pendiente")
+    contexto = {'solicitudes': solicitudes}
+    return render(request, 'index_cocinero.html', contexto)
+
+
 
 #
 # WEBPAY
@@ -536,6 +556,7 @@ def finalizar_solicitud(request, id_solicitud):
 
     solicitud.save()
     return HttpResponse(status=204, headers={'HX-Trigger': 'act'})
+
 
 def activar_producto(request, id_producto):
     producto = Producto.objects.filter(id_producto=id_producto).first()
