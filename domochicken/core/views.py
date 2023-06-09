@@ -1,6 +1,13 @@
+from datetime import datetime 
+import requests
 from django.contrib import messages
 from django.http import HttpResponse,Http404
 from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+from django.http import JsonResponse
+from .Carrito import Carrito
+from .models import Comuna, Pedido, Producto, Proveedor, ReciboPedido, Rol, Usuario, Solicitud
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.urls import reverse
@@ -127,17 +134,10 @@ def catalogo(request):
 
 def carrito(request):
     if request.user.is_authenticated:
-        usuario = request.user
-        carrito = Carrito.objects.filter(
-            fk_id_usuario_id=usuario.id).order_by('fk_id_usuario_id').first()
-        productoCarrito = Producto.objects.filter(
-            id_producto__in=carrito.fk_id_producto_id.all())
 
-        return render(request, 'carrito.html', {'productos': productoCarrito})
+        return render(request, 'carrito.html')
     else:
         return redirect('login')
-
-    return render(request, 'carrito.html')
 
 
 def editarperfil(request):
@@ -338,6 +338,17 @@ def index_repartidor(request):
     pedidos = Pedido.objects.all()
     contexto = {'pedidos': pedidos}
     return render(request, 'index_repartidor.html', contexto)
+
+
+#
+# COCINERO 
+#
+
+def index_cocinero(request):
+    solicitudes = Solicitud.objects.filter(estado="pendiente")
+    contexto = {'solicitudes': solicitudes}
+    return render(request, 'index_cocinero.html', contexto)
+
 
 
 #
@@ -591,3 +602,63 @@ def eliminar_producto(request, id_producto):
     producto.row_status = False
     producto.save()
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
+
+####FUNCIONES CARRITO
+
+
+
+def agregar_producto(request, idProducto):
+    carrito = Carrito(request)
+    producto = Producto.objects.get(id_producto = idProducto)
+    carrito.agregar(producto)
+    return redirect("carrito")
+
+def eliminar_prod_cart(request, idProducto):
+    carrito = Carrito(request)
+    producto = Producto.objects.get(id_producto = idProducto)
+    carrito.eliminar(producto)
+    return redirect("carrito")
+
+def restar_producto(request, idProducto):
+    carrito = Carrito(request)
+    producto = Producto.objects.get(id_producto = idProducto)
+    carrito.restar(producto)
+    return redirect("carrito")
+
+def limpiar_carrito(request):
+    carrito = Carrito(request)
+    carrito.limpiar()
+    return redirect("carrito")
+
+def obtener_fecha_actual():
+    respuesta = requests.get('http://worldtimeapi.org/api/timezone/Etc/UTC')
+    data = respuesta.json()
+    fecha_actual = datetime.fromisoformat(data['datetime'])
+    return fecha_actual
+
+def guardarPedido(request,total):
+    usuario = Usuario.objects.filter(correo=request.user.username).first()
+    direccion_desc = 'Hacia la direcciÃ³n ' + usuario.direccion
+    fecha_actual = obtener_fecha_actual().date()
+    # Crear un nuevo pedido
+    pedido = Pedido.objects.create(descripcion=direccion_desc, fecha=fecha_actual, fk_id_usuario_id=usuario.id_usuario,total = total)
+    # Obtener los IDs de los productos en el carrito
+    #ids_productos = request.session.carrito.items.values_list('producto_id', flat=True)
+    carrito = request.session.get('carrito', {})
+    ids_productos = []
+    for clave, valor in carrito.items():
+        producto_id = valor['producto_id']
+        ids_productos.append(producto_id)
+    # Crear un nuevo recibo de pedido asociado al pedido y usuario
+    recibo_pedido = ReciboPedido.objects.create(estado_pedido='En proceso', fk_id_pedido_id=pedido.id_pedido, fk_id_usuario_id=usuario.id_usuario)
+    recibo_pedido.fk_id_productos.add(*ids_productos)
+    # Agregar los productos al recibo de pedido
+    #recibo_pedido.fk_id_productos.add(ids_productos)
+    return redirect("carrito")
+
+
+def verPedido(request):
+    usuario = Usuario.objects.filter(correo=request.user.username).first()
+    pedido = Pedido.objects.get(fk_id_usuario_id = usuario.id_usuario )
+    detalle =ReciboPedido.objects.get(fk_id_pedido_id = pedido.id_pedido)
+    return render (request,'seguimiento.html',{'pedido':pedido,'detalle':detalle})

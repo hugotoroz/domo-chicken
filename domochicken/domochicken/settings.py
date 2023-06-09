@@ -66,6 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processor.total_carrito',
             ],
         },
     },
@@ -138,3 +139,4 @@ LOGIN_REDIRECT_URL = '/iniciar_sesion/'
 #CONFIG CRISPY FORMS
 CRISPY_ALLOWED_TEMPLATE_PACKS="bootstrap5"
 CRISPY_TEMPLATE_PACK="bootstrap5"
+CARRITO_SESSION_ID = 'carrito'

@@ -1,0 +1,26 @@
+body {
+    color: #404040;
+    font-family: "Arial", Segoe UI, Tahoma, sans-serifl, Helvetica Neue, Helvetica;
+    background-image: url(/../../static/img/textura.jpg);
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.titulo {
+    font-size: 40px;
+    color: white;
+    margin-bottom: 25px;
+    margin-top: 50px;
+    text-align: center;
+
+}
+
+
+.card{
+    background-color: white;
+    margin-bottom: 30px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1);
+}
