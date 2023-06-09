@@ -36,8 +36,8 @@
               {{ value.acumulado }}
             </td>
             <td>
-              <a href="{% url 'Add' value.producto_id %}" class="badge btn btn-dark badge-dark">+</a>
-              <a href="{% url 'Sub' value.producto_id %}" class="badge btn btn-dark badge-dark">-</a>
+              <a href="{% url 'Add' value.producto_id %}" class="badge btn btn-dark badge-dark" data-id="{{ value.producto_id }}">+</a>
+              <a href="{% url 'Sub' value.producto_id %}" class="badge btn btn-dark badge-dark" data-id="{{ value.producto_id }}">-</a>
             </td>
           </tr>
           {% endfor %}
@@ -55,14 +55,14 @@
         </tbody>
       </table>
     </div>
-    
     <hr>
   </div>
   <div class="row text-center">
     <div class="col-6"><a href="{% url 'CLS' %}" class="btn btn-danger">Limpiar</a></div>
-    <div class="col-6"><a href="#" class="btn btn-success">Guardar</a></div>
+    <a href="{% url 'guardarPedido' total_carrito %}" class="btn btn-success" id="guardar-btn">Guardar</a>
   </div>
   {% endblock %}
 </body>
 
 </html>
+

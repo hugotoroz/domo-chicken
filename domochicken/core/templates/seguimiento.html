@@ -1,0 +1,36 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href="../static/css/lista_usuarios.css">
+{% endblock %}
+{% block title %}Domo Chicken - La mejor calidad{% endblock %}
+{% block template %}
+<div class="container" style="overflow-x: auto;">
+    <h1 class="titulo">Mi Pedido</h1>
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Descripcion</th>
+                    <th scope="col">Estado Del Pedido</th>
+                    <th scope="col">Productos</th>
+                </tr>
+            </thead>
+            <!--hx-trigger="load, actualizacion from:body" hx-target="this"-->
+            <tbody >
+                <tr>
+                    <td>{{ pedido.descripcion }}</td>
+                    <td>{{ detalle.estado_pedido }}</td> <!-- CORREGIDO -->
+                    <td>
+                    {% for x in detalle.fk_id_productos.all %}
+                        {{ x.nombre_producto }}
+                    {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                    </td> <!-- CORREGIDO -->
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
