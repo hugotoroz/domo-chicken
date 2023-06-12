@@ -622,12 +622,13 @@ def obtener_fecha_actual():
     fecha_actual = datetime.fromisoformat(data['datetime'])
     return fecha_actual
 
+@login_required(login_url="/")
 def guardarPedido(request,total):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
-    direccion_desc = 'Hacia la direcciÃ³n ' + usuario.direccion
+    direccion_desc = 'Hacia la dirección ' + usuario.direccion
     fecha_actual = obtener_fecha_actual().date()
     # Crear un nuevo pedido
-    pedido = Pedido.objects.create(descripcion=direccion_desc, fecha=fecha_actual, fk_id_usuario_id=usuario.id_usuario,total = total)
+    pedido = Pedido.objects.create(descripcion=direccion_desc, fecha=fecha_actual, fk_id_usuario_id=usuario.id_usuario,total = total,estado_pedido='En proceso')
     # Obtener los IDs de los productos en el carrito
     #ids_productos = request.session.carrito.items.values_list('producto_id', flat=True)
     carrito = request.session.get('carrito', {})
@@ -636,7 +637,7 @@ def guardarPedido(request,total):
         producto_id = valor['producto_id']
         ids_productos.append(producto_id)
     # Crear un nuevo recibo de pedido asociado al pedido y usuario
-    recibo_pedido = ReciboPedido.objects.create(estado_pedido='En proceso', fk_id_pedido_id=pedido.id_pedido, fk_id_usuario_id=usuario.id_usuario)
+    recibo_pedido = ReciboPedido.objects.create(fk_id_pedido_id=pedido.id_pedido, fk_id_usuario_id=usuario.id_usuario)
     recibo_pedido.fk_id_productos.add(*ids_productos)
     # Agregar los productos al recibo de pedido
     #recibo_pedido.fk_id_productos.add(ids_productos)
@@ -645,6 +646,9 @@ def guardarPedido(request,total):
 
 def verPedido(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
-    pedido = Pedido.objects.get(fk_id_usuario_id = usuario.id_usuario )
-    detalle =ReciboPedido.objects.get(fk_id_pedido_id = pedido.id_pedido)
-    return render (request,'seguimiento.html',{'pedido':pedido,'detalle':detalle})
+    pedido_usuario = Pedido.objects.filter(fk_id_usuario_id = usuario.id_usuario).values()
+    detalle =ReciboPedido.objects.filter(fk_id_usuario_id = usuario.id_usuario).values('fk_id_productos','fk_id_pedido')
+    producto =Producto.objects.all()
+    print(detalle)    
+
+    return render (request,'seguimiento.html',{'pedido':pedido_usuario,'detalle':detalle,'producto':producto})

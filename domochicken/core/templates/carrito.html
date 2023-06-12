@@ -1,64 +1,62 @@
 {% extends "base/base.html" %}
+{% block css %}
+<!--ACA VA EL CSS-->
+<link rel="stylesheet" href="../static/css/carrito.css">
+{% endblock %}
 {% block title %}Domo Chicken - La mejor calidad{% endblock %}
 {% block template %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
-    <link rel="stylesheet" href="static/css/carrito.css">
-</head>
-<body>
-  <div class="alert alert-primary" role="alert">
-    <div class="table-responsive">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th scope="row" colspan="3" class="text-center">CARRITO</th>
-          </tr>
-          <tr>
-            <th scope="col">NOMBRE</th>
-            <th scope="col">PRECIO</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% if request.session.carrito.items %}
-          {% for key, value in request.session.carrito.items %}
-          <tr>
-            <td>{{ value.nombre }}</td>
-            <td>{{ value.precio }}</td>
-            <td>
-              {{ value.acumulado }}
-            </td>
-            <td>
-              <a href="{% url 'Add' value.producto_id %}" class="badge btn btn-dark badge-dark" data-id="{{ value.producto_id }}">+</a>
-              <a href="{% url 'Sub' value.producto_id %}" class="badge btn btn-dark badge-dark" data-id="{{ value.producto_id }}">-</a>
-            </td>
-          </tr>
-          {% endfor %}
-          {% else %}
-          <tr>
-            <td colspan="3">
-              <div class="alert alert-danger text-center">Sin Productos</div>
-            </td>
-          </tr>
-          {% endif %}
-          <tr>
-            <th scope="row">Total:</th>
-            <td colspan="2">$ {{ total_carrito }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <hr>
+<div class="container">
+  <h1 class="text-white text-center" style="margin-top: 20px;">Mi Carrito</h1>
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">NOMBRE</th>
+          <th scope="col" class="text-center">PRECIO</th>
+          <th scope="col" class="text-center">CANTIDAD</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if request.session.carrito.items %}
+        {% for key, value in request.session.carrito.items %}
+        <tr>
+          <td>{{ value.nombre }}</td>
+          <td class="text-center">{{ value.precio }}</td>
+          <td class="text-center">{{ value.cantidad }}
+            <a href="{% url 'Add' value.producto_id %}" class="badge btn btn-dark badge-dark" style="margin-left: 10px;"
+              data-id="{{ value.producto_id }}">+</a>
+            <a href="{% url 'Sub' value.producto_id %}" class="badge btn btn-dark badge-dark"
+              data-id="{{ value.producto_id }}">-</a>
+          </td>
+        </tr>
+        {% endfor %}
+        {% else %}
+        <tr>
+          <td colspan="3">
+            <div class="alert alert-danger text-center">Sin Productos</div>
+          </td>
+        </tr>
+        {% endif %}
+        <tr>
+          <th scope="row">TOTAL</th>
+          <td colspan="2">$ {{ total_carrito }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+
   <div class="row text-center">
     <div class="col-6"><a href="{% url 'CLS' %}" class="btn btn-danger">Limpiar</a></div>
-    <a href="{% url 'guardarPedido' total_carrito %}" class="btn btn-success" id="guardar-btn">Guardar</a>
+    <div class="col-6"><a href="{% url 'guardarPedido' total_carrito %}" class="btn btn-success"
+        id="guardar-btn">Proceder al pago</a></div>
+
   </div>
-  {% endblock %}
-</body>
-</html>
+</div>
+<div class="curved-div">
+  <svg viewBox="0 0 1440 319">
+      <path fill="#fff" fill-opacity="1"
+          d="M0,32L48,80C96,128,192,224,288,224C384,224,480,128,576,90.7C672,53,768,75,864,96C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+      </path>
+  </svg>
+</div>
+{% endblock %}

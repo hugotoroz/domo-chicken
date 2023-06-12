@@ -69,9 +69,10 @@ class Pedido(models.Model):
     descripcion = models.CharField(max_length=400)
     fecha = models.DateTimeField()
     total = models.IntegerField()
+    estado_pedido = models.TextField()
     fk_id_usuario = models.ForeignKey(Usuario,on_delete=models.CASCADE,)
     def __str__(self):
-        return self.descripcion
+        return f"{self.id_pedido}, {self.descripcion}"
 class Solicitud(models.Model):
     id_solicitud = models.BigAutoField(primary_key=True)
     cantidad_solicitud = models.IntegerField(null=True)
@@ -86,7 +87,6 @@ class ReciboPedido(models.Model):
     id_ReciboPedido = models.BigAutoField(primary_key=True)
     fk_id_usuario = models.ForeignKey(Usuario,on_delete=models.CASCADE,)
     fk_id_productos = models.ManyToManyField(Producto)
-    estado_pedido = models.TextField()
     fk_id_pedido = models.ForeignKey(Pedido,on_delete=models.CASCADE,)
     def __str__(self):
         return self.fk_id_usuario.nombre_usuario

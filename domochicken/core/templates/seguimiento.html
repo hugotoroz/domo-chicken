@@ -8,26 +8,34 @@
 <div class="container" style="overflow-x: auto;">
     <h1 class="titulo">Mi Pedido</h1>
     <div class="row">
-        <table class="table">
+        <table class="table table-dark">
             <thead>
                 <tr>
                     <th scope="col">Descripcion</th>
-                    <th scope="col">Estado Del Pedido</th>
+                    <th class="text-center" scope="col">Estado Del Pedido</th>
                     <th scope="col">Productos</th>
                 </tr>
             </thead>
             <!--hx-trigger="load, actualizacion from:body" hx-target="this"-->
-            <tbody >
+            <tbody class="table-group-divider">
+
+                {% for pedidos in pedido %}
                 <tr>
-                    <td>{{ pedido.descripcion }}</td>
-                    <td>{{ detalle.estado_pedido }}</td> <!-- CORREGIDO -->
-                    <td>
-                    {% for x in detalle.fk_id_productos.all %}
-                        {{ x.nombre_producto }}
-                    {% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                    </td> <!-- CORREGIDO -->
+                    <td>{{ pedidos.descripcion }}</td>
+                    <td class="text-center">{{ pedidos.estado_pedido }}</td> 
+                    <td style="text-transform: capitalize;">
+                        {% for detalles in detalle %}
+                        {% if pedidos.id_pedido == detalles.fk_id_pedido %}
+                        {% for productos in producto %}
+                        {% if productos.id_producto == detalles.fk_id_productos %}
+                        {{ productos.nombre_producto }}{% if not forloop.last %} <br> {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        {% endfor %}
+                    </td> 
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
