@@ -203,3 +203,8 @@ INSERT INTO `domochicken`.`core_proveedor` (`nombre_proveedor`, `descripcion`, `
 INSERT INTO `domochicken`.`core_producto` (`nombre_producto`, `stock`, `precio`, `descripcion`, `fk_id_proveedor_id`) VALUES ('Pollo', '2', '2000', 'Rico pollito ', '1');
 INSERT INTO `domochicken`.`core_producto` (`nombre_producto`, `stock`, `precio`, `descripcion`, `fk_id_proveedor_id`) VALUES ('Papas Fritas', '100', '200', 'RIcas papas fritas', '1');
 INSERT INTO `domochicken`.`core_producto` (`nombre_producto`, `stock`, `precio`, `descripcion`, `fk_id_proveedor_id`, `prod_is_active`, `row_status`) VALUES ('Nuggets', '2', '100', 'Nuggets d epolla', '1', '1', '1');
+
+
+INSERT INTO `domochicken`.`core_estado` (`estado`) VALUES ('En proceso');
+INSERT INTO `domochicken`.`core_estado` (`estado`) VALUES ('En despacho');
+INSERT INTO `domochicken`.`core_estado` (`estado`) VALUES ('Finalizado');
