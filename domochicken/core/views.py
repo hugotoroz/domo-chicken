@@ -1,8 +1,7 @@
 from datetime import datetime 
-import requests
 from django.contrib import messages
 from django.http import HttpResponse,Http404
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import JsonResponse
@@ -13,7 +12,8 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 from django.contrib.auth.models import User
 from .forms import producto_form, proveedor_form, usuario_form,modificar_usuario_form,registrar_usuario_form
 from django.db.models import Q
-
+import requests
+import json
 #ERRORES
 def pagina_no_encontrada(request, exception):
     return render(request, 'handlers/404.html', status=404)
@@ -131,12 +131,44 @@ def catalogo(request):
     return render(request, 'catalogo.html', contexto)
 
 def carrito(request):
-    if request.user.is_authenticated:
+    carrito = request.session.get('carrito', {})
+    primer_elemento = next(iter(carrito))
+    
+    url = 'https://webpay3gint.transbank.cl/rswebpaytransaction/api/webpay/v1.2/transactions'
+    headers = {
+        'Tbk-Api-Key-Id': '597055555532',
+        'Tbk-Api-Key-Secret': '579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C',
+        'Content-Type': 'application/json'
+    }
+    data = {
+        "buy_order": "ordenCompra12345678",
+        "session_id": "sesion1234557545",
+        "amount": carrito[primer_elemento]['acumulado'],
+        "return_url": 'http://127.0.0.1:8000/pago/'
+    }
 
-        return render(request, 'carrito.html')
-    else:
-        return redirect('login')
-
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+    content = json.loads(response.content.decode('utf-8'))
+    token_response = content['token']
+    url_response = content['url']
+    print("token: ",token_response,"url: ",url_response)
+    return render(request, 'carrito.html',{'token_response': token_response,'url_response' : url_response})
+def pago(request):
+    token_ws = request.GET.get('token_ws')
+    
+    url = 'https://webpay3gint.transbank.cl/rswebpaytransaction/api/webpay/v1.2/transactions/'+token_ws
+    headers = {
+        'Tbk-Api-Key-Id': '597055555532',
+        'Tbk-Api-Key-Secret': '579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C',
+        'Content-Type': 'application/json'
+    }
+    response = requests.put(url, headers=headers)
+    content = json.loads(response.content.decode('utf-8'))
+    print('****')
+    print(content)
+    print('****')
+  
+    return render(request, 'pago.html')
 
 def editarperfil(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
