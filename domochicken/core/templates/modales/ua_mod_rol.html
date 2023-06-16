@@ -9,7 +9,7 @@
     </div>
     <form hx-post="{% url 'modificarRol' usuario.id_usuario %}" method="POST" enctype="multipart/form-data" name="formeditusu" id="formeditusu">
         {% csrf_token %}
-        <select name="roles" id="roles" class="form-select" required>
+        <select name="roles" id="roles" class="form-select text-capitalize" required>
             <option disabled value="">Seleccione un rol</option>
             {% for rol in roles %}
             {% if rol.id_rol == usuario.fk_id_rol_id %}

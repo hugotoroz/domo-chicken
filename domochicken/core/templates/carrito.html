@@ -38,8 +38,8 @@
         </tr>
         {% endif %}
         <tr>
-          <th scope="row">TOTAL</th>
-          <td colspan="2">$ {{ total_carrito }}</td>
+          <th scope="row" class="text-end">TOTAL</th>
+          <td colspan="2" class="text-left">{{ total_carrito }}</td>
         </tr>
       </tbody>
     </table>
@@ -49,7 +49,7 @@
     <div class="col-6"><a href="{% url 'CLS' %}" class="btn btn-danger">Limpiar</a></div>
     <div class="col-6">
       <a href="{% url 'generar_pago' %}" class="btn btn-success">Pagar</a>
-      
+
     </div>
     <!--<div class="col-6"><a href="{% url 'guardarPedido' total_carrito %}" class="btn btn-success"
         id="guardar-btn">Proceder al pago</a></div>-->

@@ -206,7 +206,7 @@ def pago(request):
         direccion_desc = 'Hacia la dirección ' + usuario.direccion
         fecha_actual = obtener_fecha_actual().date()
         # Crear un nuevo pedido
-        pedido = Pedido.objects.create(descripcion=direccion_desc, fecha=fecha_actual, fk_id_usuario_id=usuario.id_usuario,total = carrito[primer_elemento]['acumulado'],estado_pedido='En proceso')
+        pedido = Pedido.objects.create(descripcion=direccion_desc, fecha=fecha_actual, fk_id_usuario_id=usuario.id_usuario,total = carrito[primer_elemento]['acumulado'])
         # Obtener los IDs de los productos en el carrito
         #ids_productos = request.session.carrito.items.values_list('producto_id', flat=True)
         carrito = request.session.get('carrito', {})
@@ -248,8 +248,12 @@ def modificarPerfil(request, id_usuario):
 @login_required(login_url="/")
 def perfil(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
-    contexto = {'usuario': usuario}
-    return render(request, 'perfil.html', contexto)
+    pedido_usuario = Pedido.objects.filter((Q(fk_id_estado_id=1) | Q(fk_id_estado_id=2)) & Q(fk_id_usuario_id = usuario.id_usuario) ).values()
+    detalle =ReciboPedido.objects.filter(fk_id_usuario_id = usuario.id_usuario).values('fk_id_productos','fk_id_pedido')
+    producto =Producto.objects.all()
+    estado = Estado.objects.all()
+    print(pedido_usuario)    
+    return render(request, 'perfil.html', {'usuario': usuario,'pedido':pedido_usuario,'detalle':detalle,'producto':producto,'estado':estado})
 
 # Registro de usuarios.
 
@@ -304,10 +308,10 @@ def iniciar_sesion(request):
                     return redirect('index_admin')
                 # jefe de local
                 elif (usuario.fk_id_rol_id == 2):
-                    return redirect('index_admin')
+                    return redirect('index_cocinero')
                 # cocinero
                 elif (usuario.fk_id_rol_id == 3):
-                    return redirect('index_admin')
+                    return redirect('index_repartidor')
                 # vendedor
                 elif (usuario.fk_id_rol_id == 4):
                     return redirect('index_admin')
@@ -408,7 +412,7 @@ def index_repartidor(request):
     contexto = {'pedidos': pedidos}
     return render(request, 'index_repartidor.html', contexto)
 @login_required(login_url="/")
-@role_required('1','2','3')
+@role_required('1','2','5')
 def pedido (request):
     return render(request, 'pedido.html')
 
@@ -710,8 +714,7 @@ def guardarPedido(request,total):
     direccion_desc = 'Hacia la dirección ' + usuario.direccion
     fecha_actual = obtener_fecha_actual().date()
     # Crear un nuevo pedido
-    estado = Estado.objects.filter(id_estado = 1).first()
-    pedido = Pedido.objects.create(descripcion=direccion_desc, fecha=fecha_actual, fk_id_usuario_id=usuario.id_usuario,total = total, fk_id_estado_id = estado.id_estado)
+    pedido = Pedido.objects.create(descripcion=direccion_desc, fecha=fecha_actual, fk_id_usuario_id=usuario.id_usuario,total = total)
     # Obtener los IDs de los productos en el carrito
     #ids_productos = request.session.carrito.items.values_list('producto_id', flat=True)
     carrito = request.session.get('carrito', {})
@@ -730,10 +733,10 @@ def guardarPedido(request,total):
 
 def verPedido(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
-    pedido_usuario = Pedido.objects.filter(Q(fk_id_estado_id=1) | Q(fk_id_estado_id=2) & Q(fk_id_usuario_id = usuario.id_usuario) ).values()
+    pedido_usuario = Pedido.objects.filter((Q(fk_id_estado_id=1) | Q(fk_id_estado_id=2)) & Q(fk_id_usuario_id = usuario.id_usuario) ).values()
     detalle =ReciboPedido.objects.filter(fk_id_usuario_id = usuario.id_usuario).values('fk_id_productos','fk_id_pedido')
     producto =Producto.objects.all()
     estado = Estado.objects.all()
-    print(detalle)    
+    print(pedido_usuario)    
 
     return render (request,'seguimiento.html',{'pedido':pedido_usuario,'detalle':detalle,'producto':producto,'estado':estado})
