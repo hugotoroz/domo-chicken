@@ -14,6 +14,8 @@ from .forms import producto_form, proveedor_form, usuario_form,modificar_usuario
 from django.db.models import Q
 import requests
 import json
+import random
+import string
 #ERRORES
 def pagina_no_encontrada(request, exception):
     return render(request, 'handlers/404.html', status=404)
@@ -131,31 +133,56 @@ def catalogo(request):
     return render(request, 'catalogo.html', contexto)
 
 def carrito(request):
-    carrito = request.session.get('carrito', {})
-    primer_elemento = next(iter(carrito))
-    
-    url = 'https://webpay3gint.transbank.cl/rswebpaytransaction/api/webpay/v1.2/transactions'
-    headers = {
-        'Tbk-Api-Key-Id': '597055555532',
-        'Tbk-Api-Key-Secret': '579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C',
-        'Content-Type': 'application/json'
-    }
-    data = {
-        "buy_order": "ordenCompra12345678",
-        "session_id": "sesion1234557545",
-        "amount": carrito[primer_elemento]['acumulado'],
-        "return_url": 'http://127.0.0.1:8000/pago/'
-    }
+    return render(request, 'carrito.html')
+#Función que genera el pago para así generar el token_ws.
+def generar_pago(request):
+    error = False
+    try:
+        carrito = request.session.get('carrito', {})
+        primer_elemento = next(iter(carrito))
+    except:
+        error = True
+    if error:
+        raise Exception('error_servidor')
+    else:
+        longitud = 14
+        caracteres = string.ascii_letters + string.digits
+        order = ''.join(random.choice(caracteres) for i in range(longitud))
+        session= ''.join(random.choice(caracteres) for i in range(longitud))
+        #print(order)
+        #print(session)
+        url = 'https://webpay3gint.transbank.cl/rswebpaytransaction/api/webpay/v1.2/transactions'
+        headers = {
+            'Tbk-Api-Key-Id': '597055555532',
+            'Tbk-Api-Key-Secret': '579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C',
+            'Content-Type': 'application/json'
+        }
+        data = {
+            "buy_order": order,
+            "session_id": session,
+            "amount": carrito[primer_elemento]['acumulado'],
+            "return_url": 'http://127.0.0.1:8000/respuesta_pago/'
+        }
 
-    response = requests.post(url, headers=headers, data=json.dumps(data))
-    content = json.loads(response.content.decode('utf-8'))
-    token_response = content['token']
-    url_response = content['url']
-    print("token: ",token_response,"url: ",url_response)
-    return render(request, 'carrito.html',{'token_response': token_response,'url_response' : url_response})
-def pago(request):
+        response = requests.post(url, headers=headers, data=json.dumps(data))
+        content = json.loads(response.content.decode('utf-8'))
+        token_response = content['token']
+        url_response = content['url']
+        #print("token: ",token_response,"url: ",url_response)
+        return render(request, 'generar_pago.html',{'token_response': token_response,'url_response' : url_response})
+#Esta función está hecha solamente para que el usuario no pueda ver el token que devuelve Webpay.
+def respuesta_pago(request):
     token_ws = request.GET.get('token_ws')
+    request.session['token_ws'] = token_ws
+    if token_ws is None:
+        raise Http404
+    return redirect('pago')
     
+def pago(request):
+    token_ws = request.session.get('token_ws')
+    if token_ws is None:
+        raise Http404
+    print(token_ws)
     url = 'https://webpay3gint.transbank.cl/rswebpaytransaction/api/webpay/v1.2/transactions/'+token_ws
     headers = {
         'Tbk-Api-Key-Id': '597055555532',
@@ -166,9 +193,33 @@ def pago(request):
     content = json.loads(response.content.decode('utf-8'))
     print('****')
     print(content)
+    print()
     print('****')
-  
-    return render(request, 'pago.html')
+    cod_respuesta= content['response_code']
+    orden_pedido= content['buy_order']
+    if cod_respuesta ==0:
+        carrito = request.session.get('carrito', {})
+        primer_elemento = next(iter(carrito))
+
+        usuario = Usuario.objects.filter(correo=request.user.username).first()
+        direccion_desc = 'Hacia la dirección ' + usuario.direccion
+        fecha_actual = obtener_fecha_actual().date()
+        # Crear un nuevo pedido
+        pedido = Pedido.objects.create(descripcion=direccion_desc, fecha=fecha_actual, fk_id_usuario_id=usuario.id_usuario,total = carrito[primer_elemento]['acumulado'],estado_pedido='En proceso')
+        # Obtener los IDs de los productos en el carrito
+        #ids_productos = request.session.carrito.items.values_list('producto_id', flat=True)
+        carrito = request.session.get('carrito', {})
+        ids_productos = []
+        for clave, valor in carrito.items():
+            producto_id = valor['producto_id']
+            ids_productos.append(producto_id)
+        # Crear un nuevo recibo de pedido asociado al pedido y usuario
+        recibo_pedido = ReciboPedido.objects.create(fk_id_pedido_id=pedido.id_pedido, fk_id_usuario_id=usuario.id_usuario)
+        recibo_pedido.fk_id_productos.add(*ids_productos)
+    
+    #Vaciar el token para que no pueda volver a ingresar a la misma página a través de la url.
+    #request.session['token_ws'] = None
+    return render(request, 'pago.html',{'cod_respuesta':cod_respuesta,'orden_pedido':orden_pedido})
 
 def editarperfil(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
