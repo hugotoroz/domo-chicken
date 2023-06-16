@@ -22,20 +22,21 @@ def pagina_no_encontrada(request, exception):
 def error_servidor(request):
     return render(request, 'handlers/500.html', status=500)
 
-def check_role(role):
+def check_role(roles):
     def test(user):
-        return user.is_authenticated and Usuario.objects.filter(fk_id_rol=role, correo=user.username).exists()
+        return user.is_authenticated and Usuario.objects.filter(fk_id_rol__in=roles, correo=user.username).exists()
     return test
-def role_required(*role):
+
+def role_required(*roles):
     def decorator(view_func):
-        decorated_view_func = user_passes_test(check_role(role), login_url="/", redirect_field_name=None)(view_func)
+        decorated_view_func = user_passes_test(check_role(roles), login_url="/", redirect_field_name=None)(view_func)
         def wrapper(request, *args, **kwargs):
-            if check_role(role)(request.user):
+            if check_role(roles)(request.user):
                 return decorated_view_func(request, *args, **kwargs)
             else:
                 raise Http404
         return wrapper
-    return decorator
+    return decorator 
 
 def index(request):
     producto = Producto.objects.filter(fk_id_proveedor=1, prod_is_active=1)[:3]
@@ -406,7 +407,10 @@ def index_repartidor(request):
     pedidos = Pedido.objects.all()
     contexto = {'pedidos': pedidos}
     return render(request, 'index_repartidor.html', contexto)
-
+@login_required(login_url="/")
+@role_required('1','2','3')
+def pedido (request):
+    return render(request, 'pedido.html')
 
 #
 # COCINERO 
@@ -417,36 +421,6 @@ def index_cocinero(request):
     contexto = {'solicitudes': solicitudes}
     return render(request, 'index_cocinero.html', contexto)
 
-
-
-#
-# WEBPAY
-#
-
-
-def webpay(request):
-    return render(request, 'webpay.html')
-
-
-def create(request):
-    return render(request, 'webpay/plus/create.html')
-
-
-def commit(request):
-    return render(request, 'webpay/plus/commit.html')
-
-
-def refund(request):
-    return render(request, 'webpay/plus/refund-form.html')
-
-
-def refundform(request):
-    return render(request, 'webpay/plus/refund.html')
-# VIEWS MODALES
-#
-#
-def pedido (request):
-    return render(request, 'pedido.html')
 # URLS
 #
 #
