@@ -41,7 +41,11 @@ section {
 .quienes_somos p {
     font-size: 21px;
 }
-
+@media screen and (max-width: 700px) {
+    .pollo-girando {
+        width: 250px;
+    }
+}
 /*
 
 CATALOGO

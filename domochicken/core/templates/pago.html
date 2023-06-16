@@ -5,9 +5,51 @@
 {% block title %}Perfil - Domo Chicken{% endblock %}
 
 {% block template %}
-<h1 class="text-white text-center" style="margin-bottom: 10px;">Pago</h1>
-<div class="text-center text-white">
-    
+<div class="container text-white">
+    {% if cod_respuesta == 0 %}
+    <h1 class="text-center" style="margin-bottom: 10px;">Pedido realizado</h1>
+    <p class="text-center">
+        ¡Felicidades! Su pedido se ha realizado <strong>exitosamente.</strong> <br>
+        Aquí tiene los detalles de su pedido
+
+    </p>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ORDEN DE PEDIDO</th>
+                    <th>FECHA</th>
+                    <th class="text-center">DETALLE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ orden_pedido }}</td>
+                    <td></td>
+                    <td class="text-center"></td>
+                </tr>
+                <tr>
+                    <th scope="row" class="text-end">TOTAL</th>
+                    <td colspan="2" class="text-left"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <img src="../static/img/pollitos_felices.gif" alt="Imágen de un pollito triste" class="img-fluid align-items-center justify-content-center" style="max-width: 400px; position:fixed; top: 50%; left: 50%; transform: translate(-50%, -10%);">
+    {% else %}
+    <h1 style="margin-top: 15px;">Pedido fallido</h1>
+    <div class="align-items-center justify-content-center"
+        style="position:fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+        <img src="../static/img/pollo_triste.gif" alt="Imágen de un pollito triste" class="img-fluid"
+            style="max-width: 200px;">
+        <p>
+            Lo lamentamos, pero no hemos podido realizar su pedido.<br>
+            Por favor, intente más tarde o con un método de pago diferente.
+        </p>
+    </div>
+
+
+    {% endif %}
 </div>
 
 <!--

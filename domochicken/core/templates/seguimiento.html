@@ -22,7 +22,11 @@
                 {% for pedidos in pedido %}
                 <tr>
                     <td>{{ pedidos.descripcion }}</td>
-                    <td class="text-center">{{ pedidos.estado_pedido }}</td> 
+                    {% for estados in estado %}
+                    {% if pedidos.fk_id_estado_id == estados.id_estado %}
+                    <td class="text-center">{{ estados.estado}}</td> 
+                    {% endif %}
+                    {% endfor %}
                     <td style="text-transform: capitalize;">
                         {% for detalles in detalle %}
                         {% if pedidos.id_pedido == detalles.fk_id_pedido %}

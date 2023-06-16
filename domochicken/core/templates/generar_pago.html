@@ -1,0 +1,15 @@
+{% extends "base/base.html" %}
+{% block template %}
+
+<form method="post" id="webpayForm" action="{{url_response}}">
+    {% csrf_token %}
+    <input type="hidden" name="token_ws" value="{{token_response}}" />
+    <button type="submit" class="btn btn-success" value="Ir a pagar"> Pagar</button>
+</form>
+
+<script>
+    window.onload = function () {
+        document.getElementById('webpayForm').submit();
+    };
+</script>
+{% endblock %}

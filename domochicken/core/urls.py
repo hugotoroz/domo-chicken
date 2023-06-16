@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import pago,error_servidor,pagina_no_encontrada,index_repartidor,modificar_usuario,agregar_usuario,modificar_proveedor,modificar_producto,agregar_producto_nuevo,eliminar_prod_cart, guardarPedido, limpiar_carrito, p_activar_producto,p_desactivar_producto,p_eliminar_producto,p_lista_productos,finalizar_solicitud, restar_producto,sp_finalizar_solicitud,sp_lista_solicitudes,activar_proveedor, desactivar_proveedor, eliminar_proveedor, p_lista_proveedores, u_lista_usuarios,activar_producto, desactivar_producto, proveedores, modificarRol, pv_activar_proveedor, pv_desactivar_proveedor, pv_eliminar_proveedor, sp_mas_info,usuarios, activar_usuario, desactivar_usuario, eliminar_usuario, solicitudes_proveedor,agregar_prov, index, index_admin, productos, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,editarperfil,modificarPerfil, stock_productos,solicitar_stock,agregar_producto,eliminar_producto, verPedido, webpay,commit, create, refundform,refund, ua_activar_usuario, ua_desactivar_usuario, ua_eliminar_usuario, ua_mod_rol,index_cocinero
+from .views import generar_pago,respuesta_pago,pago,error_servidor, lp_lista_pedidos, lp_mod_estado, modificar_estado,pagina_no_encontrada,index_repartidor,modificar_usuario,agregar_usuario,modificar_proveedor,modificar_producto,agregar_producto_nuevo,eliminar_prod_cart, guardarPedido, limpiar_carrito, p_activar_producto,p_desactivar_producto,p_eliminar_producto,p_lista_productos,finalizar_solicitud, pedido, restar_producto,sp_finalizar_solicitud,sp_lista_solicitudes,activar_proveedor, desactivar_proveedor, eliminar_proveedor, p_lista_proveedores, u_lista_usuarios,activar_producto, desactivar_producto, proveedores, modificarRol, pv_activar_proveedor, pv_desactivar_proveedor, pv_eliminar_proveedor, sp_mas_info,usuarios, activar_usuario, desactivar_usuario, eliminar_usuario, solicitudes_proveedor,agregar_prov, index, index_admin, productos, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,editarperfil,modificarPerfil, stock_productos,solicitar_stock,agregar_producto,eliminar_producto, verPedido, webpay,commit, create, refundform,refund, ua_activar_usuario, ua_desactivar_usuario, ua_eliminar_usuario, ua_mod_rol,index_cocinero
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -56,6 +56,8 @@ urlpatterns = [
     path('iniciar_sesion/', iniciar_sesion, name="iniciar_sesion"),
     path('carrito/', carrito, name="carrito"),
     path('pago/', pago, name="pago"),
+    path('respuesta_pago/', respuesta_pago, name="respuesta_pago"),
+    path('generar_pago/', generar_pago, name="generar_pago"),
     # Registro de usuario
     path('registrar_usuario/', registrar_usuario, name="registrar_usuario"),
     # Cerrar sesión
@@ -80,6 +82,14 @@ urlpatterns = [
     path('lista_usuarios/', u_lista_usuarios, name="lista_usuarios"),
     path('lista_proveedores/', p_lista_proveedores, name="lista_proveedores"),
     path('lista_productos/', p_lista_productos, name="lista_productos"),
+    path('lp_lista_pedidos/', lp_lista_pedidos, name="lp_lista_pedidos"),
+
+    
+    path('lp_mod_estado/<int:id_pedido>/', lp_mod_estado, name="lp_mod_estado"),
+    path('modificar_estado/<int:id_pedido>/',modificar_estado, name="modificar_estado"),
+
+
+
     path('p_activar_producto/<int:id_producto>/', p_activar_producto, name="p_activar_producto"),
     path('p_desactivar_producto/<int:id_producto>/', p_desactivar_producto, name="p_desactivar_producto"),
     path('p_eliminar_producto/<int:id_producto>/', p_eliminar_producto, name="p_eliminar_producto"),
@@ -90,10 +100,9 @@ urlpatterns = [
     path('eliminar_producto/<int:id_producto>/',eliminar_producto,name="eliminar_producto"),
 
     #Seguimiento pedido
-
-
     path('seguimiento/',verPedido,name="verPedido"),
     path('guardarPedido/<int:total>/',guardarPedido,name="guardarPedido"),
+    path('pedido/',pedido,name="pedido"),
     # Agregar Carrito
     path('agregar3/<int:idProducto>',agregar_producto,name="Add"),
     path('eliminar/<int:idProducto>',eliminar_prod_cart,name="Del"),

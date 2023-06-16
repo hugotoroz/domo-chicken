@@ -6,28 +6,31 @@
 
 {% block template %}
 <section class="catalogo">
-    <h1 class="text-white text-center" style="margin-top: 20px;">Catálogo</h1>
-    <div class="row">
-        {% for productos in producto %}
-        <div class="col-xxl-4 col-xl-4 col-lg-4 col-sm-6 col-6 d-flex align-items-center justify-content-center">
-            <div class="card" style="max-width: 350px;">
-                {% if productos.imagenProd %}
-                <img src="{{productos.imagenProd.url}}" alt="Error :D" id="img2" class="imagen-fija">
-                {% else %}
-                <img src="../media/Not_found.png" alt="Error :D" id="img2" class="imagen-fija">
-                {% endif %}
-                <div class="card-body">
-                    <div class="card-title">{{productos.nombre_producto}}</div>
-                    <div class="card-text text-truncate">{{productos.descripcion}}.</div>
-                    <p class="price card-text text-center">${{productos.precio}}</p>
+    <div class="container">
+        <h1 class="text-white text-center" style="margin-top: 20px;">Catálogo</h1>
+        <div class="row">
+            {% for productos in producto %}
+            <div class="col-xxl-4 col-xl-4 col-lg-4 col-sm-6 col-6 d-flex align-items-center justify-content-center">
+                <div class="card" style="max-width: 300px;">
+                    {% if productos.imagenProd %}
+                    <img src="{{productos.imagenProd.url}}" alt="Error :D" id="img2" class="imagen-fija">
+                    {% else %}
+                    <img src="../media/Not_found.png" alt="Error :D" id="img2" class="imagen-fija">
+                    {% endif %}
+                    <div class="card-body">
+                        <div class="card-title">{{productos.nombre_producto}}</div>
+                        <div class="card-text text-truncate">{{productos.descripcion}}.</div>
+                        <p class="price card-text text-center">${{productos.precio}}</p>
+                    </div>
+                    <a href="{% url 'Add' productos.id_producto %}" type="button " class="boton"
+                        style="text-decoration: none;">
+                        Añadir al Carrito
+                    </a>
                 </div>
-                <a href="{% url 'Add' productos.id_producto %}" type="button " class="boton" style="text-decoration: none;">
-                    Añadir al Carrito
-                </a>
             </div>
-        </div>
 
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
 </section>
 </div>
