@@ -1,0 +1,24 @@
+{% for pedidos in pedido %}
+<tr>
+    <td>{{ pedidos.descripcion }}</td>
+    {% for estados in estado %}
+    {% if pedidos.fk_id_estado_id == estados.id_estado %}
+    <td class="text-center">{{ estados.estado}}</td>
+    {% endif %}
+    {% endfor %}
+    <td style="text-transform: capitalize;">
+        {% for detalles in detalle %}
+        {% if pedidos.id_pedido == detalles.fk_id_pedido %}
+        {% for productos in producto %}
+        {% if productos.id_producto == detalles.fk_id_productos %}
+        {{ productos.nombre_producto }}{% if not forloop.last %} <br> {% endif %}
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        {% endfor %}
+    </td>
+    <td>
+        <a hx-get="{% url 'lp_mod_estado' pedidos.id_pedido %}" hx-target="#dialog" class="btn btn-primary">Cambiar estado</a>
+    </td>
+</tr>
+{% endfor %}

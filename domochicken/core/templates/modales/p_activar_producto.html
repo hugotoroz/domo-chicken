@@ -2,16 +2,14 @@
     <!-- Contenido de la modal -->
     <div class="modal-header">
         <h5 class="modal-title">Activar producto</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body">
         <p>¿Estás seguro que deseas activar este producto?</p>
     </div>
     <div class="modal-footer">
         <span id="grupo-id"></span>
-        <button type="button" class="btn btn-secondary close" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
         <button type="button" hx-get="{% url 'activar_producto' producto.id_producto %}" class="btn btn-danger" id="btn-salir">Activar</button>
     </div>
 </div>

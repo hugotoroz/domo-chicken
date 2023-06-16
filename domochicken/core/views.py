@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import JsonResponse
 from .Carrito import Carrito
-from .models import Comuna, Pedido, Producto, Proveedor, ReciboPedido, Rol, Usuario, Solicitud
+from .models import Comuna, Estado, Pedido, Producto, Proveedor, ReciboPedido, Rol, Usuario, Solicitud
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.contrib.auth.models import User
@@ -293,7 +293,6 @@ def iniciar_sesion(request):
             is_act= usuario.u_is_active
         except:
             es_superu = True
-
         if u_auth is not None and is_act==1 :
             login(request, u_auth)
             if es_superu:
@@ -446,6 +445,8 @@ def refundform(request):
 # VIEWS MODALES
 #
 #
+def pedido (request):
+    return render(request, 'pedido.html')
 # URLS
 #
 #
@@ -566,12 +567,34 @@ def p_eliminar_producto(request, id_producto):
     producto = Producto.objects.filter(id_producto=id_producto).first()
 
     return render(request, 'modales/p_eliminar_producto.html', {'producto': producto})
-#
-#
-# FUNCIONES
-#
-#
 
+
+def lp_lista_pedidos(request):
+    pedido_usuario = Pedido.objects.filter(Q(fk_id_estado_id=1) | Q(fk_id_estado_id=2) ).values()
+    detalle =ReciboPedido.objects.all().values('fk_id_productos','fk_id_pedido')
+    producto =Producto.objects.all()
+    estado = Estado.objects.all()
+    return render(request, 'modales/lista_pedidos.html', {'pedido':pedido_usuario,'detalle':detalle,'producto':producto,'estado':estado})
+
+
+def modificar_estado(request, id_pedido):
+    if request.method == "POST":
+        estado = request.POST['estado']
+        pedido = Pedido.objects.filter(id_pedido=id_pedido).first()
+        estado2 = Estado.objects.get(id_estado=estado)
+        pedido.fk_id_estado_id = estado2.id_estado
+        pedido.save()
+        return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
+
+
+def lp_mod_estado(request, id_pedido):
+    pedido = Pedido.objects.filter(id_pedido=id_pedido).values()
+    id_pedido = pedido[0]['id_pedido']
+
+    estado = Estado.objects.all()
+    id_estado = pedido[0]['fk_id_estado_id']
+    return render(request, 'modales/lp_mod_estado.html', {'pedido': pedido, 'estado': estado,'id_pedido':id_pedido,'id_estado':id_estado})
+# FUNCIONES
 @login_required(login_url="/")
 @role_required('1')
 def desactivar_proveedor(request, id_proveedor):
@@ -597,7 +620,6 @@ def eliminar_proveedor(request, id_proveedor):
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
 
 # Funcion para desactivar al usuario
-
 @login_required(login_url="/")
 @role_required('1')
 def desactivar_usuario(request, id_usuario):
@@ -639,13 +661,16 @@ def modificarRol(request, id_usuario):
 @login_required(login_url="/")
 @role_required('1','4')
 def finalizar_solicitud(request, id_solicitud):
+    
     solicitud = Solicitud.objects.filter(id_solicitud=id_solicitud).first()
     solicitud.estado = "finalizado"
     producto = Producto.objects.filter(
         id_producto=solicitud.fk_id_producto_id).first()
+    producto.stock += solicitud.cantidad_solicitud
     # producto.stock + solicitud.cantidad_solicitudz
 
     solicitud.save()
+    producto.save()
     return HttpResponse(status=204, headers={'HX-Trigger': 'act'})
 
 @login_required(login_url="/")
@@ -711,7 +736,8 @@ def guardarPedido(request,total):
     direccion_desc = 'Hacia la dirección ' + usuario.direccion
     fecha_actual = obtener_fecha_actual().date()
     # Crear un nuevo pedido
-    pedido = Pedido.objects.create(descripcion=direccion_desc, fecha=fecha_actual, fk_id_usuario_id=usuario.id_usuario,total = total,estado_pedido='En proceso')
+    estado = Estado.objects.filter(id_estado = 1).first()
+    pedido = Pedido.objects.create(descripcion=direccion_desc, fecha=fecha_actual, fk_id_usuario_id=usuario.id_usuario,total = total, fk_id_estado_id = estado.id_estado)
     # Obtener los IDs de los productos en el carrito
     #ids_productos = request.session.carrito.items.values_list('producto_id', flat=True)
     carrito = request.session.get('carrito', {})
@@ -720,6 +746,7 @@ def guardarPedido(request,total):
         producto_id = valor['producto_id']
         ids_productos.append(producto_id)
     # Crear un nuevo recibo de pedido asociado al pedido y usuario
+    estado = Estado.objects.filter(id_estado = 1)
     recibo_pedido = ReciboPedido.objects.create(fk_id_pedido_id=pedido.id_pedido, fk_id_usuario_id=usuario.id_usuario)
     recibo_pedido.fk_id_productos.add(*ids_productos)
     # Agregar los productos al recibo de pedido
@@ -729,9 +756,10 @@ def guardarPedido(request,total):
 
 def verPedido(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
-    pedido_usuario = Pedido.objects.filter(fk_id_usuario_id = usuario.id_usuario).values()
+    pedido_usuario = Pedido.objects.filter(Q(fk_id_estado_id=1) | Q(fk_id_estado_id=2) & Q(fk_id_usuario_id = usuario.id_usuario) ).values()
     detalle =ReciboPedido.objects.filter(fk_id_usuario_id = usuario.id_usuario).values('fk_id_productos','fk_id_pedido')
     producto =Producto.objects.all()
+    estado = Estado.objects.all()
     print(detalle)    
 
-    return render (request,'seguimiento.html',{'pedido':pedido_usuario,'detalle':detalle,'producto':producto})
+    return render (request,'seguimiento.html',{'pedido':pedido_usuario,'detalle':detalle,'producto':producto,'estado':estado})
