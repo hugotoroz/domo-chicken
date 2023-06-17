@@ -18,26 +18,33 @@
             <thead>
                 <tr>
                     <th>ORDEN DE PEDIDO</th>
-                    <th>FECHA</th>
+                    <th class="text-center">FECHA</th>
                     <th class="text-center">DETALLE</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>{{ orden_pedido }}</td>
-                    <td></td>
-                    <td class="text-center"></td>
+                    <td class="text-center">{{ pedido.fecha|date:"d/m/Y - H:i" }}</td>
+                    <td class="text-center">
+                        {% for x in detalle.fk_id_productos.all %}
+                        {{ x.nombre_producto }}
+                        {% if not forloop.last %} <br> {% endif %}
+                        {% endfor %}
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row" class="text-end">TOTAL</th>
-                    <td colspan="2" class="text-left"></td>
+                    <td colspan="2" class="text-left">$ {{pedido.total}}</td>
                 </tr>
             </tbody>
         </table>
     </div>
-    <img src="../static/img/pollitos_felices.gif" alt="Imágen de un pollito triste" class="img-fluid align-items-center justify-content-center" style="max-width: 400px; position:fixed; top: 50%; left: 50%; transform: translate(-50%, -10%);">
+    <img src="../static/img/pollitos_felices.gif" alt="Imágen de un pollito triste"
+        class="img-fluid align-items-center justify-content-center"
+        style="max-width: 400px; position:fixed; top: 50%; left: 50%; transform: translate(-50%, -10%);">
     {% else %}
-    <h1 style="margin-top: 15px;">Pedido fallido</h1>
+    <h1 style="margin-top: 15px;" class="text-center">Pedido fallido</h1>
     <div class="align-items-center justify-content-center"
         style="position:fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">
         <img src="../static/img/pollo_triste.gif" alt="Imágen de un pollito triste" class="img-fluid"

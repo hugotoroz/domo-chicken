@@ -3,12 +3,12 @@
 {% block css %}
 <link rel="stylesheet" href="../static/css/lista_usuarios.css">
 {% endblock %}
-{% block title %}Domo Chicken - La mejor calidad{% endblock %}
+{% block title %}Domo Chicken - Pedidos{% endblock %}
 {% block template %}
 <div class="container" style="overflow-x: auto;">
     <h1 class="titulo">Pedidos</h1>
     <div class="row">
-        <table class="table table-dark">
+        <table class="table">
             <thead>
                 <tr>
                     <th scope="col">Descripcion</th>
@@ -18,7 +18,8 @@
                 </tr>
             </thead>
             <!--hx-trigger="load, actualizacion from:body" hx-target="this"-->
-            <tbody class="table-group-divider" hx-get="{% url 'lp_lista_pedidos' %}" hx-trigger="load, actualizacion from:body" hx-target="this"> 
+            <tbody class="table-group-divider" hx-get="{% url 'lp_lista_pedidos' %}"
+                hx-trigger="load, actualizacion from:body" hx-target="this">
             </tbody>
         </table>
     </div>

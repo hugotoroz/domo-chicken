@@ -37,6 +37,11 @@ def role_required(*roles):
                 raise Http404
         return wrapper
     return decorator 
+def obtener_fecha_actual():
+    respuesta = requests.get('http://worldtimeapi.org/api/timezone/Etc/UTC')
+    data = respuesta.json()
+    fecha_actual = datetime.fromisoformat(data['datetime'])
+    return fecha_actual
 
 def index(request):
     producto = Producto.objects.filter(fk_id_proveedor=1, prod_is_active=1)[:3]
@@ -181,6 +186,8 @@ def respuesta_pago(request):
     
 def pago(request):
     token_ws = request.session.get('token_ws')
+    pedido= None
+    recibo_pedido= None
     if token_ws is None:
         raise Http404
     print(token_ws)
@@ -204,7 +211,7 @@ def pago(request):
 
         usuario = Usuario.objects.filter(correo=request.user.username).first()
         direccion_desc = 'Hacia la dirección ' + usuario.direccion
-        fecha_actual = obtener_fecha_actual().date()
+        fecha_actual = obtener_fecha_actual()
         # Crear un nuevo pedido
         pedido = Pedido.objects.create(descripcion=direccion_desc, fecha=fecha_actual, fk_id_usuario_id=usuario.id_usuario,total = carrito[primer_elemento]['acumulado'])
         # Obtener los IDs de los productos en el carrito
@@ -217,10 +224,14 @@ def pago(request):
         # Crear un nuevo recibo de pedido asociado al pedido y usuario
         recibo_pedido = ReciboPedido.objects.create(fk_id_pedido_id=pedido.id_pedido, fk_id_usuario_id=usuario.id_usuario)
         recibo_pedido.fk_id_productos.add(*ids_productos)
-    
+        print('****')
+        print(pedido.id_pedido)
+        print('****')
+
     #Vaciar el token para que no pueda volver a ingresar a la misma página a través de la url.
     #request.session['token_ws'] = None
-    return render(request, 'pago.html',{'cod_respuesta':cod_respuesta,'orden_pedido':orden_pedido})
+    #carrito.limpiar()
+    return render(request, 'pago.html',{'cod_respuesta':cod_respuesta,'orden_pedido':orden_pedido,'pedido':pedido,'detalle':recibo_pedido})
 
 def editarperfil(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
@@ -251,8 +262,7 @@ def perfil(request):
     pedido_usuario = Pedido.objects.filter((Q(fk_id_estado_id=1) | Q(fk_id_estado_id=2)) & Q(fk_id_usuario_id = usuario.id_usuario) ).values()
     detalle =ReciboPedido.objects.filter(fk_id_usuario_id = usuario.id_usuario).values('fk_id_productos','fk_id_pedido')
     producto =Producto.objects.all()
-    estado = Estado.objects.all()
-    print(pedido_usuario)    
+    estado = Estado.objects.all()  
     return render(request, 'perfil.html', {'usuario': usuario,'pedido':pedido_usuario,'detalle':detalle,'producto':producto,'estado':estado})
 
 # Registro de usuarios.
@@ -701,12 +711,6 @@ def limpiar_carrito(request):
     carrito = Carrito(request)
     carrito.limpiar()
     return redirect("carrito")
-
-def obtener_fecha_actual():
-    respuesta = requests.get('http://worldtimeapi.org/api/timezone/Etc/UTC')
-    data = respuesta.json()
-    fecha_actual = datetime.fromisoformat(data['datetime'])
-    return fecha_actual
 
 @login_required(login_url="/")
 def guardarPedido(request,total):

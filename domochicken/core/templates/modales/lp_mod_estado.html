@@ -5,27 +5,32 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body">
-        <p>Selecciona un rol </p>
+        <div class="row">
+            <div class="col d-flex align-items-center justify-content-center">
+                <p>Seleccione un estado</p>
+            </div>
+            <div class="col">
+                <form hx-post="{% url 'modificar_estado' id_pedido %}" method="POST" enctype="multipart/form-data"
+                    name="formeditusu" id="formeditusu">
+                    {% csrf_token %}
+                    <select name="estado" id="estado" class="form-select text-capitalize">
+                        <option disabled value="">Seleccione un estado</option>
+                        {% for estado in estado %}
+                        {% if estado.id_estado == id_estado %}
+                        <option value="{{ id_estado }}" selected>{{ estado.estado }}</option>
+                        {% else %}
+                        <option value="{{ estado.id_estado}}">{{ estado.estado }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+        </div>
     </div>
-    <form hx-post="{% url 'modificar_estado' id_pedido %}" method="POST" enctype="multipart/form-data" name="formeditusu" id="formeditusu">
-        {% csrf_token %}
-        <select name="estado" id="estado" class="form-select" required>
-            <option disabled value="">Seleccione un estado</option>
-            {% for estado in estado %}
-            {% if estado.id_estado == id_estado %}
-            <option value="{{ id_estado }}" selected>{{ estado.estado }}</option>
-            {% else %}
-            <option value="{{ estado.id_estado}}">{{ estado.estado }}</option>
-            {% endif %}
-            {% endfor %}
-        </select>
-        <div class="modal-body">
-            <p>Estas seguro de que quieres cambiar el estado a este pedido?</p>
-        </div>
-        <div class="modal-footer">
-            <span id="grupo-id"></span>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            <button type="submit" class="btn btn-danger" id="btn-salir">Aceptar</button>
-        </div>
-    </form>
+    <div class="modal-footer">
+        <span id="grupo-id"></span>
+        <button type="button" class="btn btn-secundario" data-bs-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primario" id="btn-salir">Cambiar</button>
+    </div>
+
 </div>

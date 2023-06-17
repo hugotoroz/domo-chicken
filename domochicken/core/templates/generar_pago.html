@@ -1,10 +1,10 @@
 {% extends "base/base.html" %}
 {% block template %}
 
-<form method="post" id="webpayForm" action="{{url_response}}">
+<form method="post" id="webpayForm" action="{{url_response}}" class="d-none">
     {% csrf_token %}
     <input type="hidden" name="token_ws" value="{{token_response}}" />
-    <button type="submit" class="btn btn-success" value="Ir a pagar"> Pagar</button>
+    <button type="submit" class="btn btn-success" value="Ir a pagar"  class="d-none"> Pagar</button>
 </form>
 
 <script>

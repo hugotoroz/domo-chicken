@@ -31,10 +31,12 @@
         :root {
             --main-buttons: #ae0000;
             --act-buttons: #9a1414;
+            --sec-buttons: #ae6800;
+            --act-sec-buttons: #94631a;
         }
 
         * {
-            font-family: 'Lato', sans-serif!important;
+            font-family: 'Lato', sans-serif !important;
             font-size: 17px;
             transition: all .2s ease-out;
 
@@ -69,6 +71,27 @@
             bottom: 0;
             position: absolute;
             width: 100%;
+        }
+
+        .btn-primario {
+            background: var(--main-buttons);
+            color: #fff;
+        }
+
+        .btn-secundario {
+            background: var(--sec-buttons);
+            color: #fff;
+        }
+
+
+        .btn-primario:hover {
+            background: var(--act-buttons);
+            color: #fff;
+        }
+
+        .btn-secundario:hover {
+            background: var(--act-sec-buttons);
+            color: #fff;
         }
     </style>
 </head>

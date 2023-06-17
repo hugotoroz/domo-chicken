@@ -27,6 +27,8 @@
         :root {
             --main-buttons: #ae0000;
             --act-buttons: #9a1414;
+            --sec-buttons: #ae6800;
+            --act-sec-buttons: #94631a;
         }
 
         * {
@@ -60,13 +62,36 @@
             position: absolute;
             width: 100%;
         }
+
+        .btn-primario {
+            background: var(--main-buttons);
+            color: #fff;
+        }
+
+        .btn-secundario {
+            background: var(--sec-buttons);
+            color: #fff;
+        }
+
+
+        .btn-primario:hover {
+            background: var(--act-buttons);
+            color: #fff;
+        }
+
+        .btn-secundario:hover {
+            background: var(--act-sec-buttons);
+            color: #fff;
+        }
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Navbar</a>
+            <a href="{% url 'index' %}">
+                <img src="../static/img/logo_navbar.png" alt="Bootstrap" width="50">
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
                 aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -131,7 +156,7 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="#">Ver pedidos</a></li>
+                            <li><a class="dropdown-item" href="{% url 'pedido' %}">Ver pedidos</a></li>
 
                         </ul>
                     </li>
@@ -153,7 +178,7 @@
     <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="modal_label" aria-hidden="true">
         <div class="modal-dialog" id="dialog" hx-target="this">
             <!--Acá se insertan los datos de la modal.-->
-            
+
         </div>
     </div>
     <!--Bootstrap Js-->
@@ -178,7 +203,7 @@
                 }
             })
         })()
-        
+
     </script>
 </body>
 

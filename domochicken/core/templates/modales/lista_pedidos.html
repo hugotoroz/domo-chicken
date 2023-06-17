@@ -1,9 +1,9 @@
 {% for pedidos in pedido %}
 <tr>
-    <td>{{ pedidos.descripcion }}</td>
+    <td class="text-capitalize">{{ pedidos.descripcion }}</td>
     {% for estados in estado %}
     {% if pedidos.fk_id_estado_id == estados.id_estado %}
-    <td class="text-center">{{ estados.estado}}</td>
+    <td class="text-center text-capitalize">{{ estados.estado}}</td>
     {% endif %}
     {% endfor %}
     <td style="text-transform: capitalize;">
@@ -18,7 +18,7 @@
         {% endfor %}
     </td>
     <td>
-        <a hx-get="{% url 'lp_mod_estado' pedidos.id_pedido %}" hx-target="#dialog" class="btn btn-primary">Cambiar estado</a>
+        <a hx-get="{% url 'lp_mod_estado' pedidos.id_pedido %}" hx-target="#dialog" class="btn btn-primario">Cambiar estado</a>
     </td>
 </tr>
 {% endfor %}

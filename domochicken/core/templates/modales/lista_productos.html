@@ -1,9 +1,9 @@
 {% for x in producto %}
 <div class="col-xxl-4 col-xl-4 col-lg-6 col-sm-12 col-12 d-flex align-items-center justify-content-center">
-    <div class="card" style="width: 40rem; margin-top: 20px;">
+    <div class="card" style="width: 45vh; margin-top: 20px;">
         <div class="row">
             <div class="col">
-                <img src="{{x.imagenProd.url}}" alt="Error :D" id="img2" class="card-img-top" style="width: 200px;">
+                <img src="{{x.imagenProd.url}}" alt="Error :D" id="img2" class="card-img-top" style="">
             </div>
         </div>
         <div class="card-body">
@@ -18,14 +18,14 @@
             <div class="row">
                 <div
                     class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 d-flex align-items-center justify-content-center">
-                    <a href="{% url 'modificar_producto' x.id_producto%}" class="btn btn-primary my-btn">Modificar</a>
+                    <a href="{% url 'modificar_producto' x.id_producto%}" class="btn btn-secundario my-btn">Modificar</a>
                 </div>
                 <div
                     class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4 d-flex align-items-center justify-content-center">
 
                     {% if x.prod_is_active == 1 %}
                     <button href="" hx-get="{% url 'p_desactivar_producto' x.id_producto %}" hx-target="#dialog"
-                        type="button" class="btn btn-primary my-btn btn-danger">
+                        type="button" class="btn btn-primario my-btn btn-danger">
                         Desactivar
                     </button>
                     {% endif %}
@@ -41,7 +41,7 @@
 
                     {% if x.row_status == 1 %}
                     <button href="" hx-get="{% url 'p_eliminar_producto' x.id_producto %}" hx-target="#dialog"
-                        type="button" class="btn btn-primary my-btn btn-danger">
+                        type="button" class="btn btn-primario my-btn">
                         Eliminar
                     </button>
                     {% endif %}
