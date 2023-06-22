@@ -12,8 +12,8 @@
             {% for productos in producto %}
             <div class="col-xxl-4 col-xl-4 col-lg-4 col-sm-6 col-6 d-flex align-items-center justify-content-center">
                 <div class="card" style="max-width: 300px;">
-                    {% if productos.imagenProd %}
-                    <img src="{{productos.imagenProd.url}}" alt="Error :D" id="img2" class="imagen-fija">
+                    {% if productos.imagen_producto %}
+                    <img src="{{productos.imagen_producto.url}}" alt="Error :D" id="img2" class="imagen-fija">
                     {% else %}
                     <img src="../media/Not_found.png" alt="Error :D" id="img2" class="imagen-fija">
                     {% endif %}

@@ -50,7 +50,7 @@ class Producto(models.Model):
     nombre_producto = models.CharField(max_length=100)
     stock = models.IntegerField()
     precio = models.IntegerField()
-    imagenProd =models.ImageField(upload_to="productos/",default='images/Not_found.png',verbose_name="Imagen del Producto",null=True, blank=False)
+    imagen_producto =models.ImageField(upload_to="productos/",default='images/Not_found.png',verbose_name="Imagen del Producto",null=True, blank=False)
     descripcion = models.CharField(max_length=400)
     fk_id_proveedor = models.ForeignKey(Proveedor,on_delete=models.CASCADE,)
     prod_is_active = models.BooleanField(default=True) 

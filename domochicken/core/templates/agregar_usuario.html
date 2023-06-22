@@ -14,8 +14,8 @@
 <form method="post" class="form" name="form_agregar_usuario" enctype="multipart/form-data">
     {% csrf_token %}
     {{form|crispy}}
-    
-    <button class="submit">Agregar</button>
+
+    <button class="btn btn-primario" type="submit">Agregar</button>
 </form>
 
 <div class="curved-div">
@@ -25,4 +25,19 @@
         </path>
     </svg>
 </div>
+{% endblock %}
+{% block js %}
+<script>
+    function togglePassword() {
+        var x = document.getElementById("id_clave");
+        var y = document.getElementById("show-hide");
+        if (x.type === "password") {
+            x.type = "text";
+            y.innerHTML = "Ocultar Contraseña";
+        } else {
+            x.type = "password";
+            y.innerHTML = "Mostrar Contraseña";
+        }
+    }
+</script>
 {% endblock %}

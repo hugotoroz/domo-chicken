@@ -9,6 +9,12 @@
 {%load static%}
 
 <body>
+  <style>
+    .derechos {
+      position: relative !important;
+      margin-top: 100px;
+    }
+  </style>
 
   <section class="text-center">
     <!-- Background image -->
@@ -22,7 +28,7 @@
     <!-- Background image -->
 
     <div class="card mx-4 mx-md-5 shadow-5-strong" style="
-      margin-top: -100px;
+      margin-top: -150px;
       background: hsla(0, 0%, 100%, 0.8);
       backdrop-filter: blur(30px);
       ">
@@ -44,7 +50,20 @@
     </div>
   </section>
   {% block js %}
-  <script src="/../static/js/registro.js"></script>
+  <script>
+    function togglePassword() {
+      var x = document.getElementById("id_clave");
+      var y = document.getElementById("show-hide");
+      if (x.type === "password") {
+        x.type = "text";
+        y.innerHTML = "Ocultar Contraseña";
+      } else {
+        x.type = "password";
+        y.innerHTML = "Mostrar Contraseña";
+
+      }
+    }
+  </script>
   {% endblock %}
 
   {% endblock %}

@@ -70,11 +70,13 @@ def index_admin(request):
 @role_required('1','2')
 def agregar_producto_nuevo(request):
     if request.method == "POST":
-        form_agregar_producto = producto_form(
-            request.POST, request.FILES)
+        form_agregar_producto = producto_form(request.POST, request.FILES)
         if form_agregar_producto.is_valid():
             form_agregar_producto.save()
             return redirect('productos')
+        else:
+            contexto = {'form': form_agregar_producto}
+            return render(request, 'agregar_producto.html', contexto)
     else:
         form_agregar_producto = producto_form()
         contexto = {'form': form_agregar_producto}
@@ -122,15 +124,17 @@ def solicitar_stock(request, id_prod):
 def modificar_producto(request, idProd):
     producto_filter = Producto.objects.get(id_producto=idProd)
     if request.method == "POST":
-        form_agregar_producto = producto_form(
-            request.POST, request.FILES, instance=producto_filter)
+        form_agregar_producto = producto_form(request.POST, request.FILES, instance=producto_filter)
         if form_agregar_producto.is_valid():
             form_agregar_producto.save()
             return redirect('productos')
+        else:
+            contexto = {'form': form_agregar_producto}
+            return render(request, 'agregar_producto.html', contexto)
     else:
         form_agregar_producto = producto_form(instance=producto_filter)
         contexto = {'producto': producto_filter, 'form': form_agregar_producto}
-        return render(request, 'modificar.html', contexto)
+        return render(request, 'modificar_producto.html', contexto)
 
 
 def catalogo(request):
@@ -287,6 +291,9 @@ def registrar_usuario(request):
             
             #form_agregar_usuario.save()
             return redirect('index')
+        else:
+            contexto = {'form': form_registrar_usuario}
+            return render(request, 'registrarse.html', contexto)
     else:
         form_registrar_usuario = registrar_usuario_form()
         contexto = {'form': form_registrar_usuario}
@@ -329,7 +336,7 @@ def iniciar_sesion(request):
                 elif (usuario.fk_id_rol_id == 5):
                     return redirect('perfil')
         else:
-            messages.success(
+            messages.error(
                 request, 'El correo o la contraseña son incorrectos.')
             return redirect('iniciar_sesion')
     else:
@@ -347,6 +354,9 @@ def agregar_prov(request):
         if form_agregar_proveedor.is_valid():
             form_agregar_proveedor.save()
             return redirect('proveedores')
+        else:
+            contexto = {'form': form_agregar_proveedor}
+            return render(request, 'agregar_prov.html', contexto)
     else:
         form_agregar_proveedor = proveedor_form()
         contexto = {'form': form_agregar_proveedor}
@@ -362,6 +372,10 @@ def modificar_proveedor(request, id_prov):
         if form_agregar_proveedor.is_valid():
             form_agregar_proveedor.save()
             return redirect('proveedores')
+        else:
+            contexto = {'form': form_agregar_proveedor}
+            return render(request, 'modificar_prov.html', contexto)
+
     else:
         form_agregar_proveedor = proveedor_form(instance=prov_filter)
         contexto = {'form': form_agregar_proveedor}
@@ -397,6 +411,11 @@ def agregar_usuario(request):
             Usuario.objects.create(nombre_usuario=nombre_usuario, apellido_usuario=apellido_usuario,correo=correo,  direccion=direccion,fk_id_comuna_id=comuna,celular=celular,fk_id_rol_id=rol)
             #form_agregar_usuario.save()
             return redirect('usuarios')
+        else:
+            contexto = {'form': form_agregar_usuario}
+            return render(request, 'agregar_usuario.html', contexto)
+
+
     else:
         form_agregar_usuario = usuario_form()
         contexto = {'form': form_agregar_usuario}
@@ -406,11 +425,16 @@ def agregar_usuario(request):
 @role_required('1')
 def modificar_usuario(request, id_user):
     usuario_filter = Usuario.objects.get(id_usuario=id_user)
+    user_filter = User.objects.get(username= usuario_filter.correo)
     if request.method == "POST":
         form_modificar_usuario = modificar_usuario_form(request.POST, instance=usuario_filter)
         if form_modificar_usuario.is_valid():
+            user_filter.username = request.POST.get('id_correo')
             form_modificar_usuario.save()
             return redirect('usuarios')
+        else:
+            contexto = {'form': form_modificar_usuario}
+            return render(request, 'modificar_usuario.html', contexto)
     else:
         form_modificar_usuario = modificar_usuario_form(instance=usuario_filter)
         contexto = {'form': form_modificar_usuario}
