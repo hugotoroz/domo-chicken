@@ -6,23 +6,35 @@
 
 {% block template %}
 <div class="container text-white">
-    <h1 class="text-center" style="margin-bottom: 10px;">Pedidos a entregar</h1>
-    
+    <h1 class="text-center" style="margin: 40px 0px 100px;">Pedidos a Entregar</h1>
+    {% if pedido %}
     <div class="table-responsive">
         <table class="table">
             <thead>
                 <tr>
                     <th>DIRECCIÓN</th>
                     <th class="text-center">FECHA</th>
-
+                    <th>Productos</th>
                     <th scope="col" class="text-center">Opciones</th>
                 </tr>
             </thead>
             <tbody>
+                {% for pedidos in pedido %}
                 <tr>
-                    {% for pedidos in pedido %}
+                    
                     <td>{{ pedidos.descripcion }}</td>
                     <td class="text-center">{{ pedidos.fecha|date:"d/m/Y - H:i" }}</td>
+                    <td class="text-capitalize">
+                        {% for detalles in detalle %}
+                        {% if pedidos.id_pedido == detalles.fk_id_pedido %}
+                        {% for productos in producto %}
+                        {% if productos.id_producto == detalles.fk_id_productos %}
+                        {{ productos.nombre_producto }}{% if not forloop.last %} <br> {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        {% endfor %}
+                    </td> 
                     <td class="d-flex align-items-center justify-content-center">
                         <a href="{% url 'estado_repartidor' pedidos.id_pedido %}"
                         type="button" class="btn btn-success my-btn">
@@ -31,11 +43,15 @@
                     </td>
                     
 
-                    {% endfor %}
+                    
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
+    {% else %}
+    <div class="fw-bold text-center" style="margin-top: 100px;">Todavía no posee pedidos para entregar...</div>
+    {% endif %}
 </div>
 
 <!--

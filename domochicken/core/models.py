@@ -72,6 +72,7 @@ class Estado(models.Model):
     
 class Pedido(models.Model):
     id_pedido = models.BigAutoField(primary_key=True)
+    orden_pedido = models.CharField(max_length=14,null=True)
     descripcion = models.CharField(max_length=400)
     fecha = models.DateTimeField()
     total = models.IntegerField()

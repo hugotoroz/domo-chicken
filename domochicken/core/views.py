@@ -57,6 +57,12 @@ def index(request):
 
     if rol==1:
         return redirect('index_admin')
+    if rol==2:
+        return redirect('index_cocinero')
+    if rol==3:
+        return redirect('vista_repartidor')
+    if rol==4:
+        return redirect('index_admin')
     else:
         return render(request, 'index.html', contexto)
 
@@ -198,11 +204,6 @@ def respuesta_pago(request):
     if token_ws is None:
         raise Http404
     return redirect('pago')
-
-def vista_repartidor (request):
-    usuario = Usuario.objects.filter(correo=request.user.username).first()
-    pedido = Pedido.objects.filter((Q(fk_id_estado_id=1) | Q(fk_id_estado_id=2)) & Q(repartidor = usuario.id_usuario) ).values()
-    return render(request, 'repartidor.html',{'pedido':pedido})
     
 @login_required(login_url="/")
 @role_required('5') 
@@ -240,7 +241,7 @@ def pago(request):
         cantidad_pedidos = Pedido.objects.filter(repartidor=repartidor.id_usuario).count()
         if cantidad_pedidos < 2:
             # El repartidor actual puede ser agregado al campo repartidor de la tabla Pedido
-            pedido = Pedido.objects.create(descripcion=direccion_desc, fecha=fecha_actual, fk_id_usuario_id=usuario.id_usuario,total = carrito[primer_elemento]['acumulado'],repartidor=repartidor.id_usuario)
+            pedido = Pedido.objects.create(orden_pedido=orden_pedido,descripcion=direccion_desc, fecha=fecha_actual, fk_id_usuario_id=usuario.id_usuario,total = carrito[primer_elemento]['acumulado'],repartidor=repartidor.id_usuario)
             print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
             print(f"Repartidor {repartidor.id_usuario} agregado al pedido.")
             print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
@@ -267,7 +268,7 @@ def pago(request):
     #carrito.limpiar()
     return render(request, 'pago.html',{'cod_respuesta':cod_respuesta,'orden_pedido':orden_pedido,'pedido':pedido,'detalle':recibo_pedido})
 @login_required(login_url="/")
-@role_required('5')
+@role_required('5','2','3')
 def editar_perfil(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
     user_filter = User.objects.get(username= usuario.correo)
@@ -292,7 +293,7 @@ def editar_perfil(request):
         contexto = {'form': form_modificar_usuario,'usuario':usuario}
         return render(request, 'editar_perfil.html', contexto)
 @login_required(login_url="/")
-@role_required('5')
+@role_required('5','2','3')
 def modificar_clave_usuario(request):
     usuario_filter = Usuario.objects.filter(correo=request.user.username).first()
     user_filter = User.objects.get(username= usuario_filter.correo)
@@ -315,7 +316,7 @@ def modificar_clave_usuario(request):
         return render(request, 'modificar_clave_usuario.html', contexto)
 
 @login_required(login_url="/")
-@role_required('5')
+@role_required('5','2','3')
 def perfil(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
     pedido_usuario = Pedido.objects.filter((Q(fk_id_estado_id=1) | Q(fk_id_estado_id=2)) & Q(fk_id_usuario_id = usuario.id_usuario) ).values()
@@ -543,9 +544,12 @@ def pedido (request):
 #
 
 def index_cocinero(request):
-    solicitudes = Solicitud.objects.filter(estado="pendiente")
-    contexto = {'solicitudes': solicitudes}
-    return render(request, 'index_cocinero.html', contexto)
+    usuario = Usuario.objects.filter(correo=request.user.username).first()
+    pedido = Pedido.objects.filter((Q(fk_id_estado_id=1))).values()
+    print(pedido)
+    detalle =ReciboPedido.objects.all().values('fk_id_productos','fk_id_pedido')
+    producto =Producto.objects.all()
+    return render(request, 'index_cocinero.html',{'pedido':pedido,'detalle':detalle,'producto':producto})
 
 # URLS
 #
@@ -860,9 +864,10 @@ def verPedido(request):
     return render (request,'seguimiento.html',{'pedido':pedido_usuario,'detalle':detalle,'producto':producto,'estado':estado})
 def vista_repartidor (request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
-    pedido = Pedido.objects.filter((Q(fk_id_estado_id=1) | Q(fk_id_estado_id=2)) & Q(repartidor = usuario.id_usuario) ).values()
-    return render(request, 'repartidor.html',{'pedido':pedido})
-
+    pedido = Pedido.objects.filter((Q(fk_id_estado_id=2)) & Q(repartidor = usuario.id_usuario) ).values()
+    detalle =ReciboPedido.objects.all().values('fk_id_productos','fk_id_pedido')
+    producto =Producto.objects.all()
+    return render(request, 'repartidor.html',{'pedido':pedido,'detalle':detalle,'producto':producto})
 
 def estado_repartidor(request, id_pedido):
     estado = get_object_or_404(Estado, id_estado=3)
@@ -870,4 +875,11 @@ def estado_repartidor(request, id_pedido):
     pedido.fk_id_estado = estado
     pedido.save()
     return redirect('vista_repartidor')
+
+def estado_cocinero(request, id_pedido):
+    estado = get_object_or_404(Estado, id_estado=2)
+    pedido = get_object_or_404(Pedido, id_pedido=id_pedido)
+    pedido.fk_id_estado = estado
+    pedido.save()
+    return redirect('index_cocinero')
 
