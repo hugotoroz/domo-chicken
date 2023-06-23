@@ -52,7 +52,7 @@
     </div>
 </section>
 <!---->
-<section class="catalogo">
+<section class="catalogo" >
     <div class="container">
         <h1 class="text-center">Catálogo</h1>
         <div class="row">
@@ -70,9 +70,10 @@
                         <p class="price card-text text-center">${{x.precio}}</p>
                     </div>
 
-                    <button href="{% url 'Add' x.id_producto %}" type="button " class="boton">
+                    <a href="{% url 'Add' x.id_producto %}" type="button " class="boton"
+                        style="text-decoration: none;">
                         Añadir al Carrito
-                    </button>
+                    </a>
 
                 </div>
             </div>
@@ -88,7 +89,7 @@
 
 <section id="ubicacion">
     <div class="container">
-        <h1>Ubicación</h1>
+        <h1 class="text-center" style="margin: 40px 0px 50px; ">Ubicación</h1>
     </div>
     <div class="ratio ratio-21x9" style="--bs-aspect-ratio: 20.8571428571%">
         <iframe

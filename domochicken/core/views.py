@@ -144,12 +144,13 @@ def modificar_producto(request, idProd):
         contexto = {'producto': producto_filter, 'form': form_agregar_producto}
         return render(request, 'modificar_producto.html', contexto)
 
-
 def catalogo(request):
     producto = Producto.objects.filter(fk_id_proveedor=1, prod_is_active=1)
     contexto = {'producto': producto}
     return render(request, 'catalogo.html', contexto)
 
+@login_required(login_url="/")
+@role_required('5')
 def carrito(request):
     return render(request, 'carrito.html')
 #Función que genera el pago para así generar el token_ws.
@@ -188,6 +189,8 @@ def generar_pago(request):
         url_response = content['url']
         #print("token: ",token_response,"url: ",url_response)
         return render(request, 'generar_pago.html',{'token_response': token_response,'url_response' : url_response})
+@login_required(login_url="/")
+@role_required('5')
 #Esta función está hecha solamente para que el usuario no pueda ver el token que devuelve Webpay.
 def respuesta_pago(request):
     token_ws = request.GET.get('token_ws')
@@ -195,7 +198,8 @@ def respuesta_pago(request):
     if token_ws is None:
         raise Http404
     return redirect('pago')
-    
+@login_required(login_url="/")
+@role_required('5') 
 def pago(request):
     token_ws = request.session.get('token_ws')
     pedido= None
@@ -244,7 +248,8 @@ def pago(request):
     #request.session['token_ws'] = None
     #carrito.limpiar()
     return render(request, 'pago.html',{'cod_respuesta':cod_respuesta,'orden_pedido':orden_pedido,'pedido':pedido,'detalle':recibo_pedido})
-
+@login_required(login_url="/")
+@role_required('5')
 def editar_perfil(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
     user_filter = User.objects.get(username= usuario.correo)
@@ -268,6 +273,8 @@ def editar_perfil(request):
         form_modificar_usuario = modificar_usuario_form(instance=usuario)
         contexto = {'form': form_modificar_usuario,'usuario':usuario}
         return render(request, 'editar_perfil.html', contexto)
+@login_required(login_url="/")
+@role_required('5')
 def modificar_clave_usuario(request):
     usuario_filter = Usuario.objects.filter(correo=request.user.username).first()
     user_filter = User.objects.get(username= usuario_filter.correo)
@@ -290,6 +297,7 @@ def modificar_clave_usuario(request):
         return render(request, 'modificar_clave_usuario.html', contexto)
 
 @login_required(login_url="/")
+@role_required('5')
 def perfil(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
     pedido_usuario = Pedido.objects.filter((Q(fk_id_estado_id=1) | Q(fk_id_estado_id=2)) & Q(fk_id_usuario_id = usuario.id_usuario) ).values()
@@ -376,7 +384,8 @@ def cerrar_sesion(request):
     logout(request)
     return redirect('iniciar_sesion')
 
-
+@login_required(login_url="/")
+@role_required('1')
 def agregar_prov(request):
     if request.method == "POST":
         form_agregar_proveedor = proveedor_form(request.POST)
@@ -393,6 +402,7 @@ def agregar_prov(request):
 
 
 @login_required(login_url="/")
+@role_required('1')
 def modificar_proveedor(request, id_prov):
     prov_filter = Proveedor.objects.get(id_proveedor=id_prov)
     if request.method == "POST":
@@ -412,6 +422,7 @@ def modificar_proveedor(request, id_prov):
 
 
 @login_required(login_url="/")
+@role_required('1')
 def solicitudes_proveedor(request):
     solicitudes = Solicitud.objects.all()
     contexto = {'solicitudes': solicitudes}
@@ -771,8 +782,11 @@ def eliminar_producto(request, id_producto):
 ####FUNCIONES CARRITO
 
 
-
 def agregar_producto(request, idProducto):
+    if not request.user.is_authenticated:
+        messages.error(
+            request, 'Debe iniciar sesión para acceder al carrito.')
+        return redirect('iniciar_sesion')
     carrito = Carrito(request)
     producto = Producto.objects.get(id_producto = idProducto)
     carrito.agregar(producto)

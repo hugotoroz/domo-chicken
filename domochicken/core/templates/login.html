@@ -4,6 +4,12 @@
 {% endblock %}
 {% block title %}Domo Chicken - Iniciar sesión{% endblock %}
 {% block template %}
+<style>
+    .derechos {
+      position: relative !important;
+      margin-top: 100px;
+    }
+</style>
 <!-- Section: Design Block -->
 <section class="text-center">
     <!-- Background image -->
@@ -24,7 +30,7 @@
         <div class="card-body py-5 px-md-5">
 
             <div class="row d-flex justify-content-center">
-                <div class="col-lg-4">
+                <div class="col-xl-5 col-lg-10 col-md-10 col-sm-10">
                     <h2 class="fw-bold mb-5">Iniciar sesión</h2>
 
                     <form class="form-login needs-validation" action="{% url 'iniciar_sesion' %}" method="post"
