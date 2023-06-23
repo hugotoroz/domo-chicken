@@ -25,6 +25,12 @@
     <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
 
     {% block css %}{% endblock %}
+    <script>
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    </script>
+
 
     <title>{% block title %}{% endblock %}</title>
     <style>
@@ -69,8 +75,8 @@
             text-align: center;
             color: #fff;
             bottom: 0;
+            position: absolute;
             width: 100%;
-            position: fixed;
         }
 
         .btn-primario {
@@ -103,7 +109,7 @@
         <div class="container-fluid">
             <!-- INSETAR LOGO ACÁ -->
             <a class="navbar-brand" href="{% url 'index' %}">
-                <img src="../static/img/logo_navbar.png" alt="Bootstrap" width="50">
+                <img src="../static/img/logo_navbar.png" alt="Domo Chicken" width="50">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">

@@ -21,6 +21,11 @@
     <!-- jQuery-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     {% block css %}{% endblock %}
+    <script>
+        if ( window.history.replaceState ) {
+            window.history.replaceState( null, null, window.location.href );
+        }
+    </script>    
 
     <title>{% block title %}{% endblock %}</title>
     <style>
@@ -90,7 +95,7 @@
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
             <a href="{% url 'index' %}">
-                <img src="../static/img/logo_navbar.png" alt="Bootstrap" width="50">
+                <img src="../static/img/logo_navbar.png" alt="Domo Chicken" width="50">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
                 aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -124,7 +129,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{% url 'agregar_prov' %}">Agregar proveedor</a></li>
-                            <li><a class="dropdown-item" href="{% url 'solicitudes_proveedor' %}">Solciitudes
+                            <li><a class="dropdown-item" href="{% url 'solicitudes_proveedor' %}">Solicitudes
                                     pendientes</a></li>
                             <li>
                                 <hr class="dropdown-divider">
