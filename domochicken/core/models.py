@@ -69,11 +69,13 @@ class Estado(models.Model):
     estado = models.CharField(max_length=50)
     def __str__(self):
         return self.estado
+    
 class Pedido(models.Model):
     id_pedido = models.BigAutoField(primary_key=True)
     descripcion = models.CharField(max_length=400)
     fecha = models.DateTimeField()
     total = models.IntegerField()
+    repartidor = models.IntegerField(null=True)
     fk_id_estado = models.ForeignKey(Estado,on_delete=models.CASCADE, default=1)
     fk_id_usuario = models.ForeignKey(Usuario,on_delete=models.CASCADE,)
     def __str__(self):
