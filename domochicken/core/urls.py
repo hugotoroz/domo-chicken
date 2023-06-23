@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import generar_pago,respuesta_pago,pago,error_servidor, lp_lista_pedidos, lp_mod_estado, modificar_estado,pagina_no_encontrada,index_repartidor,modificar_usuario,agregar_usuario,modificar_proveedor,modificar_producto,agregar_producto_nuevo,eliminar_prod_cart, guardarPedido, limpiar_carrito, p_activar_producto,p_desactivar_producto,p_eliminar_producto,p_lista_productos,finalizar_solicitud, pedido, restar_producto,sp_finalizar_solicitud,sp_lista_solicitudes,activar_proveedor, desactivar_proveedor, eliminar_proveedor, p_lista_proveedores, u_lista_usuarios,activar_producto, desactivar_producto, proveedores, modificarRol, pv_activar_proveedor, pv_desactivar_proveedor, pv_eliminar_proveedor, sp_mas_info,usuarios, activar_usuario, desactivar_usuario, eliminar_usuario, solicitudes_proveedor,agregar_prov, index, index_admin, productos, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,editarperfil,modificarPerfil, stock_productos,solicitar_stock,agregar_producto,eliminar_producto, verPedido, ua_activar_usuario, ua_desactivar_usuario, ua_eliminar_usuario, ua_mod_rol,index_cocinero
+from .views import modificar_clave_usuario,modificar_clave,generar_pago,respuesta_pago,pago,error_servidor, lp_lista_pedidos, lp_mod_estado, modificar_estado,pagina_no_encontrada,index_repartidor,modificar_usuario,agregar_usuario,modificar_proveedor,modificar_producto,agregar_producto_nuevo,eliminar_prod_cart, guardarPedido, limpiar_carrito, p_activar_producto,p_desactivar_producto,p_eliminar_producto,p_lista_productos,finalizar_solicitud, pedido, restar_producto,sp_finalizar_solicitud,sp_lista_solicitudes,activar_proveedor, desactivar_proveedor, eliminar_proveedor, p_lista_proveedores, u_lista_usuarios,activar_producto, desactivar_producto, proveedores, modificarRol, pv_activar_proveedor, pv_desactivar_proveedor, pv_eliminar_proveedor, sp_mas_info,usuarios, activar_usuario, desactivar_usuario, eliminar_usuario, solicitudes_proveedor,agregar_prov, index, index_admin, productos, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,editar_perfil, stock_productos,solicitar_stock,agregar_producto,eliminar_producto, verPedido, ua_activar_usuario, ua_desactivar_usuario, ua_eliminar_usuario, ua_mod_rol,index_cocinero
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -17,9 +17,8 @@ urlpatterns = [
     path('catalogo/', catalogo, name="catalogo"),
     
     path('perfil/', perfil, name="perfil"),
-    path('editarperfil/',editarperfil,name="editarperfil"),
+    path('editar_perfil/',editar_perfil,name="editar_perfil"),
 
-    path('modificarPerfil/<int:id_usuario>',modificarPerfil,name="modificarPerfil"),
 
     
     #Render de pagina de agregar producto
@@ -40,6 +39,10 @@ urlpatterns = [
     path('usuarios/',usuarios,name="usuarios"),
     path('agregar_usuario/',agregar_usuario,name="agregar_usuario"),
     path('modificar_usuario/<id_user>',modificar_usuario,name="modificar_usuario"),
+    #Para el cliente
+    path('modificar_clave_usuario/',modificar_clave_usuario,name="modificar_clave_usuario"),
+    #Para el administrador
+    path('modificar_clave/<id_user>',modificar_clave,name="modificar_clave"),
     #Funciones modificar rol
     path('modificarRol/<id_usuario>/',modificarRol,name="modificarRol"),
     #Funcion para desactivar un usuario

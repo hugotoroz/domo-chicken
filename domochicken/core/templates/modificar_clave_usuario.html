@@ -1,4 +1,4 @@
-{% extends "base/base_admin.html" %}
+{% extends "base/base.html" %}
 {% block css %}
 <link rel="stylesheet" href="../static/css/style.css">
 <link rel="stylesheet" href="../static/css/agregar_producto.css">
@@ -8,17 +8,14 @@
 {% block title %}Domo Chicken - La mejor calidad{% endblock %}
 {% block template %}
 
-<h1 class="text-white text-center" style="margin-bottom: 10px;">Modificar usuario</h1>
+<h1 class="text-white text-center" style="margin-bottom: 10px;">Modificar Contraseña</h1>
 
-
-<form method="post" class="form" name="form_agregar_usuario" enctype="multipart/form-data">
+<form method="post" class="form" name="form_modificar_clave" enctype="multipart/form-data">
     {% csrf_token %}
     {{form|crispy}}
-    
-    <button class="btn btn-primario" type="submit">Modificar</button>
-    <div class="">¿Desea modificar la contraseña? <a href="{% url 'modificar_clave' usuario.id_usuario %}" class="fw-bold">Click aquí</a></div>
-</form>
 
+    <button class="btn btn-primario" type="submit">Modificar</button>
+</form>
 <div class="curved-div">
     <svg viewBox="0 0 1440 319">
         <path fill="#fff" fill-opacity="1"
@@ -26,4 +23,20 @@
         </path>
     </svg>
 </div>
+{% endblock %}
+{% block js %}
+<script>
+    function togglePassword() {
+        var x = document.getElementById("id_clave");
+        var y = document.getElementById("show-hide");
+        if (x.type === "password") {
+            x.type = "text";
+            y.innerHTML = "Ocultar Contraseña";
+        } else {
+            x.type = "password";
+            y.innerHTML = "Mostrar Contraseña";
+
+        }
+    }
+</script>
 {% endblock %}

@@ -18,33 +18,36 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <div class="text-header">Editar Perfil</div>
+                        <div class="text-header fw-bold">Mis datos</div>
                     </div>
                     <div class="card-body">
-                        <form class="needs-validation" enctype="multipart/form-data">
-                            <div class="form-group">
-                                <label for="email">Correo electrónico: </label>
-                                <input disabled class="form-control" value="{{usuario.correo}}" type="email">
+                        <div class="form-group">
+                            <label for="email">Correo electrónico: </label>
+                            <input disabled class="form-control" value="{{usuario.correo}}" type="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="cellphone">Número de teléfono | Celular:</label>
+                            <input disabled class="form-control" value="{{usuario.celular}}" type="cellphone">
+                        </div>
+                        <div class="form-group">
+                            <label for="text">Dirección:</label>
+                            <input disabled class="form-control" value="{{usuario.direccion}}" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label for="text">Comuna:</label>
+                            <input disabled class="form-control" value="{{usuario.fk_id_comuna.comuna}}" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label for="cellphone">Fecha de creación:</label>
+                            <input disabled class="form-control" value=" {{ user.date_joined|date:'d/m/Y - H:i' }}"
+                                type="text">
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <a href="{% url 'editar_perfil' %}" class="btn btn-primario"
+                                    style="margin-top: 10px;">Editar perfil</a>
                             </div>
-                            <div class="form-group">
-                                <label for="cellphone">Número de teléfono | Celular:</label>
-                                <input disabled class="form-control" value="{{usuario.celular}}" type="cellphone">
-                            </div>
-                            <div class="form-group">
-                                <label for="text">Dirección:</label>
-                                <input disabled class="form-control" value="{{usuario.direccion}}" type="text">
-                                <div class="invalid-feedback">Por favor ingrese un número celular</div>
-                            </div>
-                            <div class="form-group">
-                                <label for="cellphone">Fecha de creación:</label>
-                                <input disabled class="form-control" value=" {{ user.date_joined|date:"d/m/Y - H:i" }}" type="text">
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <a href="{% url 'editarperfil' %}" class="btn btn-primario" style="margin-top: 10px;">Editar perfil</a>
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>

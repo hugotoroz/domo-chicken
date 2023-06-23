@@ -10,7 +10,9 @@ from .models import Comuna, Estado, Pedido, Producto, Proveedor, ReciboPedido, R
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.contrib.auth.models import User
-from .forms import producto_form, proveedor_form, usuario_form,modificar_usuario_form,registrar_usuario_form
+from django.forms import ValidationError
+from django.contrib.auth.hashers import check_password
+from .forms import producto_form, proveedor_form, usuario_form,modificar_usuario_form,registrar_usuario_form,modificar_clave_form,solicitar_stock_form
 from django.db.models import Q
 import requests
 import json
@@ -108,15 +110,21 @@ def stock_productos(request):
 @role_required('1','4')
 def solicitar_stock(request, id_prod):
     producto = Producto.objects.get(id_producto=id_prod)
+    usuario = Usuario.objects.filter(correo=request.user.username).first()
     if request.method == "POST":
-        usuario = Usuario.objects.filter(correo=request.user.username).first()
-        cantidad = request.POST['cantidad']
-        Solicitud.objects.create(cantidad_solicitud=cantidad, estado="pendiente", realizado_por=usuario.correo,
+        form_solicitar_stock = solicitar_stock_form(request.POST)
+        if form_solicitar_stock.is_valid():
+        
+            cantidad = request.POST['cantidad']
+            Solicitud.objects.create(cantidad_solicitud=cantidad, estado="pendiente", realizado_por=usuario.correo,
                                  fk_id_proveedor=producto.fk_id_proveedor, fk_id_producto_id=id_prod)
-        producto.save()
+        else:
+            contexto = {'form': form_solicitar_stock}
+            return render(request, 'solicitar_stock.html', contexto)    
         return redirect('stock_productos')
     else:
-        contexto = {'producto': producto}
+        form_solicitar_stock = solicitar_stock_form()
+        contexto = {'form': form_solicitar_stock}
         return render(request, 'solicitar_stock.html', contexto)
 
 @login_required(login_url="/")
@@ -237,28 +245,49 @@ def pago(request):
     #carrito.limpiar()
     return render(request, 'pago.html',{'cod_respuesta':cod_respuesta,'orden_pedido':orden_pedido,'pedido':pedido,'detalle':recibo_pedido})
 
-def editarperfil(request):
+def editar_perfil(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
-    contexto = {'usuario': usuario}
-    return render(request, 'editarperfil.html', contexto)
-
-
-@login_required(login_url="/")
-def modificarPerfil(request, id_usuario):
+    user_filter = User.objects.get(username= usuario.correo)
     if request.method == "POST":
-        usuario = Usuario.objects.get(id_usuario=id_usuario)
-        usuario.nombre_usuario = request.POST.get('nomusu')
-        usuario.apellido_usuario = request.POST.get('apellidousu')
-        usuario.celular = request.POST.get('celularusu')
-        usuario.direccion = request.POST.get('direccionusu')
-        usuario.save()
-        contexto = {'usuario': usuario}
-        messages.success(request, '¡Información modificada!')
-        return render(request, 'perfil.html', contexto)
+        form_modificar_usuario = modificar_usuario_form(request.POST, instance=usuario)
+        email= request.POST.get('correo')
+        email.strip()
+        if email != usuario.correo:
+            if User.objects.filter(username__iexact=email).exists():
+                form_modificar_usuario.add_error('correo','El correo ingresado ya posee una cuenta asociada.')
+        if form_modificar_usuario.is_valid():
+            if email != usuario.correo:
+                user_filter.usernamec = email
+            user_filter.save()
+            form_modificar_usuario.save()
+            return redirect('perfil')
+        else:
+            contexto = {'form': form_modificar_usuario,'usuario':usuario}
+            return render(request, 'editar_perfil.html', contexto)
     else:
-        usuarioM = Usuario.objects.get(id_usuario=id_usuario)
-    return render(request, 'editarperfil.html', {'usuario': usuarioM})
-
+        form_modificar_usuario = modificar_usuario_form(instance=usuario)
+        contexto = {'form': form_modificar_usuario,'usuario':usuario}
+        return render(request, 'editar_perfil.html', contexto)
+def modificar_clave_usuario(request):
+    usuario_filter = Usuario.objects.filter(correo=request.user.username).first()
+    user_filter = User.objects.get(username= usuario_filter.correo)
+    if request.method == "POST":
+        form_modificar_clave = modificar_clave_form(request.POST)
+        new_password= request.POST.get('clave')
+        if check_password(new_password,user_filter.password):
+            #raise ValidationError('Las contraseña ingresada coincide con la actual.')
+            form_modificar_clave.add_error('clave', 'Las contraseña ingresada coincide con la actual.')
+        if form_modificar_clave.is_valid():
+            user_filter.set_password(new_password)
+            user_filter.save()
+            return redirect('index')
+        else:
+            contexto = {'form': form_modificar_clave}
+            return render(request, 'modificar_clave_usuario.html', contexto)
+    else:
+        form_modificar_clave = modificar_clave_form()
+        contexto = {'form': form_modificar_clave}
+        return render(request, 'modificar_clave_usuario.html', contexto)
 
 @login_required(login_url="/")
 def perfil(request):
@@ -388,8 +417,9 @@ def solicitudes_proveedor(request):
     contexto = {'solicitudes': solicitudes}
     return render(request, 'solicitudes_proveedor.html', contexto)
 
+@login_required(login_url="/")
+@role_required('1')
 def usuarios(request):
-
     return render(request, 'usuarios.html')
 
 @login_required(login_url="/")
@@ -428,17 +458,46 @@ def modificar_usuario(request, id_user):
     user_filter = User.objects.get(username= usuario_filter.correo)
     if request.method == "POST":
         form_modificar_usuario = modificar_usuario_form(request.POST, instance=usuario_filter)
+        email= request.POST.get('correo')
+        email.strip()
+        if email != usuario_filter.correo:
+            if User.objects.filter(username__iexact=email).exists():
+                form_modificar_usuario.add_error('correo','El correo ingresado ya posee una cuenta asociada.')
         if form_modificar_usuario.is_valid():
-            user_filter.username = request.POST.get('id_correo')
+            if email != usuario_filter.correo:
+                user_filter.usernamec = email
+            user_filter.save()
             form_modificar_usuario.save()
             return redirect('usuarios')
         else:
-            contexto = {'form': form_modificar_usuario}
+            contexto = {'form': form_modificar_usuario,'usuario':usuario_filter}
             return render(request, 'modificar_usuario.html', contexto)
     else:
         form_modificar_usuario = modificar_usuario_form(instance=usuario_filter)
-        contexto = {'form': form_modificar_usuario}
+        contexto = {'form': form_modificar_usuario,'usuario':usuario_filter}
         return render(request, 'modificar_usuario.html', contexto)
+@login_required(login_url="/")
+@role_required('1')
+def modificar_clave(request, id_user):
+    usuario_filter = Usuario.objects.get(id_usuario=id_user)
+    user_filter = User.objects.get(username= usuario_filter.correo)
+    if request.method == "POST":
+        form_modificar_clave = modificar_clave_form(request.POST)
+        new_password= request.POST.get('clave')
+        if check_password(new_password,user_filter.password):
+            #raise ValidationError('Las contraseña ingresada coincide con la actual.')
+            form_modificar_clave.add_error('clave', 'Las contraseña ingresada coincide con la actual.')
+        if form_modificar_clave.is_valid():
+            user_filter.set_password(new_password)
+            user_filter.save()
+            return redirect('usuarios')
+        else:
+            contexto = {'form': form_modificar_clave}
+            return render(request, 'modificar_clave.html', contexto)
+    else:
+        form_modificar_clave = modificar_clave_form()
+        contexto = {'form': form_modificar_clave}
+        return render(request, 'modificar_clave.html', contexto)
 @login_required(login_url="/")
 @role_required('1','3')
 def index_repartidor(request):
