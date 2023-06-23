@@ -858,3 +858,16 @@ def verPedido(request):
     print(pedido_usuario)    
 
     return render (request,'seguimiento.html',{'pedido':pedido_usuario,'detalle':detalle,'producto':producto,'estado':estado})
+def vista_repartidor (request):
+    usuario = Usuario.objects.filter(correo=request.user.username).first()
+    pedido = Pedido.objects.filter((Q(fk_id_estado_id=1) | Q(fk_id_estado_id=2)) & Q(repartidor = usuario.id_usuario) ).values()
+    return render(request, 'repartidor.html',{'pedido':pedido})
+
+
+def estado_repartidor(request, id_pedido):
+    estado = get_object_or_404(Estado, id_estado=3)
+    pedido = get_object_or_404(Pedido, id_pedido=id_pedido)
+    pedido.fk_id_estado = estado
+    pedido.save()
+    return redirect('vista_repartidor')
+

@@ -7,7 +7,7 @@
 {% block template %}
 <div class="container text-white">
     <h1 class="text-center" style="margin-bottom: 10px;">Pedidos a entregar</h1>
-
+    
     <div class="table-responsive">
         <table class="table">
             <thead>
@@ -24,10 +24,10 @@
                     <td>{{ pedidos.descripcion }}</td>
                     <td class="text-center">{{ pedidos.fecha|date:"d/m/Y - H:i" }}</td>
                     <td class="d-flex align-items-center justify-content-center">
-                        <button href=""
+                        <a href="{% url 'estado_repartidor' pedidos.id_pedido %}"
                         type="button" class="btn btn-success my-btn">
                        Entregar Pedido
-                    </button>
+                    </a>
                     </td>
                     
 
