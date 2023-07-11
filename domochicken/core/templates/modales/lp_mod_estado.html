@@ -9,7 +9,6 @@
             <div class="col d-flex align-items-center justify-content-center">
                 <p>Seleccione un estado</p>
             </div>
-            <div class="col">
                 <form hx-post="{% url 'modificar_estado' id_pedido %}" method="POST" enctype="multipart/form-data"
                     name="formeditusu" id="formeditusu">
                     {% csrf_token %}
@@ -23,14 +22,15 @@
                         {% endif %}
                         {% endfor %}
                     </select>
+                    <div class="modal-footer">
+                        <span id="grupo-id"></span>
+                        <button type="button" class="btn btn-secundario" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primario" id="btn-salir">Cambiar</button>
+                    </div>
                 </form>
-            </div>
+    
         </div>
     </div>
-    <div class="modal-footer">
-        <span id="grupo-id"></span>
-        <button type="button" class="btn btn-secundario" data-bs-dismiss="modal">Cerrar</button>
-        <button type="submit" class="btn btn-primario" id="btn-salir">Cambiar</button>
-    </div>
+    
 
 </div>

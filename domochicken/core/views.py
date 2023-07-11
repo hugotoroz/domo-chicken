@@ -14,6 +14,9 @@ from django.forms import ValidationError
 from django.contrib.auth.hashers import check_password
 from .forms import producto_form, proveedor_form, usuario_form,modificar_usuario_form,registrar_usuario_form,modificar_clave_form,solicitar_stock_form
 from django.db.models import Q
+from django.db.models import Sum
+from datetime import datetime
+from django.utils import timezone
 import requests
 import json
 import random
@@ -72,7 +75,9 @@ def index(request):
 def index_admin(request):
     usuarios = Usuario.objects.filter(correo=request.user.username).first()
     roles = Rol.objects.all()
-    return render(request, 'index_admin.html', {'usuarios': usuarios, 'roles': roles})
+    ganancias_mes_actual = obtener_ganancias_mes_actual()
+    ventas_mes_actual = obtener_ventas_mes_actual()
+    return render(request, 'index_admin.html', {'usuarios': usuarios, 'roles': roles,'ganancias_mes_actual': obtener_ganancias_mes_actual,'ventas_mes_actual':ventas_mes_actual})
 
 @login_required(login_url="/")
 @role_required('1','2')
@@ -565,8 +570,8 @@ def sp_lista_solicitudes(request):
 @login_required(login_url="/")
 @role_required('1')
 def u_lista_usuarios(request):
-    usuarios = Usuario.objects.filter(Q(fk_id_rol_id=2) | Q(fk_id_rol_id=3) | Q(
-        fk_id_rol_id=4) | Q(fk_id_rol_id=5) & Q(row_status=1))
+    usuarios = Usuario.objects.filter(
+    (Q(fk_id_rol_id=2) | Q(fk_id_rol_id=3) | Q(fk_id_rol_id=4) | Q(fk_id_rol_id=5)) & Q(row_status=1))
     roles = Rol.objects.all()
     return render(request, 'modales/lista_usuarios.html', {'usuarios': usuarios, 'roles': roles})
 
@@ -876,6 +881,7 @@ def estado_repartidor(request, id_pedido):
     pedido.save()
     return redirect('vista_repartidor')
 
+
 def estado_cocinero(request, id_pedido):
     estado = get_object_or_404(Estado, id_estado=2)
     pedido = get_object_or_404(Pedido, id_pedido=id_pedido)
@@ -883,3 +889,36 @@ def estado_cocinero(request, id_pedido):
     pedido.save()
     return redirect('index_cocinero')
 
+
+def obtener_ganancias_mes_actual():
+    # Obtener el mes actual
+    mes_actual = timezone.now().month  
+    # Obtener la suma de los totales de los pedidos del mes actual
+    ganancias_mes_actual = Pedido.objects.filter(
+        fecha__month=mes_actual,
+        fk_id_estado=3
+    ).aggregate(total_ganancias=Sum('total'))['total_ganancias']
+
+    # Verificar si hay ganancias para el mes actual
+    if ganancias_mes_actual is not None:
+        ganancias_mes_actual = "{:,.0f}".format(ganancias_mes_actual).replace(",", ".")
+        return ganancias_mes_actual
+    else:
+        return 0
+
+
+def obtener_ventas_mes_actual():
+    # Obtener el mes actual
+    mes_actual = timezone.now().month
+
+    # Obtener la suma de los totales de los pedidos del mes actual
+    ganancias_mes_actual = Pedido.objects.filter(
+        fecha__month=mes_actual,
+        fk_id_estado=3
+    ).count()
+
+    # Verificar si hay ganancias para el mes actual
+    if ganancias_mes_actual is not None:
+        return ganancias_mes_actual
+    else:
+        return 0
