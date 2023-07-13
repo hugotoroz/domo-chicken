@@ -17,6 +17,9 @@ from django.db.models import Q
 from django.db.models import Sum
 from datetime import datetime
 from django.utils import timezone
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 import requests
 import json
 import random
@@ -867,12 +870,48 @@ def verPedido(request):
     print(pedido_usuario)    
 
     return render (request,'seguimiento.html',{'pedido':pedido_usuario,'detalle':detalle,'producto':producto,'estado':estado})
+
 def vista_repartidor (request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
-    pedido = Pedido.objects.filter((Q(fk_id_estado_id=2)) & Q(repartidor = usuario.id_usuario) ).values()
+    pedido = Pedido.objects.filter((Q(fk_id_estado_id=2)) & Q(repartidor = usuario.id_usuario)).values()
     detalle =ReciboPedido.objects.all().values('fk_id_productos','fk_id_pedido')
     producto =Producto.objects.all()
     return render(request, 'repartidor.html',{'pedido':pedido,'detalle':detalle,'producto':producto})
+
+def actualizar_tabla(request):
+    usuario = Usuario.objects.filter(correo=request.user.username).first()
+    pedido = Pedido.objects.filter((Q(fk_id_estado_id=2)) & Q(repartidor=usuario.id_usuario)).values()
+    detalle = ReciboPedido.objects.all().values('fk_id_productos', 'fk_id_pedido')
+    producto = Producto.objects.all()
+    # Construir los datos actualizados de la tabla
+    datos_tabla = []
+    for pedidos in pedido:
+        descripcion = pedidos['descripcion']
+        fecha = pedidos['fecha'].strftime('%d/%m/%Y - %H:%M')
+
+        productos = ""
+        for detalles in detalle:
+            if pedidos['id_pedido'] == detalles['fk_id_pedido']:
+                for productos in producto:
+                    if productos['id_producto'] == detalles['fk_id_productos']:
+                        productos += productos['nombre_producto'] + '<br>'
+
+        url = reverse('estado_repartidor', args=[pedidos['id_pedido']])
+
+        datos_tabla.append({
+            'descripcion': descripcion,
+            'fecha': fecha,
+            'productos': productos,
+            'url': url
+        })
+
+    # Renderizar el HTML de la tabla actualizada
+    tabla_html = render_to_string('repartidor.html', {'datos_tabla': datos_tabla})
+    # Eliminar etiquetas HTML innecesarias
+    tabla_plana = strip_tags(tabla_html)
+
+    return JsonResponse({'tabla_html': tabla_plana})
+
 
 def estado_repartidor(request, id_pedido):
     estado = get_object_or_404(Estado, id_estado=3)

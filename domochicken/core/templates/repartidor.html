@@ -21,7 +21,7 @@
             <tbody>
                 {% for pedidos in pedido %}
                 <tr>
-                    
+
                     <td>{{ pedidos.descripcion }}</td>
                     <td class="text-center">{{ pedidos.fecha|date:"d/m/Y - H:i" }}</td>
                     <td class="text-capitalize">
@@ -34,16 +34,16 @@
                         {% endfor %}
                         {% endif %}
                         {% endfor %}
-                    </td> 
-                    <td class="d-flex align-items-center justify-content-center">
-                        <a href="{% url 'estado_repartidor' pedidos.id_pedido %}"
-                        type="button" class="btn btn-success my-btn">
-                       Entregar Pedido
-                    </a>
                     </td>
-                    
+                    <td class="d-flex align-items-center justify-content-center">
+                        <a href="{% url 'estado_repartidor' pedidos.id_pedido %}" type="button"
+                            class="btn btn-success my-btn">
+                            Entregar Pedido
+                        </a>
+                    </td>
 
-                    
+
+
                 </tr>
                 {% endfor %}
             </tbody>
@@ -63,4 +63,42 @@
     </svg>
 </div>
 -->
+<script>
+    $(document).ready(function () {
+        setInterval(actualizarTabla, 5000); // Actualiza la tabla cada 5 segundos (ajusta el intervalo según tus necesidades)
+
+        function actualizarTabla() {
+            $.ajax({
+                url: '/actualizar_tabla/',  // Ruta a tu vista 'actualizar_tabla'
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    var datosTabla = response.datos;
+                    // Actualiza la tabla con los nuevos datos
+                    actualizarDatosTabla(datosTabla);
+                },
+                error: function (xhr, errmsg, err) {
+                    console.log(errmsg); // Manejo de errores
+                }
+            });
+        }
+
+        function actualizarDatosTabla(datosTabla) {
+            var tbody = $('.table tbody');
+            tbody.empty(); // Limpia el contenido actual de la tabla
+
+            for (var i = 0; i < datosTabla.length; i++) {
+                var fila = '<tr>' +
+                    '<td>' + datosTabla[i].descripcion + '</td>' +
+                    '<td class="text-center">' + datosTabla[i].fecha + '</td>' +
+                    '<td class="text-capitalize">' + datosTabla[i].productos + '</td>' +
+                    '<td class="d-flex align-items-center justify-content-center">' +
+                    '<a href="' + datosTabla[i].url + '" type="button" class="btn btn-success my-btn">Entregar Pedido</a>' +
+                    '</td>' +
+                    '</tr>';
+                tbody.append(fila); // Agrega la fila a la tabla
+            }
+        }
+    });
+</script>
 {% endblock %}
