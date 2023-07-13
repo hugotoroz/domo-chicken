@@ -307,7 +307,7 @@ def generar_pago(request):
             "buy_order": order,
             "session_id": session,
             "amount": carrito[primer_elemento]['acumulado'],
-            "return_url": 'http://127.0.0.1:8000/respuesta_pago/'
+            "return_url": 'http://192.168.1.14:8000/respuesta_pago/'
         }
 
         response = requests.post(url, headers=headers, data=json.dumps(data))
@@ -332,7 +332,7 @@ def pago(request):
     token_ws = request.session.get('token_ws')
     pedido= None
     recibo_pedido= None
-    carrito = Carrito(request)
+    carrito2 = Carrito(request)
     if token_ws is None:
         raise Http404
     print(token_ws)
@@ -388,14 +388,15 @@ def pago(request):
         print('****')
         print(pedido.id_pedido)
         print('****')
-
         #Asignación automática de un repartidor al pedido.
         repartidores = Usuario.objects.filter(fk_id_rol=3)
         for repartidor in repartidores:
             cantidad_pedidos = Pedido.objects.filter(repartidor=repartidor.id_usuario).count()
             if cantidad_pedidos < 2:
+                pedido2 = Pedido.objects.get(id_pedido=pedido.id_pedido)
                 #Acá se asigna al repartidor
-                pedido.repartidor = repartidor.id_usuario
+                pedido2.repartidor = repartidor.id_usuario
+                pedido2.save()
                 print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
                 print(f"Repartidor {repartidor.id_usuario} agregado al pedido.")
                 print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
@@ -404,7 +405,9 @@ def pago(request):
                 print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
                 print("No se encontró un repartidor disponible para agregar al pedido.")
                 print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    
     #Vaciar el token para que no pueda volver a ingresar a la misma página a través de la url.
+    carrito2.limpiar()
     request.session['token_ws'] = None
     return render(request, 'pago.html',{'cod_respuesta':cod_respuesta,'orden_pedido':orden_pedido,'pedido':pedido,'detalle':recibo_pedido})
 @login_required(login_url="/")
@@ -703,6 +706,58 @@ def index_cocinero(request):
     producto =Producto.objects.all()
     return render(request, 'index_cocinero.html',{'pedido':pedido,'detalle':detalle,'producto':producto})
 
+def asignar_repartidor(request):
+    repartidores = Usuario.objects.filter(fk_id_rol=3)
+    asignado = False
+    for repartidor in repartidores:
+        cantidad_pedidos = Pedido.objects.filter(repartidor=repartidor.id_usuario).count()
+        if cantidad_pedidos < 2:
+            pedidos = Pedido.objects.filter(repartidor__isnull=True)
+            for pedido in pedidos:
+                pedido.repartidor = repartidor.id_usuario
+                pedido.save()
+            asignado = True
+            break
+    if asignado:
+        mensaje = f"Se asignó un repartidor a los pedidos."
+    else:
+        mensaje = "No se encontró un repartidor disponible para agregar al pedido."
+    
+    return JsonResponse({'mensaje': mensaje})
+
+def actualizar_tabla_cocinero(request):
+    usuario = Usuario.objects.filter(correo=request.user.username).first()
+    pedido = Pedido.objects.filter(Q(fk_id_estado_id=1)).values()
+    detalle = ReciboPedido.objects.all().values('fk_id_productos', 'fk_id_pedido')
+    producto = Producto.objects.all()
+
+    # Construir los datos actualizados de la tabla
+    datos_tabla = []
+    for pedidos in pedido:
+        orden_pedido = pedidos['orden_pedido']
+        fecha = pedidos['fecha'].strftime('%d/%m/%Y - %H:%M')
+
+        productos_texto = ""
+        for detalles in detalle:
+            if pedidos['id_pedido'] == detalles['fk_id_pedido']:
+                for producto_detalle in producto:
+                    if producto_detalle.id_producto == detalles['fk_id_productos']:
+                        productos_texto += producto_detalle.nombre_producto + '<br>'
+
+        url = reverse('estado_cocinero', args=[pedidos['id_pedido']])
+        datos_tabla.append({
+            'orden_pedido': orden_pedido,
+            'fecha': fecha,
+            'productos': productos_texto,
+            'url': url
+        })
+
+    # Construir la respuesta JSON
+    response_data = {'datos': datos_tabla}
+
+    # Devolver la respuesta JSON
+    return JsonResponse(response_data)
+
 # URLS
 #
 #
@@ -979,35 +1034,33 @@ def actualizar_tabla(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
     pedido = Pedido.objects.filter((Q(fk_id_estado_id=2)) & Q(repartidor=usuario.id_usuario)).values()
     detalle = ReciboPedido.objects.all().values('fk_id_productos', 'fk_id_pedido')
-    producto = Producto.objects.all()
+    productos = Producto.objects.all()
     # Construir los datos actualizados de la tabla
     datos_tabla = []
     for pedidos in pedido:
         descripcion = pedidos['descripcion']
         fecha = pedidos['fecha'].strftime('%d/%m/%Y - %H:%M')
 
-        productos = ""
+        productos_texto = ""
         for detalles in detalle:
             if pedidos['id_pedido'] == detalles['fk_id_pedido']:
-                for productos in producto:
-                    if productos['id_producto'] == detalles['fk_id_productos']:
-                        productos += productos['nombre_producto'] + '<br>'
+                for producto_detalle in productos:
+                    if producto_detalle.id_producto == detalles['fk_id_productos']:
+                        productos_texto += producto_detalle.nombre_producto + '<br>'
 
         url = reverse('estado_repartidor', args=[pedidos['id_pedido']])
-
         datos_tabla.append({
             'descripcion': descripcion,
             'fecha': fecha,
-            'productos': productos,
+            'productos': productos_texto,
             'url': url
         })
+    # Construir la respuesta JSON
+    response_data = {'datos': datos_tabla}
+    response_json = json.dumps(response_data)
+    # Devolver la respuesta JSON
+    return HttpResponse(response_json, content_type='application/json')
 
-    # Renderizar el HTML de la tabla actualizada
-    tabla_html = render_to_string('repartidor.html', {'datos_tabla': datos_tabla})
-    # Eliminar etiquetas HTML innecesarias
-    tabla_plana = strip_tags(tabla_html)
-
-    return JsonResponse({'tabla_html': tabla_plana})
 
 
 def estado_repartidor(request, id_pedido):
@@ -1034,7 +1087,7 @@ def obtener_ganancias_mes_actual():
         fecha__month=mes_actual,
         fk_id_estado=3
     ).aggregate(total_ganancias=Sum('total'))['total_ganancias']
-
+    print(ganancias_mes_actual)
     # Verificar si hay ganancias para el mes actual
     if ganancias_mes_actual is not None:
         ganancias_mes_actual = "{:,.0f}".format(ganancias_mes_actual).replace(",", ".")

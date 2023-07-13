@@ -9,7 +9,6 @@
 <!--PATH DE OLAS BLANCAS PARTE SUPERIOR-->
 <div class="container text-white">
     <h1 class="text-center" style="margin: 40px 0px 100px;">Pedidos a Preparar</h1>
-    {% if pedido %}
     <div class="table-responsive">
         <table class="table">
             <thead>
@@ -23,7 +22,7 @@
             <tbody>
                 {% for pedidos in pedido %}
                 <tr>
-                    
+
                     <td>{{ pedidos.orden_pedido }}</td>
                     <td class="text-center">{{ pedidos.fecha|date:"d/m/Y - H:i" }}</td>
                     <td class="text-capitalize">
@@ -36,26 +35,75 @@
                         {% endfor %}
                         {% endif %}
                         {% endfor %}
-                    </td> 
-                    <td class="d-flex align-items-center justify-content-center">
-                        <a href="{% url 'estado_cocinero' pedidos.id_pedido %}"
-                        type="button" class="btn btn-success my-btn">
-                       Pasar a Despacho
-                    </a>
                     </td>
-                    
+                    <td class="d-flex align-items-center justify-content-center">
+                        <a href="{% url 'estado_cocinero' pedidos.id_pedido %}" type="button"
+                            class="btn btn-success my-btn">
+                            Pasar a Despacho
+                        </a>
+                    </td>
 
-                    
+
+
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-    {% else %}
-    <div class="fw-bold text-center" style="margin-top: 100px;">Todavía no posee pedidos para entregar...</div>
-    {% endif %}
 </div>
+<script>
+    $(document).ready(function () {
+        setInterval(actualizarTabla, 1000); // Actualiza la tabla cada 5 segundos (ajusta el intervalo según tus necesidades)
+        function actualizarTabla() {
+            $.ajax({
+                url: '/actualizar_tabla_cocinero/',  // Ruta a tu vista 'actualizar_tabla_cocinero'
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    var datosTabla = response.datos;
+                    // Actualiza la tabla con los nuevos datos
+                    actualizarDatosTabla(datosTabla);
+                },
+                error: function (xhr, errmsg, err) {
+                    console.log(errmsg); // Manejo de errores
+                }
+            });
+        }
 
+        function actualizarDatosTabla(datosTabla) {
+            var tbody = $('.table tbody');
+            tbody.empty(); // Limpia el contenido actual de la tabla
+
+            for (var i = 0; i < datosTabla.length; i++) {
+                var fila = '<tr>' +
+                    '<td>' + datosTabla[i].orden_pedido + '</td>' +
+                    '<td class="text-center">' + datosTabla[i].fecha + '</td>' +
+                    '<td class="text-capitalize">' + datosTabla[i].productos + '</td>' +
+                    '<td class="d-flex align-items-center justify-content-center">' +
+                    '<a href="' + datosTabla[i].url + '" type="button" class="btn btn-success my-btn">Pasar a Despacho</a>' +
+                    '</td>' +
+                    '</tr>';
+                tbody.append(fila); // Agrega la fila a la tabla
+            }
+        }
+        function asignarRepartidor() {
+            $.ajax({
+                url: '/asignar_repartidor/', // Ruta de la URL que mapea a la vista asignar_repartidor
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data.mensaje);
+                    // Aquí puedes realizar cualquier acción adicional después de recibir la respuesta
+                },
+                error: function (xhr, errmsg, err) {
+                    console.log(errmsg);
+                }
+            });
+        }
+        // Llamar a la función cada 5 segundos
+        setInterval(asignarRepartidor, 1000);
+    });
+</script>
 {% block js %}
 <script src="/../static/js/cocinero.js"></script>
 {% endblock %}

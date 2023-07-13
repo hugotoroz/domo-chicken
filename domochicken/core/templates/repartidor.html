@@ -7,7 +7,6 @@
 {% block template %}
 <div class="container text-white">
     <h1 class="text-center" style="margin: 40px 0px 100px;">Pedidos a Entregar</h1>
-    {% if pedido %}
     <div class="table-responsive">
         <table class="table">
             <thead>
@@ -21,7 +20,6 @@
             <tbody>
                 {% for pedidos in pedido %}
                 <tr>
-
                     <td>{{ pedidos.descripcion }}</td>
                     <td class="text-center">{{ pedidos.fecha|date:"d/m/Y - H:i" }}</td>
                     <td class="text-capitalize">
@@ -49,9 +47,6 @@
             </tbody>
         </table>
     </div>
-    {% else %}
-    <div class="fw-bold text-center" style="margin-top: 100px;">Todavía no posee pedidos para entregar...</div>
-    {% endif %}
 </div>
 
 <!--
@@ -65,7 +60,7 @@
 -->
 <script>
     $(document).ready(function () {
-        setInterval(actualizarTabla, 5000); // Actualiza la tabla cada 5 segundos (ajusta el intervalo según tus necesidades)
+        setInterval(actualizarTabla, 1000); // Actualiza la tabla cada 5 segundos (ajusta el intervalo según tus necesidades)
 
         function actualizarTabla() {
             $.ajax({
