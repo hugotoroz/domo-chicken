@@ -2,6 +2,7 @@ from django import forms
 from .models import Producto, Proveedor,Comuna,Usuario,Rol
 from django.contrib.auth.models import User
 from django.forms import ValidationError
+from django.db.models import Q
 import re
 from rut_chile import rut_chile
 
@@ -25,11 +26,8 @@ class producto_form(forms.ModelForm):
         }
     def clean(self):
         cleaned_data = super().clean()
-        stock = cleaned_data.get("stock")
         precio = cleaned_data.get("precio")
 
-        if stock is None or stock <= 0:
-            self.add_error('stock','El stock debe ser mayor a 1.')
         if precio is None or precio <= 499:
             self.add_error('precio','El precio debe ser $500 o mayor.')
 
@@ -222,3 +220,8 @@ class solicitar_stock_form(forms.Form):
         if cantidad is None or cantidad <= 0:
             self.add_error('cantidad','La cantidad a solicitar debe ser mayor a 1.')
         return cleaned_data
+    
+
+class relacionar_producto_form(forms.Form):
+    producto=forms.ModelChoiceField(queryset=Producto.objects.exclude(Q(row_status=0) | Q(fk_id_proveedor=1)),label="Seleccione un proveedor", required= False)
+    

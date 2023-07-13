@@ -1,0 +1,27 @@
+:root {
+  --main-buttons: #ae0000;
+  --act-buttons: #9a1414;
+}
+
+* {
+  font-family: 'Lato', sans-serif !important;
+  font-size: 17px;
+  transition: all .2s ease-out;
+
+}
+
+body {
+  background-color: #f5f5f5;
+}
+.iconos-usuario {
+  text-decoration: none;
+  color: #575757;
+  padding: 0 0.5rem 0 0.5rem;
+  
+}
+.iconos-usuario i{
+  font-size: 18px;
+}
+.iconos-usuario:hover {
+  color: #323232;
+}

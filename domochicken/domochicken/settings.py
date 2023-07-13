@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'core',
     'crispy_forms',
-    'crispy_bootstrap5'
+    'crispy_bootstrap5',
+    'django.contrib.humanize'
 ]
 
 MIDDLEWARE = [
@@ -114,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Santiago'
 
 USE_I18N = True
 
@@ -124,7 +125,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+#Ruta de directorio de archivos estáticos
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -140,3 +143,7 @@ LOGIN_REDIRECT_URL = '/iniciar_sesion/'
 CRISPY_ALLOWED_TEMPLATE_PACKS="bootstrap5"
 CRISPY_TEMPLATE_PACK="bootstrap5"
 CARRITO_SESSION_ID = 'carrito'
+#SEPARADOR DE MILES
+#USE_L10N = False
+#USE_THOUSAND_SEPARATOR = True
+#THOUSAND_SEPARATOR = '.'

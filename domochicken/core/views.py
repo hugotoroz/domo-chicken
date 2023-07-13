@@ -6,17 +6,18 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import JsonResponse
 from .Carrito import Carrito
-from .models import Comuna, Estado, Pedido, Producto, Proveedor, ReciboPedido, Rol, Usuario, Solicitud
+from .models import Comuna, Estado, Pedido, Producto, Proveedor, ReciboPedido, Rol, Usuario, Solicitud,Producto_Relacionado
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.contrib.auth.models import User
 from django.forms import ValidationError
 from django.contrib.auth.hashers import check_password
-from .forms import producto_form, proveedor_form, usuario_form,modificar_usuario_form,registrar_usuario_form,modificar_clave_form,solicitar_stock_form
-from django.db.models import Q
+from .forms import producto_form, proveedor_form, usuario_form,modificar_usuario_form,registrar_usuario_form,modificar_clave_form,solicitar_stock_form,relacionar_producto_form
+from django.db.models import Q,F
 from django.db.models import Sum
 from datetime import datetime
 from django.utils import timezone
+import pytz
 import requests
 import json
 import random
@@ -42,14 +43,26 @@ def role_required(*roles):
                 raise Http404
         return wrapper
     return decorator 
+
 def obtener_fecha_actual():
-    respuesta = requests.get('http://worldtimeapi.org/api/timezone/Etc/UTC')
-    data = respuesta.json()
-    fecha_actual = datetime.fromisoformat(data['datetime'])
-    return fecha_actual
+    now = timezone.now()
+    chile_tz = pytz.timezone('America/Santiago')
+    now_chile = now.astimezone(chile_tz)
+    print(now_chile)
+    fecha = now_chile.strftime("%Y-%m-%d")
+    #hora = now_chile.strftime("%H:%M:%S")
+    return fecha
+
+def obtener_hora_actual():
+    now = timezone.now()
+    chile_tz = pytz.timezone('America/Santiago')
+    now_chile = now.astimezone(chile_tz)
+    print(now_chile)
+    hora = now_chile.strftime("%H:%M:%S")
+    return hora
 
 def index(request):
-    producto = Producto.objects.filter(fk_id_proveedor=1, prod_is_active=1)[:3]
+    producto = Producto.objects.filter(fk_id_proveedor=1, prod_is_active=1,stock__gt=0)[:3]
     usuario = Usuario.objects.filter(correo=request.user.username).first()
     contexto = {'producto': producto, 'usuario': usuario}
     rol = None
@@ -68,7 +81,58 @@ def index(request):
         return redirect('index_admin')
     else:
         return render(request, 'index.html', contexto)
+#FUNCIONES CARRITO
+def agregar_producto(request, idProducto):
+    if not request.user.is_authenticated:
+        messages.error(
+            request, 'Debe iniciar sesión para acceder al carrito.')
+        return redirect('iniciar_sesion')
+    carrito = Carrito(request)
+    producto = Producto.objects.get(id_producto = idProducto)
+    carrito.agregar(producto)
+    messages.success(
+            request, 'Producto agregado al carrito exitosamente!')
+    return redirect("catalogo")
 
+def agregar_producto_i(request, idProducto):
+    if not request.user.is_authenticated:
+        messages.error(
+            request, 'Debe iniciar sesión para acceder al carrito.')
+        return redirect('iniciar_sesion')
+    carrito = Carrito(request)
+    producto = Producto.objects.get(id_producto = idProducto)
+    carrito.agregar(producto)
+    messages.success(
+            request, 'Producto agregado al carrito exitosamente!')
+    url = reverse('index') + '#catalogo'
+    return redirect(url)
+
+def agregar_producto_cart(request, idProducto):
+    if not request.user.is_authenticated:
+        messages.error(
+            request, 'Debe iniciar sesión para acceder al carrito.')
+        return redirect('iniciar_sesion')
+    carrito = Carrito(request)
+    producto = Producto.objects.get(id_producto = idProducto)
+    carrito.agregar(producto)
+    return redirect("carrito")
+
+def eliminar_prod_cart(request, idProducto):
+    carrito = Carrito(request)
+    producto = Producto.objects.get(id_producto = idProducto)
+    carrito.eliminar(producto)
+    return redirect("carrito")
+
+def restar_producto(request, idProducto):
+    carrito = Carrito(request)
+    producto = Producto.objects.get(id_producto = idProducto)
+    carrito.restar(producto)
+    return redirect("carrito")
+
+def limpiar_carrito(request):
+    carrito = Carrito(request)
+    carrito.limpiar()
+    return redirect("carrito")
 
 @login_required(login_url="/")
 @role_required('1')
@@ -85,15 +149,52 @@ def agregar_producto_nuevo(request):
     if request.method == "POST":
         form_agregar_producto = producto_form(request.POST, request.FILES)
         if form_agregar_producto.is_valid():
-            form_agregar_producto.save()
-            return redirect('productos')
+            p= form_agregar_producto.save()
+            id_prod = p.id_producto
+            print(id_prod)
+            request.session['relacionar_producto'] = id_prod
+            messages.success(
+                request, 'El producto ha sido agregado exitosamente.')
+            
+            
+            if p.fk_id_proveedor_id == 1:
+                return redirect('producto_relacionado')
+            else:
+                return redirect('productos')
         else:
             contexto = {'form': form_agregar_producto}
             return render(request, 'agregar_producto.html', contexto)
     else:
+        
         form_agregar_producto = producto_form()
         contexto = {'form': form_agregar_producto}
         return render(request, 'agregar_producto.html', contexto)
+@login_required(login_url="/")
+@role_required('1')
+def producto_relacionado(request):
+    id_prod = request.session.get('relacionar_producto')
+    print(id_prod)
+    if request.method == "POST":
+        form_relacionar_producto = relacionar_producto_form(request.POST or None)
+        prod = request.POST.get('producto')
+        hay_productos = Producto_Relacionado.objects.filter(id_producto=id_prod,id_producto_relacionado=prod)
+        print(hay_productos)
+        if hay_productos:
+            messages.error(
+                request, 'El producto ya está relacionado.')
+            form_relacionar_producto = relacionar_producto_form()
+            contexto = {'form': form_relacionar_producto}
+            return render(request, 'producto_relacionado.html', contexto)
+        elif form_relacionar_producto.is_valid():
+            Producto_Relacionado.objects.create(id_producto = id_prod,id_producto_relacionado = prod )
+            messages.success(
+                request, 'Se ha relacionado al producto correctamente.')
+            return redirect('producto_relacionado')
+    else:
+
+        form_relacionar_producto = relacionar_producto_form()
+        contexto = {'form': form_relacionar_producto}
+        return render(request, 'producto_relacionado.html', contexto)
 
 @login_required(login_url="/")
 @role_required('1','4')
@@ -110,7 +211,7 @@ def proveedores(request):
 @login_required(login_url="/")
 @role_required('1','4')
 def stock_productos(request):
-    producto = Producto.objects.filter(row_status=1)
+    producto = Producto.objects.exclude(Q(row_status=0) | Q(fk_id_proveedor=1))
     contexto = {'producto': producto}
     return render(request, 'stock_productos.html', contexto)
 
@@ -129,6 +230,8 @@ def solicitar_stock(request, id_prod):
             cantidad = request.POST['cantidad']
             Solicitud.objects.create(cantidad_solicitud=cantidad, estado="pendiente", realizado_por=usuario.correo,
                                  fk_id_proveedor=producto.fk_id_proveedor, fk_id_producto_id=id_prod)
+            messages.success(
+                request, 'El stock ha sido solicitado exitosamente.')
         else:
             contexto = {'form': form_solicitar_stock}
             return render(request, 'solicitar_stock.html', contexto)    
@@ -145,8 +248,17 @@ def modificar_producto(request, idProd):
     if request.method == "POST":
         form_agregar_producto = producto_form(request.POST, request.FILES, instance=producto_filter)
         if form_agregar_producto.is_valid():
-            form_agregar_producto.save()
-            return redirect('productos')
+            p= form_agregar_producto.save()
+            id_prod = p.id_producto
+            print(id_prod)
+            request.session['relacionar_producto'] = id_prod
+            messages.success(
+                request, 'El producto ha sido modificado exitosamente.')
+            if p.fk_id_proveedor_id == 1:
+                return redirect('producto_relacionado')
+            else:
+                return redirect('productos')
+            #return redirect('productos')
         else:
             contexto = {'form': form_agregar_producto}
             return render(request, 'agregar_producto.html', contexto)
@@ -156,7 +268,7 @@ def modificar_producto(request, idProd):
         return render(request, 'modificar_producto.html', contexto)
 
 def catalogo(request):
-    producto = Producto.objects.filter(fk_id_proveedor=1, prod_is_active=1)
+    producto = Producto.objects.filter(fk_id_proveedor=1, prod_is_active=1,stock__gt=0)
     contexto = {'producto': producto}
     return render(request, 'catalogo.html', contexto)
 
@@ -235,42 +347,61 @@ def pago(request):
     cod_respuesta= content['response_code']
     orden_pedido= content['buy_order']
     if cod_respuesta ==0:
+        #Obtener carrito
         carrito = request.session.get('carrito', {})
         primer_elemento = next(iter(carrito))
+        #Obtener datos del usuario
         usuario = Usuario.objects.filter(correo=request.user.username).first()
-        direccion_desc = 'Hacia la dirección ' + usuario.direccion
+        comuna_usuario = Comuna.objects.get(id_comuna= usuario.fk_id_comuna_id)
+        direccion_desc = usuario.direccion+', '+comuna_usuario.comuna
+        #Obtener fecha y hora actuales
         fecha_actual = obtener_fecha_actual()
-        # Crear un nuevo pedido
+        hora_actual = obtener_hora_actual()
+        fecha_hora = fecha_actual + ' ' + hora_actual
+        #Se crea el pedido.
+        pedido = Pedido.objects.create(orden_pedido=orden_pedido,descripcion=direccion_desc, fecha=fecha_hora, fk_id_usuario_id=usuario.id_usuario,total = carrito[primer_elemento]['acumulado'])
+        # Obtener los productos del carrito para insertarlos en Recibo_Pedido
+        carrito = request.session.get('carrito', {})
+        ids_productos = []
+        for clave, valor in carrito.items():
+            producto_id = valor['producto_id']
+            cantidad_comprada = valor['cantidad']
+            ids_productos.append(producto_id)
+            print("*** ID_PRODUCTO ***")
+            print(producto_id)
+            print("*** *** ***")
+            #Se hace el descuento del stock de todos los productos.
+            productos_comprados = Producto.objects.filter(id_producto = producto_id)
+            productos_comprados.update(stock=F('stock') - cantidad_comprada)
+            #Descuento de los productos asociados al comprado (proveedores)
+            productos = Producto_Relacionado.objects.filter(id_producto=producto_id)
+            Producto.objects.filter(id_producto__in=productos.values_list('id_producto_relacionado', flat=True)).update(stock=F('stock') - cantidad_comprada)
+
+        #Crear la tabla intermediaria con todos los productos.
+        recibo_pedido = ReciboPedido.objects.create(fk_id_pedido_id=pedido.id_pedido, fk_id_usuario_id=usuario.id_usuario)
+        recibo_pedido.fk_id_productos.add(*ids_productos)
+
+        print('****')
+        print(pedido.id_pedido)
+        print('****')
+
+        #Asignación automática de un repartidor al pedido.
         repartidores = Usuario.objects.filter(fk_id_rol=3)
-    for repartidor in repartidores:
-        cantidad_pedidos = Pedido.objects.filter(repartidor=repartidor.id_usuario).count()
-        if cantidad_pedidos < 2:
-            # El repartidor actual puede ser agregado al campo repartidor de la tabla Pedido
-            pedido = Pedido.objects.create(orden_pedido=orden_pedido,descripcion=direccion_desc, fecha=fecha_actual, fk_id_usuario_id=usuario.id_usuario,total = carrito[primer_elemento]['acumulado'],repartidor=repartidor.id_usuario)
-            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-            print(f"Repartidor {repartidor.id_usuario} agregado al pedido.")
-            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-            # Obtener los IDs de los productos en el carrito
-            #ids_productos = request.session.carrito.items.values_list('producto_id', flat=True)
-            carrito = request.session.get('carrito', {})
-            ids_productos = []
-            for clave, valor in carrito.items():
-                producto_id = valor['producto_id']
-                ids_productos.append(producto_id)
-            # Crear un nuevo recibo de pedido asociado al pedido y usuario
-            recibo_pedido = ReciboPedido.objects.create(fk_id_pedido_id=pedido.id_pedido, fk_id_usuario_id=usuario.id_usuario)
-            recibo_pedido.fk_id_productos.add(*ids_productos)
-            print('****')
-            print(pedido.id_pedido)
-            print('****')
-            break
-        else:
-            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-            print("No se encontró un repartidor disponible para agregar al pedido.")
-            print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+        for repartidor in repartidores:
+            cantidad_pedidos = Pedido.objects.filter(repartidor=repartidor.id_usuario).count()
+            if cantidad_pedidos < 2:
+                #Acá se asigna al repartidor
+                pedido.repartidor = repartidor.id_usuario
+                print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                print(f"Repartidor {repartidor.id_usuario} agregado al pedido.")
+                print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                break
+            else:
+                print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                print("No se encontró un repartidor disponible para agregar al pedido.")
+                print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     #Vaciar el token para que no pueda volver a ingresar a la misma página a través de la url.
-    #request.session['token_ws'] = None
-    #carrito.limpiar()
+    request.session['token_ws'] = None
     return render(request, 'pago.html',{'cod_respuesta':cod_respuesta,'orden_pedido':orden_pedido,'pedido':pedido,'detalle':recibo_pedido})
 @login_required(login_url="/")
 @role_required('5','2','3')
@@ -415,6 +546,8 @@ def agregar_prov(request):
         form_agregar_proveedor = proveedor_form(request.POST)
         if form_agregar_proveedor.is_valid():
             form_agregar_proveedor.save()
+            messages.success(
+                request, 'El proveedor ha sido agregado exitosamente.')
             return redirect('proveedores')
         else:
             contexto = {'form': form_agregar_proveedor}
@@ -434,6 +567,8 @@ def modificar_proveedor(request, id_prov):
             request.POST, instance=prov_filter)
         if form_agregar_proveedor.is_valid():
             form_agregar_proveedor.save()
+            messages.success(
+                request, 'El proveedor ha sido modificado exitosamente.')
             return redirect('proveedores')
         else:
             contexto = {'form': form_agregar_proveedor}
@@ -448,8 +583,9 @@ def modificar_proveedor(request, id_prov):
 @login_required(login_url="/")
 @role_required('1')
 def solicitudes_proveedor(request):
-    solicitudes = Solicitud.objects.all()
-    contexto = {'solicitudes': solicitudes}
+    solicitudes = Solicitud.objects.exclude(estado='finalizado')
+    print(solicitudes)
+    contexto = {'solicitud': solicitudes}
     return render(request, 'solicitudes_proveedor.html', contexto)
 
 @login_required(login_url="/")
@@ -475,7 +611,10 @@ def agregar_usuario(request):
             User.objects.create_user(correo, '', clave)
             Usuario.objects.create(nombre_usuario=nombre_usuario, apellido_usuario=apellido_usuario,correo=correo,  direccion=direccion,fk_id_comuna_id=comuna,celular=celular,fk_id_rol_id=rol)
             #form_agregar_usuario.save()
+            messages.success(
+                request, 'El usuario ha sido agregado exitosamente.')
             return redirect('usuarios')
+        
         else:
             contexto = {'form': form_agregar_usuario}
             return render(request, 'agregar_usuario.html', contexto)
@@ -503,6 +642,8 @@ def modificar_usuario(request, id_user):
                 user_filter.usernamec = email
             user_filter.save()
             form_modificar_usuario.save()
+            messages.success(
+                request, 'El usuario ha sido modificado exitosamente.')
             return redirect('usuarios')
         else:
             contexto = {'form': form_modificar_usuario,'usuario':usuario_filter}
@@ -542,7 +683,9 @@ def index_repartidor(request):
 @login_required(login_url="/")
 @role_required('1','2','5')
 def pedido (request):
-    return render(request, 'pedido.html')
+    pedido_usuario = Pedido.objects.filter(Q(fk_id_estado_id=1) | Q(fk_id_estado_id=2) ).values()
+    
+    return render(request, 'pedido.html',{'pedido':pedido_usuario })
 
 #
 # COCINERO 
@@ -653,6 +796,7 @@ def pv_eliminar_proveedor(request, id_proveedor):
 @role_required('1','4')
 def p_lista_productos(request):
     producto = Producto.objects.filter(row_status=1)
+    #producto.precio = "{:,.0f}".format(producto.precio).replace(",", ".")
 
     return render(request, 'modales/lista_productos.html', {'producto': producto})
 
@@ -677,7 +821,8 @@ def p_eliminar_producto(request, id_producto):
 
     return render(request, 'modales/p_eliminar_producto.html', {'producto': producto})
 
-
+@login_required(login_url="/")
+@role_required('1')
 def lp_lista_pedidos(request):
     pedido_usuario = Pedido.objects.filter(Q(fk_id_estado_id=1) | Q(fk_id_estado_id=2) ).values()
     detalle =ReciboPedido.objects.all().values('fk_id_productos','fk_id_pedido')
@@ -685,7 +830,8 @@ def lp_lista_pedidos(request):
     estado = Estado.objects.all()
     return render(request, 'modales/lista_pedidos.html', {'pedido':pedido_usuario,'detalle':detalle,'producto':producto,'estado':estado})
 
-
+@login_required(login_url="/")
+@role_required('1')
 def modificar_estado(request, id_pedido):
     if request.method == "POST":
         estado = request.POST['estado']
@@ -695,7 +841,8 @@ def modificar_estado(request, id_pedido):
         pedido.save()
         return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
 
-
+@login_required(login_url="/")
+@role_required('1')
 def lp_mod_estado(request, id_pedido):
     pedido = Pedido.objects.filter(id_pedido=id_pedido).values()
     id_pedido = pedido[0]['id_pedido']
@@ -806,58 +953,7 @@ def eliminar_producto(request, id_producto):
     producto.save()
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
 
-####FUNCIONES CARRITO
-
-
-def agregar_producto(request, idProducto):
-    if not request.user.is_authenticated:
-        messages.error(
-            request, 'Debe iniciar sesión para acceder al carrito.')
-        return redirect('iniciar_sesion')
-    carrito = Carrito(request)
-    producto = Producto.objects.get(id_producto = idProducto)
-    carrito.agregar(producto)
-    return redirect("carrito")
-
-def eliminar_prod_cart(request, idProducto):
-    carrito = Carrito(request)
-    producto = Producto.objects.get(id_producto = idProducto)
-    carrito.eliminar(producto)
-    return redirect("carrito")
-
-def restar_producto(request, idProducto):
-    carrito = Carrito(request)
-    producto = Producto.objects.get(id_producto = idProducto)
-    carrito.restar(producto)
-    return redirect("carrito")
-
-def limpiar_carrito(request):
-    carrito = Carrito(request)
-    carrito.limpiar()
-    return redirect("carrito")
-
 @login_required(login_url="/")
-def guardarPedido(request,total):
-    usuario = Usuario.objects.filter(correo=request.user.username).first()
-    direccion_desc = 'Hacia la dirección ' + usuario.direccion
-    fecha_actual = obtener_fecha_actual().date()
-    # Crear un nuevo pedido
-    # Obtener los IDs de los productos en el carrito
-    #ids_productos = request.session.carrito.items.values_list('producto_id', flat=True)
-    carrito = request.session.get('carrito', {})
-    ids_productos = []
-    for clave, valor in carrito.items():
-        producto_id = valor['producto_id']
-        ids_productos.append(producto_id)
-    # Crear un nuevo recibo de pedido asociado al pedido y usuario
-    estado = Estado.objects.filter(id_estado = 1)
-    recibo_pedido = ReciboPedido.objects.create(fk_id_pedido_id=pedido.id_pedido, fk_id_usuario_id=usuario.id_usuario)
-    recibo_pedido.fk_id_productos.add(*ids_productos)
-    # Agregar los productos al recibo de pedido
-    #recibo_pedido.fk_id_productos.add(ids_productos)
-    return redirect("carrito")
-
-
 def verPedido(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
     pedido_usuario = Pedido.objects.filter((Q(fk_id_estado_id=1) | Q(fk_id_estado_id=2)) & Q(fk_id_usuario_id = usuario.id_usuario) ).values()
