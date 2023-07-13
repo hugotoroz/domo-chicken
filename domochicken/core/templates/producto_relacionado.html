@@ -1,0 +1,54 @@
+{% extends "base/base_admin.html" %}
+{% block css %}
+<link rel="stylesheet" href="../static/css/style.css">
+<link rel="stylesheet" href="../static/css/agregar_producto.css">
+{% endblock %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Domo Chicken - La mejor calidad{% endblock %}
+{% block template %}
+<h1 class="text-white text-center fw-bold" style="margin: 30px 0px 20px;">Establecer proveedores</h1>
+<p class="text-white text-center">
+    Se deben establecer el/los proveedores del producto. De esta manera, se llevará un correcto control de inventario.
+    <br>
+    <strong>IMPORTANTE:</strong> Si no se realiza este paso, el stock no se descontará correctamente cuando se haga un pedido. <br> <br>
+    Si usted ya estableció su proveedor y no necesita otro, presione <strong>Volver a Productos</strong> para salir.
+</p>
+{% if messages %}
+{% for message in messages %}
+<div class="row">
+    <div class="col"></div>
+    <div class="col-4">
+        {% if message.tags == 'success' %}
+        <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+            <i class="bi bi-check-circle-fill"></i> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% elif message.tags == 'error' %}
+        <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+    </div>
+    <div class="col"></div>
+</div>
+{% endfor %}
+{% endif %}
+<form method="post" class="form" name="form_relacionar_producto" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{form|crispy}}
+    <div class="text-center ">
+        <button class="btn btn-primario" type="submit" style="margin-bottom: 10px;">Agregar Proveedor</button>
+        <a href="{% url 'productos' %}" class="d-block btn btn-secundario">Volver a Productos</a>
+    </div>
+</form>
+<div style="margin: 0px 0px 200px;"></div>
+<div class="curved-div">
+    <svg viewBox="0 0 1440 319">
+        <path fill="#fff" fill-opacity="1"
+            d="M0,32L48,80C96,128,192,224,288,224C384,224,480,128,576,90.7C672,53,768,75,864,96C960,117,1056,139,1152,149.3C1248,160,1344,160,1392,160L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+        </path>
+    </svg>
+</div>
+{% endblock %}

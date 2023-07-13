@@ -1,4 +1,5 @@
 {% extends "base/base.html" %}
+{% load humanize %}
 {% block css %}
 <link rel="stylesheet" href="../static/css/perfil.css">
 {% endblock %}
@@ -14,11 +15,11 @@
     <div class="perfil-usuario-body">
 
         <div class="perfil-usuario-footer">
-            <h3 class="titulo">{{usuario.nombre_usuario}} {{usuario.apellido_usuario}} </h3>
+            <h3 class="titulo text-center fw-bold">{{usuario.nombre_usuario}} {{usuario.apellido_usuario}} </h3>
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <div class="text-header fw-bold">Mis datos</div>
+                        <div class="text-header fw-bold">Datos Personales</div>
                     </div>
                     <div class="card-body">
                         <div class="form-group">
@@ -31,11 +32,11 @@
                         </div>
                         <div class="form-group">
                             <label for="text">Dirección:</label>
-                            <input disabled class="form-control" value="{{usuario.direccion}}" type="text">
+                            <input disabled class="form-control text-capitalize" value="{{usuario.direccion}}" type="text">
                         </div>
                         <div class="form-group">
                             <label for="text">Comuna:</label>
-                            <input disabled class="form-control" value="{{usuario.fk_id_comuna.comuna}}" type="text">
+                            <input disabled class="form-control text-capitalize" value="{{usuario.fk_id_comuna.comuna}}" type="text">
                         </div>
                         <div class="form-group">
                             <label for="cellphone">Fecha de creación:</label>
@@ -61,6 +62,7 @@
         <table class="table table-light rounded-1">
             <thead>
                 <tr>
+                    <th scope="col">Orden Pedido</th>
                     <th scope="col">Descripcion</th>
                     <th class="text-center" scope="col">Estado Del Pedido</th>
                     <th scope="col">Productos</th>
@@ -71,6 +73,7 @@
 
                 {% for pedidos in pedido %}
                 <tr>
+                    <td class="fw-bold">{{ pedidos.orden_pedido }}</td>
                     <td>{{ pedidos.descripcion }}</td>
                     {% for estados in estado %}
                     {% if pedidos.fk_id_estado_id == estados.id_estado %}
@@ -90,8 +93,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row" class="text-end">TOTAL</th>
-                    <td colspan="2" class="text-left">$ {{ pedidos.total }}</td>
+                    <td colspan="3" class="text-end fw-bold">TOTAL</td>
+                    <td colspan="3" class="text-left fw-bold">$ {{ pedidos.total|intcomma }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

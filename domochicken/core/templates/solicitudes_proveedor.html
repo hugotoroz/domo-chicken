@@ -5,15 +5,16 @@
 {% endblock %}
 {% block title %}Domo Chicken - Solicitud {% endblock %}
 {% block template %}
+<h1 class="text-white text-center fw-bold" style="margin: 20px 0px 10px;">Solicitudes Pendientes</h1>
+{% if solicitud %}
 <div class="container" style="overflow-x: auto;">
-    <h1 class="text-white text-center" style="margin-bottom: 10px;">Solicitudes Pendientes</h1>
     <div class="row ">
         <table class="table">
             <thead>
                 <tr>
                     <th scope="col">Proveedor</th>
                     <th scope="col">Producto</th>
-                    <th scope="col">Cantidad</th>
+                    <th scope="col" class="text-center">Cantidad</th>
                     <th scope="col">Estado</th>
                     <th scope="col">Opciones</th>
                 </tr>
@@ -24,6 +25,7 @@
         </table>
     </div>
 </div>
-
-
+{% else %}
+<h3 class="text-white text-center fw-bold" style="margin: 20px 0px 10px;">Todavía no hay ninguna solicitud realizada...</h3>
+{% endif %}
 {% endblock %}

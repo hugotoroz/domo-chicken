@@ -56,7 +56,12 @@ class Producto(models.Model):
     prod_is_active = models.BooleanField(default=True) 
     row_status = models.BooleanField(default=True)
     def __str__(self):
-        return self.nombre_producto
+        return f"{self.nombre_producto} - {self.fk_id_proveedor}"
+class Producto_Relacionado(models.Model):
+    id_relacion = models.BigAutoField(primary_key=True)
+    id_producto = models.IntegerField()
+    id_producto_relacionado = models.IntegerField()
+    p_descontado = models.BooleanField(default=False) 
 class Carrito(models.Model):
     id_carrito = models.BigAutoField(primary_key=True)
     total = models.IntegerField()

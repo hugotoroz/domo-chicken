@@ -1,20 +1,22 @@
 {% extends "base/base_admin.html" %}
 {% load static %}
 {% block css %}
-<link rel="stylesheet" href="../static/css/lista_usuarios.css">
+<link rel="stylesheet" href="{% static 'css/lista_usuarios.css' %}">
 {% endblock %}
 {% block title %}Domo Chicken - Pedidos{% endblock %}
 {% block template %}
 <div class="container" style="overflow-x: auto;">
-    <h1 class="titulo">Pedidos</h1>
+    <h1 class="titulo fw-bold text-white">Pedidos</h1>
+    {% if pedido %}
     <div class="row">
         <table class="table">
             <thead>
                 <tr>
+                    <th scope="col">Orden Pedido</th>
                     <th scope="col">Descripcion</th>
                     <th class="text-center" scope="col">Estado Del Pedido</th>
                     <th scope="col">Productos</th>
-                    <th scope="col"></th>
+                    <th scope="col">Opciones</th>
                 </tr>
             </thead>
             <!--hx-trigger="load, actualizacion from:body" hx-target="this"-->
@@ -23,6 +25,9 @@
             </tbody>
         </table>
     </div>
+    {% else %}
+    <h2 class="fw-bold text-center text-white">No hay ningún pedido realizado...</h2>
+    {% endif %}
 </div>
 
 {% endblock %}

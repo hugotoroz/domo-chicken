@@ -6,56 +6,68 @@
 {% endblock %}
 {% block title %}Domo Chicken - Panel de administración{% endblock %}
 {% block template %}
-<div class="container-fluid">
-    <h1 class="text-white text-center" style="margin-bottom: 10px;">¡Bienvenido administrador!</h1>
-    <div class="row">
-        <div class="col-md-6 col-sm-12 columnas">
-            <div class="card color-borde-1 shadow h-100 py-2">
-                <div class="titulo-card fw-bold"><i class="fa-solid fa-coins"></i> GANANCIAS MENSUALES</div>
-                <div class="desc">$ {{ganancias_mes_actual}}</div>
-            </div>
-        </div>
-        <div class="col-md-6 col-sm-12 columnas">
-            <div class="card color-borde-2 shadow h-100 py-2">
-                <div class="titulo-card fw-bold"><i class="fa-solid fa-calendar"></i> VENTAS REALIZADAS</div>
-                <div class="desc">{{ventas_mes_actual}} ventas realizadas este mes.</div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="container">
-    <h2 class="titulo">Acceso rápido</h2>
-    <div class="row">
-        <div class="col-12 columnas">
-            <div class="card h-100 py-2">
-                <a href="{% url 'productos' %}" style="text-decoration: none; color: #000;">
-                    <p class="fw-bold align-items-start titulo-card"><i class="bi bi-box2 "></i>Productos
-                    </p>
-                    <p class="desc">Opciones de productos</p>
-                </a>
+
+
+    <h1 class="text-white text-center" style="margin: 20px 0px 10px;">¡Bienvenido al Panel de Administración!</h1>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 col-sm-12 columnas">
+                <div class="card color-borde-1 shadow h-100 py-2">
+                    <div class="titulo-card fw-bold"><i class="bi bi-cash-coin"></i> GANANCIAS MENSUALES</div>
+                    <div class="desc fw-bold">$ {{ganancias_mes_actual}}</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12 columnas">
+                <div class="card color-borde-2 shadow h-100 py-2">
+                    <div class="titulo-card fw-bold"><i class="bi bi-receipt"></i> VENTAS MENSUALES</div>
+                    <div class="desc fw-bold">{{ventas_mes_actual}} ventas realizadas.</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-6 columnas">
-            <div class="card h-100 py-2">
-                <a href="{% url 'proveedores' %}" style="text-decoration: none; color: #000;">
-                    <p class="fw-bold align-items-start titulo-card"><i class="bi bi-truck"></i> Proveedores </p>
-                    <p class="desc">Lista de proveedores, solciitudes, agregar, modificar o desactivar un proveedor
-                    </p>
-                </a>
+    <div class="container">
+        <h2 class="text-white text-center titulo" style="margin-bottom: 10px;">Acceso rápido</h2>
+        <div class="row">
+            <div class="col-12 columnas">
+                <div class="card h-100 py-2 text-center">
+                    <a href="{% url 'productos' %}" style="text-decoration: none; color: #000;">
+                        <p class="fw-bold align-items-start titulo-card"><i class="bi bi-box2 "></i> PRODUCTOS
+                        </p>
+                        <p class="desc">
+                            Productos actuales de la tienda. <br>
+                            Solicitudes de stock, agregar, modificar y/o eliminar un producto.
+                        </p>
+                    </a>
+                </div>
             </div>
         </div>
-        <div class="col-6 columnas">
-            <div class="card h-100 py-2">
-                <a href="{% url 'usuarios' %}" style="text-decoration: none; color: #000;">
 
-                    <p class="fw-bold align-items-start titulo-card"><i class="bi bi-truck"></i> Usuarios </p>
-                    <p class="desc">Lista de usuarios, agregar, modificar o desactivar un usuario
-                    </p>
-                </a>
+        <div class="row">
+            <div class="col-6 columnas">
+                <div class="card h-100 py-2 text-center">
+                    <a href="{% url 'proveedores' %}" style="text-decoration: none; color: #000;">
+                        <p class="fw-bold align-items-start titulo-card"><i class="bi bi-truck"></i> PROVEEDORES </p>
+                        <p class="desc">
+                            Proveedores de los productos de la tienda. <br>
+                            Lista de solicitudes, agregar, modificar, desactivar y/o activar un proveedor.
+                        </p>
+                    </a>
+                </div>
+            </div>
+            <div class="col-6 columnas">
+                <div class="card h-100 py-2 text-center">
+                    <a href="{% url 'usuarios' %}" style="text-decoration: none; color: #000;">
+
+                        <p class="fw-bold align-items-start titulo-card"><i class="bi bi-people"></i> USUARIOS </p>
+                        <p class="desc">
+                            Lista de usuarios y empleados de la tienda. <br>
+                            Agregar, modificar, desactivar y/o activar un usuario o empleado.
+                        </p>
+                    </a>
+                </div>
             </div>
         </div>
     </div>

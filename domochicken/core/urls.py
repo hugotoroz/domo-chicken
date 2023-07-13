@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import actualizar_tabla, estado_cocinero,estado_repartidor, modificar_clave_usuario,modificar_clave,generar_pago,respuesta_pago,pago,error_servidor, lp_lista_pedidos, lp_mod_estado, modificar_estado,pagina_no_encontrada,index_repartidor,modificar_usuario,agregar_usuario,modificar_proveedor,modificar_producto,agregar_producto_nuevo,eliminar_prod_cart, guardarPedido, limpiar_carrito, p_activar_producto,p_desactivar_producto,p_eliminar_producto,p_lista_productos,finalizar_solicitud, pedido, restar_producto,sp_finalizar_solicitud,sp_lista_solicitudes,activar_proveedor, desactivar_proveedor, eliminar_proveedor, p_lista_proveedores, u_lista_usuarios,activar_producto, desactivar_producto, proveedores, modificarRol, pv_activar_proveedor, pv_desactivar_proveedor, pv_eliminar_proveedor, sp_mas_info,usuarios, activar_usuario, desactivar_usuario, eliminar_usuario, solicitudes_proveedor,agregar_prov, index, index_admin, productos, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,editar_perfil, stock_productos,solicitar_stock,agregar_producto,eliminar_producto, verPedido, ua_activar_usuario, ua_desactivar_usuario, ua_eliminar_usuario, ua_mod_rol,index_cocinero, vista_repartidor
+from .views import actualizar_tabla,agregar_producto_cart,agregar_producto_i,producto_relacionado,estado_cocinero,estado_repartidor, modificar_clave_usuario,modificar_clave,generar_pago,respuesta_pago,pago,error_servidor, lp_lista_pedidos, lp_mod_estado, modificar_estado,pagina_no_encontrada,index_repartidor,modificar_usuario,agregar_usuario,modificar_proveedor,modificar_producto,agregar_producto_nuevo,eliminar_prod_cart, limpiar_carrito, p_activar_producto,p_desactivar_producto,p_eliminar_producto,p_lista_productos,finalizar_solicitud, pedido, restar_producto,sp_finalizar_solicitud,sp_lista_solicitudes,activar_proveedor, desactivar_proveedor, eliminar_proveedor, p_lista_proveedores, u_lista_usuarios,activar_producto, desactivar_producto, proveedores, modificarRol, pv_activar_proveedor, pv_desactivar_proveedor, pv_eliminar_proveedor, sp_mas_info,usuarios, activar_usuario, desactivar_usuario, eliminar_usuario, solicitudes_proveedor,agregar_prov, index, index_admin, productos, proveedores, catalogo, carrito, cerrar_sesion, index, iniciar_sesion, index_admin, proveedores, registrar_usuario, perfil,editar_perfil, stock_productos,solicitar_stock,agregar_producto,eliminar_producto, verPedido, ua_activar_usuario, ua_desactivar_usuario, ua_eliminar_usuario, ua_mod_rol,index_cocinero, vista_repartidor
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -23,6 +23,7 @@ urlpatterns = [
     
     #Render de pagina de agregar producto
     path('agregar_producto_nuevo/',agregar_producto_nuevo,name="agregar_producto_nuevo"),
+    path('producto_relacionado/',producto_relacionado,name="producto_relacionado"),
     #Render para ver el stock
     path('stock_productos/',stock_productos,name ="stock_productos"),
     #Solicitar stock a proveedor
@@ -103,10 +104,11 @@ urlpatterns = [
     path('estado_repartidor/<int:id_pedido>',estado_repartidor,name="estado_repartidor"),
     #Seguimiento pedido
     path('seguimiento/',verPedido,name="verPedido"),
-    path('guardarPedido/<int:total>/',guardarPedido,name="guardarPedido"),
     path('pedido/',pedido,name="pedido"),
     # Agregar Carrito
-    path('agregar3/<int:idProducto>',agregar_producto,name="Add"),
+    path('agregar/<int:idProducto>',agregar_producto,name="Add"),
+    path('agregar_cart/<int:idProducto>',agregar_producto_cart,name="Addcart"),
+    path('agregari/<int:idProducto>',agregar_producto_i,name="Addi"),
     path('eliminar/<int:idProducto>',eliminar_prod_cart,name="Del"),
     path('restar/<int:idProducto>',restar_producto,name="Sub"),
     path('limpiar/',limpiar_carrito,name="CLS"),
@@ -117,3 +119,4 @@ urlpatterns = [
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

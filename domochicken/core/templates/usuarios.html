@@ -6,7 +6,21 @@
 {% block title %}Domo Chicken - La mejor calidad{% endblock %}
 {% block template %}
 <div class="container" style="overflow-x: auto;">
-    <h1 class="text-white text-center" style="margin-bottom: 10px;">Usuarios</h1>
+    <h1 class="text-white text-center fw-bold" style="margin: 20px 0px 10px;">Usuarios</h1>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="row">
+        <div class="col"></div>
+        <div class="col-4">
+            <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+                <i class="bi bi-check-circle-fill"></i> {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+        <div class="col"></div>
+    </div>
+    {% endfor %}
+    {% endif %}
     <div class="row">
         <table class="table">
             <thead>
