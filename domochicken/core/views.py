@@ -48,6 +48,38 @@ def role_required(*roles):
         return wrapper
     return decorator 
 
+def obtener_ganancias_mes_actual():
+    # Obtener el mes actual
+    mes_actual = timezone.now().month  
+    # Obtener la suma de los totales de los pedidos del mes actual
+    ganancias_mes_actual = Pedido.objects.filter(
+        fecha__month=mes_actual,
+        fk_id_estado=3
+    ).aggregate(total_ganancias=Sum('total'))['total_ganancias']
+    print(ganancias_mes_actual)
+    # Verificar si hay ganancias para el mes actual
+    if ganancias_mes_actual is not None:
+        ganancias_mes_actual = "{:,.0f}".format(ganancias_mes_actual).replace(",", ".")
+        return ganancias_mes_actual
+    else:
+        return 0
+
+def obtener_ventas_mes_actual():
+    # Obtener el mes actual
+    mes_actual = timezone.now().month
+
+    # Obtener la suma de los totales de los pedidos del mes actual
+    ganancias_mes_actual = Pedido.objects.filter(
+        fecha__month=mes_actual,
+        fk_id_estado=3
+    ).count()
+
+    # Verificar si hay ganancias para el mes actual
+    if ganancias_mes_actual is not None:
+        return ganancias_mes_actual
+    else:
+        return 0
+
 def obtener_fecha_actual():
     now = timezone.now()
     chile_tz = pytz.timezone('America/Santiago')
@@ -86,6 +118,7 @@ def index(request):
     else:
         return render(request, 'index.html', contexto)
 #FUNCIONES CARRITO
+@login_required(login_url="/")
 def agregar_producto(request, idProducto):
     if not request.user.is_authenticated:
         messages.error(
@@ -97,7 +130,7 @@ def agregar_producto(request, idProducto):
     messages.success(
             request, 'Producto agregado al carrito exitosamente!')
     return redirect("catalogo")
-
+@login_required(login_url="/")
 def agregar_producto_i(request, idProducto):
     if not request.user.is_authenticated:
         messages.error(
@@ -110,7 +143,7 @@ def agregar_producto_i(request, idProducto):
             request, 'Producto agregado al carrito exitosamente!')
     url = reverse('index') + '#catalogo'
     return redirect(url)
-
+@login_required(login_url="/")
 def agregar_producto_cart(request, idProducto):
     if not request.user.is_authenticated:
         messages.error(
@@ -120,26 +153,26 @@ def agregar_producto_cart(request, idProducto):
     producto = Producto.objects.get(id_producto = idProducto)
     carrito.agregar(producto)
     return redirect("carrito")
-
+@login_required(login_url="/")
 def eliminar_prod_cart(request, idProducto):
     carrito = Carrito(request)
     producto = Producto.objects.get(id_producto = idProducto)
     carrito.eliminar(producto)
     return redirect("carrito")
-
+@login_required(login_url="/")
 def restar_producto(request, idProducto):
     carrito = Carrito(request)
     producto = Producto.objects.get(id_producto = idProducto)
     carrito.restar(producto)
     return redirect("carrito")
-
+@login_required(login_url="/")
 def limpiar_carrito(request):
     carrito = Carrito(request)
     carrito.limpiar()
     return redirect("carrito")
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def index_admin(request):
     usuarios = Usuario.objects.filter(correo=request.user.username).first()
     roles = Rol.objects.all()
@@ -148,7 +181,7 @@ def index_admin(request):
     return render(request, 'index_admin.html', {'usuarios': usuarios, 'roles': roles,'ganancias_mes_actual': obtener_ganancias_mes_actual,'ventas_mes_actual':ventas_mes_actual})
 
 @login_required(login_url="/")
-@role_required('1','2')
+@role_required('1','4')
 def agregar_producto_nuevo(request):
     if request.method == "POST":
         form_agregar_producto = producto_form(request.POST, request.FILES)
@@ -174,7 +207,7 @@ def agregar_producto_nuevo(request):
         contexto = {'form': form_agregar_producto}
         return render(request, 'agregar_producto.html', contexto)
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def producto_relacionado(request):
     id_prod = request.session.get('relacionar_producto')
     print(id_prod)
@@ -246,7 +279,7 @@ def solicitar_stock(request, id_prod):
         return render(request, 'solicitar_stock.html', contexto)
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def modificar_producto(request, idProd):
     producto_filter = Producto.objects.get(id_producto=idProd)
     if request.method == "POST":
@@ -277,7 +310,7 @@ def catalogo(request):
     return render(request, 'catalogo.html', contexto)
 
 @login_required(login_url="/")
-@role_required('5')
+@role_required('2','3','5')
 def carrito(request):
     return render(request, 'carrito.html')
 #Función que genera el pago para así generar el token_ws.
@@ -307,7 +340,7 @@ def generar_pago(request):
             "buy_order": order,
             "session_id": session,
             "amount": carrito[primer_elemento]['acumulado'],
-            "return_url": 'http://192.168.1.14:8000/respuesta_pago/'
+            "return_url": 'http://192.168.1.88:8000/respuesta_pago/'
         }
 
         response = requests.post(url, headers=headers, data=json.dumps(data))
@@ -348,9 +381,14 @@ def pago(request):
     print(content)
     print()
     print('****')
-    cod_respuesta= content['response_code']
-    orden_pedido= content['buy_order']
-    if cod_respuesta ==0:
+    try:
+
+        cod_respuesta= content['response_code']
+        orden_pedido= content['buy_order']
+    except:
+        cod_respuesta= 1
+        orden_pedido= ""
+    if cod_respuesta == 0:
         #Obtener carrito
         carrito = request.session.get('carrito', {})
         primer_elemento = next(iter(carrito))
@@ -462,7 +500,7 @@ def modificar_clave_usuario(request):
 @role_required('5','2','3')
 def perfil(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
-    pedido_usuario = Pedido.objects.filter((Q(fk_id_estado_id=1) | Q(fk_id_estado_id=2)) & Q(fk_id_usuario_id = usuario.id_usuario) ).values()
+    pedido_usuario = Pedido.objects.filter( fk_id_usuario_id = usuario.id_usuario ).values().order_by('fk_id_estado_id')
     detalle =ReciboPedido.objects.filter(fk_id_usuario_id = usuario.id_usuario).values('fk_id_productos','fk_id_pedido')
     producto =Producto.objects.all()
     estado = Estado.objects.all()  
@@ -498,7 +536,6 @@ def registrar_usuario(request):
         contexto = {'form': form_registrar_usuario}
         return render(request, 'registrarse.html', contexto)
     
-
 def iniciar_sesion(request):
     if request.method == "POST":
         # Tomar los datos del formulario.
@@ -547,7 +584,7 @@ def cerrar_sesion(request):
     return redirect('iniciar_sesion')
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def agregar_prov(request):
     if request.method == "POST":
         form_agregar_proveedor = proveedor_form(request.POST)
@@ -566,7 +603,7 @@ def agregar_prov(request):
 
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def modificar_proveedor(request, id_prov):
     prov_filter = Proveedor.objects.get(id_proveedor=id_prov)
     if request.method == "POST":
@@ -588,7 +625,7 @@ def modificar_proveedor(request, id_prov):
 
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def solicitudes_proveedor(request):
     solicitudes = Solicitud.objects.exclude(estado='finalizado')
     print(solicitudes)
@@ -596,12 +633,13 @@ def solicitudes_proveedor(request):
     return render(request, 'solicitudes_proveedor.html', contexto)
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def usuarios(request):
+        
     return render(request, 'usuarios.html')
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def agregar_usuario(request):
     if request.method == "POST":
         form_agregar_usuario = usuario_form(request.POST)
@@ -633,7 +671,7 @@ def agregar_usuario(request):
         return render(request, 'agregar_usuario.html', contexto)
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def modificar_usuario(request, id_user):
     usuario_filter = Usuario.objects.get(id_usuario=id_user)
     user_filter = User.objects.get(username= usuario_filter.correo)
@@ -660,7 +698,7 @@ def modificar_usuario(request, id_user):
         contexto = {'form': form_modificar_usuario,'usuario':usuario_filter}
         return render(request, 'modificar_usuario.html', contexto)
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def modificar_clave(request, id_user):
     usuario_filter = Usuario.objects.get(id_usuario=id_user)
     user_filter = User.objects.get(username= usuario_filter.correo)
@@ -688,7 +726,7 @@ def index_repartidor(request):
     contexto = {'pedidos': pedidos}
     return render(request, 'index_repartidor.html', contexto)
 @login_required(login_url="/")
-@role_required('1','2','5')
+@role_required('1','4')
 def pedido (request):
     pedido_usuario = Pedido.objects.filter(Q(fk_id_estado_id=1) | Q(fk_id_estado_id=2) ).values()
     
@@ -697,7 +735,8 @@ def pedido (request):
 #
 # COCINERO 
 #
-
+@login_required(login_url="/")
+@role_required('2')
 def index_cocinero(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
     pedido = Pedido.objects.filter((Q(fk_id_estado_id=1))).values()
@@ -705,26 +744,35 @@ def index_cocinero(request):
     detalle =ReciboPedido.objects.all().values('fk_id_productos','fk_id_pedido')
     producto =Producto.objects.all()
     return render(request, 'index_cocinero.html',{'pedido':pedido,'detalle':detalle,'producto':producto})
-
+@login_required(login_url="/")
+@role_required('2')
 def asignar_repartidor(request):
     repartidores = Usuario.objects.filter(fk_id_rol=3)
     asignado = False
     for repartidor in repartidores:
         cantidad_pedidos = Pedido.objects.filter(repartidor=repartidor.id_usuario).count()
+        print(cantidad_pedidos)
         if cantidad_pedidos < 2:
             pedidos = Pedido.objects.filter(repartidor__isnull=True)
-            for pedido in pedidos:
-                pedido.repartidor = repartidor.id_usuario
-                pedido.save()
-            asignado = True
-            break
+            if not pedidos:
+                asignado = False
+            else:
+                for pedido in pedidos:
+                    pedido.repartidor = repartidor.id_usuario
+                    pedido.save()
+                    asignado = True
+                    break
+                #continue
+        else:
+            continue
     if asignado:
-        mensaje = f"Se asignó un repartidor a los pedidos."
+        mensaje = f"Se asignó el repartidor {repartidor.id_usuario} al pedido."
     else:
-        mensaje = "No se encontró un repartidor disponible para agregar al pedido."
+        mensaje = "No se encontró un repartidor o pedido disponible para agregar."
     
     return JsonResponse({'mensaje': mensaje})
-
+@login_required(login_url="/")
+@role_required('2')
 def actualizar_tabla_cocinero(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
     pedido = Pedido.objects.filter(Q(fk_id_estado_id=1)).values()
@@ -770,7 +818,7 @@ def sp_lista_solicitudes(request):
     return render(request, 'modales/lista_solicitudes.html', contexto)
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def u_lista_usuarios(request):
     usuarios = Usuario.objects.filter(
     (Q(fk_id_rol_id=2) | Q(fk_id_rol_id=3) | Q(fk_id_rol_id=4) | Q(fk_id_rol_id=5)) & Q(row_status=1))
@@ -800,7 +848,7 @@ def sp_mas_info(request, id_solicitud):
 
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def ua_mod_rol(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
     roles = Rol.objects.all()
@@ -809,7 +857,7 @@ def ua_mod_rol(request, id_usuario):
 
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def ua_eliminar_usuario(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
 
@@ -817,35 +865,35 @@ def ua_eliminar_usuario(request, id_usuario):
 
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def ua_desactivar_usuario(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
 
     return render(request, 'modales/ua_desactivar_usuario.html', {'usuario': usuario})
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def ua_activar_usuario(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
 
     return render(request, 'modales/ua_activar_usuario.html', {'usuario': usuario})
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def pv_desactivar_proveedor(request, id_proveedor):
     provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
  
     return render(request, 'modales/pv_desactivar_prove.html', {'proveedor': provee})
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def pv_activar_proveedor(request, id_proveedor):
     provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
 
     return render(request, 'modales/pv_activar_prove.html', {'proveedor': provee})
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def pv_eliminar_proveedor(request, id_proveedor):
     provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
 
@@ -860,28 +908,28 @@ def p_lista_productos(request):
     return render(request, 'modales/lista_productos.html', {'producto': producto})
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def p_activar_producto(request, id_producto):
     producto = Producto.objects.filter(id_producto=id_producto).first()
 
     return render(request, 'modales/p_activar_producto.html', {'producto': producto})
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def p_desactivar_producto(request, id_producto):
     producto = Producto.objects.filter(id_producto=id_producto).first()
 
     return render(request, 'modales/p_desactivar_producto.html', {'producto': producto})
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def p_eliminar_producto(request, id_producto):
     producto = Producto.objects.filter(id_producto=id_producto).first()
 
     return render(request, 'modales/p_eliminar_producto.html', {'producto': producto})
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def lp_lista_pedidos(request):
     pedido_usuario = Pedido.objects.filter(Q(fk_id_estado_id=1) | Q(fk_id_estado_id=2) ).values()
     detalle =ReciboPedido.objects.all().values('fk_id_productos','fk_id_pedido')
@@ -890,7 +938,7 @@ def lp_lista_pedidos(request):
     return render(request, 'modales/lista_pedidos.html', {'pedido':pedido_usuario,'detalle':detalle,'producto':producto,'estado':estado})
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def modificar_estado(request, id_pedido):
     if request.method == "POST":
         estado = request.POST['estado']
@@ -901,7 +949,7 @@ def modificar_estado(request, id_pedido):
         return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def lp_mod_estado(request, id_pedido):
     pedido = Pedido.objects.filter(id_pedido=id_pedido).values()
     id_pedido = pedido[0]['id_pedido']
@@ -911,7 +959,7 @@ def lp_mod_estado(request, id_pedido):
     return render(request, 'modales/lp_mod_estado.html', {'pedido': pedido, 'estado': estado,'id_pedido':id_pedido,'id_estado':id_estado})
 # FUNCIONES
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def desactivar_proveedor(request, id_proveedor):
     provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
     provee.prov_is_active = False
@@ -919,7 +967,7 @@ def desactivar_proveedor(request, id_proveedor):
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def activar_proveedor(request, id_proveedor):
     provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
     provee.prov_is_active = True
@@ -927,7 +975,7 @@ def activar_proveedor(request, id_proveedor):
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def eliminar_proveedor(request, id_proveedor):
     provee = Proveedor.objects.filter(id_proveedor=id_proveedor).first()
     provee.row_status = False
@@ -936,7 +984,7 @@ def eliminar_proveedor(request, id_proveedor):
 
 # Funcion para desactivar al usuario
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def desactivar_usuario(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
     usuario.u_is_active = False
@@ -945,7 +993,7 @@ def desactivar_usuario(request, id_usuario):
 # Funcion para activar al usuario
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def activar_usuario(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
     usuario.u_is_active = True
@@ -955,7 +1003,7 @@ def activar_usuario(request, id_usuario):
 # Funcion para eliminar usuario
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def eliminar_usuario(request, id_usuario):
     usuario = Usuario.objects.filter(id_usuario=id_usuario).first()
     usuario.row_status = False
@@ -963,7 +1011,7 @@ def eliminar_usuario(request, id_usuario):
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizacion'})
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def modificarRol(request, id_usuario):
     if request.method == "POST":
         rol = request.POST['roles']
@@ -989,7 +1037,7 @@ def finalizar_solicitud(request, id_solicitud):
     return HttpResponse(status=204, headers={'HX-Trigger': 'act'})
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def activar_producto(request, id_producto):
     producto = Producto.objects.filter(id_producto=id_producto).first()
     producto.prod_is_active = True
@@ -997,7 +1045,7 @@ def activar_producto(request, id_producto):
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def desactivar_producto(request, id_producto):
     producto = Producto.objects.filter(id_producto=id_producto).first()
     producto.prod_is_active = False
@@ -1005,7 +1053,7 @@ def desactivar_producto(request, id_producto):
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
 
 @login_required(login_url="/")
-@role_required('1')
+@role_required('1','4')
 def eliminar_producto(request, id_producto):
     producto = Producto.objects.filter(id_producto=id_producto).first()
     producto.row_status = False
@@ -1013,6 +1061,7 @@ def eliminar_producto(request, id_producto):
     return HttpResponse(status=204, headers={'HX-Trigger': 'actualizar'})
 
 @login_required(login_url="/")
+@role_required('1','4')
 def verPedido(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
     pedido_usuario = Pedido.objects.filter((Q(fk_id_estado_id=1) | Q(fk_id_estado_id=2)) & Q(fk_id_usuario_id = usuario.id_usuario) ).values()
@@ -1022,14 +1071,16 @@ def verPedido(request):
     print(pedido_usuario)    
 
     return render (request,'seguimiento.html',{'pedido':pedido_usuario,'detalle':detalle,'producto':producto,'estado':estado})
-
+@login_required(login_url="/")
+@role_required('3')
 def vista_repartidor (request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
     pedido = Pedido.objects.filter((Q(fk_id_estado_id=2)) & Q(repartidor = usuario.id_usuario)).values()
     detalle =ReciboPedido.objects.all().values('fk_id_productos','fk_id_pedido')
     producto =Producto.objects.all()
     return render(request, 'repartidor.html',{'pedido':pedido,'detalle':detalle,'producto':producto})
-
+@login_required(login_url="/")
+@role_required('3')
 def actualizar_tabla(request):
     usuario = Usuario.objects.filter(correo=request.user.username).first()
     pedido = Pedido.objects.filter((Q(fk_id_estado_id=2)) & Q(repartidor=usuario.id_usuario)).values()
@@ -1061,8 +1112,6 @@ def actualizar_tabla(request):
     # Devolver la respuesta JSON
     return HttpResponse(response_json, content_type='application/json')
 
-
-
 def estado_repartidor(request, id_pedido):
     estado = get_object_or_404(Estado, id_estado=3)
     pedido = get_object_or_404(Pedido, id_pedido=id_pedido)
@@ -1078,36 +1127,9 @@ def estado_cocinero(request, id_pedido):
     pedido.save()
     return redirect('index_cocinero')
 
-
-def obtener_ganancias_mes_actual():
-    # Obtener el mes actual
-    mes_actual = timezone.now().month  
-    # Obtener la suma de los totales de los pedidos del mes actual
-    ganancias_mes_actual = Pedido.objects.filter(
-        fecha__month=mes_actual,
-        fk_id_estado=3
-    ).aggregate(total_ganancias=Sum('total'))['total_ganancias']
-    print(ganancias_mes_actual)
-    # Verificar si hay ganancias para el mes actual
-    if ganancias_mes_actual is not None:
-        ganancias_mes_actual = "{:,.0f}".format(ganancias_mes_actual).replace(",", ".")
-        return ganancias_mes_actual
-    else:
-        return 0
+@login_required(login_url="/")
+def ver_pedidos(request):
+    url = reverse('perfil') + '#pedidos'
+    return redirect(url)
 
 
-def obtener_ventas_mes_actual():
-    # Obtener el mes actual
-    mes_actual = timezone.now().month
-
-    # Obtener la suma de los totales de los pedidos del mes actual
-    ganancias_mes_actual = Pedido.objects.filter(
-        fecha__month=mes_actual,
-        fk_id_estado=3
-    ).count()
-
-    # Verificar si hay ganancias para el mes actual
-    if ganancias_mes_actual is not None:
-        return ganancias_mes_actual
-    else:
-        return 0

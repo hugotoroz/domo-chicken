@@ -11,7 +11,14 @@ pip install sqlparse
 pip install rut_chile
 
 IMPORTANTE:
---> mysqlclient es solamente si utilizará la base de datos MySQL
+--> mysqlclient es solamente si utilizará la base de datos MySQL.
+    -> Si vas a utilizar la base de datos por default. cambiar en settings.py la variable DATABASES a la siguiente:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 --> pytest y pytest-django es solamente si desea probar los Unit Test realizados.
 --> Los demás son estrictamente necesarios para el funcionamiento.
 
