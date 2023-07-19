@@ -100,6 +100,12 @@ def obtener_hora_actual():
 def index(request):
     producto = Producto.objects.filter(fk_id_proveedor=1, prod_is_active=1,stock__gt=0)[:3]
     usuario = Usuario.objects.filter(correo=request.user.username).first()
+    carrito = request.session.get('carrito', {})
+    #primer_elemento = list(iter(carrito))
+    #cadena = json.dumps(carrito)
+    #carrito[primer_elemento]['acumulado']
+    #print(cadena)
+    
     contexto = {'producto': producto, 'usuario': usuario}
     rol = None
     try:
@@ -170,6 +176,13 @@ def limpiar_carrito(request):
     carrito = Carrito(request)
     carrito.limpiar()
     return redirect("carrito")
+def calcular_total_carrito(request):
+    total = 0
+    if request.user.is_authenticated:
+        if "carrito" in request.session.keys():
+            for key, value in request.session["carrito"].items():
+                total += int(value["acumulado"])
+    return total
 
 @login_required(login_url="/")
 @role_required('1','4')
@@ -319,6 +332,7 @@ def generar_pago(request):
     try:
         carrito = request.session.get('carrito', {})
         primer_elemento = next(iter(carrito))
+        total_carrito = calcular_total_carrito(request) # Llama a la función del context processor
     except:
         error = True
     if error:
@@ -339,7 +353,7 @@ def generar_pago(request):
         data = {
             "buy_order": order,
             "session_id": session,
-            "amount": carrito[primer_elemento]['acumulado'],
+            "amount": total_carrito,
             "return_url": 'http://192.168.1.88:8000/respuesta_pago/'
         }
 
@@ -392,6 +406,7 @@ def pago(request):
         #Obtener carrito
         carrito = request.session.get('carrito', {})
         primer_elemento = next(iter(carrito))
+        total_carrito = calcular_total_carrito(request) 
         #Obtener datos del usuario
         usuario = Usuario.objects.filter(correo=request.user.username).first()
         comuna_usuario = Comuna.objects.get(id_comuna= usuario.fk_id_comuna_id)
@@ -401,7 +416,7 @@ def pago(request):
         hora_actual = obtener_hora_actual()
         fecha_hora = fecha_actual + ' ' + hora_actual
         #Se crea el pedido.
-        pedido = Pedido.objects.create(orden_pedido=orden_pedido,descripcion=direccion_desc, fecha=fecha_hora, fk_id_usuario_id=usuario.id_usuario,total = carrito[primer_elemento]['acumulado'])
+        pedido = Pedido.objects.create(orden_pedido=orden_pedido,descripcion=direccion_desc, fecha=fecha_hora, fk_id_usuario_id=usuario.id_usuario,total = total_carrito)
         # Obtener los productos del carrito para insertarlos en Recibo_Pedido
         carrito = request.session.get('carrito', {})
         ids_productos = []
@@ -750,7 +765,7 @@ def asignar_repartidor(request):
     repartidores = Usuario.objects.filter(fk_id_rol=3)
     asignado = False
     for repartidor in repartidores:
-        cantidad_pedidos = Pedido.objects.filter(repartidor=repartidor.id_usuario).count()
+        cantidad_pedidos = Pedido.objects.filter(repartidor=repartidor.id_usuario).exclude(fk_id_estado_id=3).count()
         print(cantidad_pedidos)
         if cantidad_pedidos < 2:
             pedidos = Pedido.objects.filter(repartidor__isnull=True)
